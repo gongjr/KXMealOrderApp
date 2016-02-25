@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="70dip"
+    android:background="#fbf5cd"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:weightSum="3" >
+
+    <TextView
+        android:id="@+id/tv_property_space"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:gravity="left|center_vertical"
+        android:paddingLeft="10dip"
+        android:text=""
+        android:textColor="@color/cl_text_grey"
+        android:textSize="@dimen/text_size_xsmall" />
+    
+    <Button
+        android:id="@+id/rl_property_ensurebtn"
+        android:layout_width="0dip"
+        android:layout_height="35dip"
+        android:layout_marginBottom="5dip"
+        android:layout_marginLeft="15dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="5dip"
+        android:layout_weight="1.2"
+        android:background="@drawable/property_dropdown_btn_bg"
+        android:text="确定"
+        android:textSize="@dimen/text_size_xsmall" />
+    
+</LinearLayout>

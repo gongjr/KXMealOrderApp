@@ -1,0 +1,171 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content_view"
+    style="@style/activity_root_style" >
+
+    <RelativeLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentTop="true"
+        android:background="@color/white" >
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:background="@anim/arrow_to_left_btn_bg" />
+
+        <TextView
+            android:id="@+id/tv_make_order_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="A021桌"
+            android:textColor="#b94152"
+            android:textSize="24sp" />
+
+        <Button
+            android:id="@+id/btn_view_order"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/btn_search"
+            android:layout_marginRight="10dip"
+            android:background="@anim/view_order_btn_bg" />
+
+        <Button
+            android:id="@+id/btn_search"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@anim/search_btn_bg"/>
+
+        <TextView
+            android:id="@+id/tv_bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="1dip"
+            android:layout_alignParentBottom="true"
+            android:background="#C5C5C5" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/ll_top"
+        android:orientation="horizontal" >
+
+        <ListView
+            android:id="@+id/lv_dish_type"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="2.5"
+            android:cacheColorHint="#00000000"
+            android:divider="@null"
+            android:fadingEdge="none"
+            android:overScrollMode="never"
+            android:scrollbars="none" >
+        </ListView>
+
+        <RelativeLayout
+            android:id="@+id/rl_dishes_container"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="7.5" >
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/rcyv_dishes_info"
+                android:layout_width="match_parent"
+                android:layout_height="fill_parent"
+                android:cacheColorHint="#00000000"
+                android:fadingEdge="none"
+                android:overScrollMode="never"
+                android:scrollbars="none" />
+            <!-- 
+            <TextView 
+                android:id="@+id/lv_bottom_empty_view"
+                android:layout_width="match_parent"
+                android:layout_height="50dip"
+                android:layout_alignParentBottom="true"
+                android:background="#FF0FFF"/>
+             -->
+        </RelativeLayout>
+    </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/ll_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:layout_alignParentBottom="true"
+        android:background="@color/cl_bottom_layout_bg" >
+
+        <ImageView
+            android:id="@+id/img_basket"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="5dip"
+            android:src="@drawable/shopping_car" />
+
+        <TextView
+            android:id="@+id/tv_order_dishes_count"
+            android:layout_width="24dip"
+            android:layout_height="24dip"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="10dip"
+            android:background="@anim/selected_dishes_basket_count_icon_bg"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:layout_toLeftOf="@+id/tv_vertical_line"
+            android:textSize="@dimen/text_size_xxsmall" 
+            android:visibility="invisible"/>
+
+        <TextView
+            android:id="@+id/tv_vertical_line"
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginBottom="10dip"
+            android:layout_toRightOf="@+id/img_basket"
+            android:background="#5F5F5F" />
+
+        <TextView
+            android:id="@+id/tv_total_price"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/tv_vertical_line"
+            android:gravity="center"
+            android:text=""
+            android:textColor="#FFFFFF"
+            android:textSize="@dimen/text_size_middle" />
+
+        <Button
+            android:id="@+id/btn_take_order"
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@anim/choose_end_btn_bg"
+            android:button="@null"
+            android:gravity="center"
+            android:paddingLeft="20dip"
+            android:paddingRight="20dip"
+            android:text="选好了"
+            android:textColor="@color/white" />
+    </RelativeLayout>
+
+</RelativeLayout>

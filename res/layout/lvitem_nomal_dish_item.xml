@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <TextView
+        android:id="@+id/tv_dish_comp_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toLeftOf="@+id/btn_to_dish_comp_detail"
+        android:gravity="left|center_vertical"
+        android:paddingBottom="5dip"
+        android:paddingLeft="10dip"
+        android:paddingRight="5dip"
+        android:paddingTop="5dip"
+        android:text="塔可特级牛排套餐"
+        android:textSize="@dimen/text_size_middle"  />
+
+    <RelativeLayout
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_dish_comp_name"
+        android:orientation="horizontal"
+        android:paddingBottom="5dip"
+        android:paddingLeft="5dip"
+        android:paddingRight="5dip"
+        android:paddingTop="5dip" >
+
+        <TextView
+            android:id="@+id/tv_dish_comp_origin_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dip"
+            android:text="￥128"
+            android:textColor="#a1a1a1"
+            android:textSize="@dimen/text_size_xsmall" />
+
+        <TextView
+            android:id="@+id/tv_dish_comp_vip_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="5dip"
+            android:layout_toRightOf="@+id/tv_dish_comp_origin_price"
+            android:text="￥89"
+            android:textColor="#fd6767" 
+            android:textSize="@dimen/text_size_xsmall"/>
+
+        <LinearLayout
+            android:id="@+id/ll_count_op"
+            android:layout_width="60dip"
+            android:layout_height="30dip"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dip"
+            android:orientation="horizontal"
+            android:padding="1dip"
+            android:gravity="right|center_vertical">
+
+            <TextView
+                android:id="@+id/btn_count_cur"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:textSize="@dimen/text_size_xsmall"
+                android:inputType="number"
+                android:editable="false"
+                android:enabled="false"
+                android:text="" />
+
+            <Button
+                android:id="@+id/btn_count_add"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@anim/dish_count_add_btn_bg"
+                android:button="@null"
+                android:gravity="center" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_properties"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/ll_content"
+        android:background="#fbf5cd"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+       
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/ll_properties"
+        android:background="#F1F1F1" />
+
+</RelativeLayout>

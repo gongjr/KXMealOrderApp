@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" 
+    >
+
+    <RelativeLayout
+        android:id="@+id/search_item_normal"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:background="@anim/lvitem_search_dishes_bg">
+    
+    <TextView 
+        android:id="@+id/tv_dishes_name"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_marginLeft="10dip"
+        android:layout_alignParentLeft="true"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_size_small"
+        android:text="水果沙拉"/>
+
+    <TextView 
+        android:id="@+id/tv_dishes_type_name"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:layout_marginRight="10dip"
+        android:layout_alignParentRight="true"
+        android:gravity="center_vertical"
+        android:textSize="@dimen/text_size_small"
+        android:text="沙拉"/>
+
+    <LinearLayout
+        android:id="@+id/serach_item_choose_num_group"
+        android:layout_width="wrap_content"
+        android:layout_height="50dip"
+        android:orientation="horizontal"
+        android:layout_alignParentRight="true"
+        android:visibility="gone"
+        >
+
+        <Button
+            android:id="@+id/search_item_choose_minus"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:background="@anim/dish_confirm_order_minus_btn_bg"
+            android:visibility="gone"
+            />
+        
+        <TextView
+            android:id="@+id/search_item_choose_num"
+            android:layout_width="wrap_content"
+            android:layout_height="50dip"
+            android:text="1"
+            android:textSize="@dimen/text_size_small"
+            android:gravity="center"
+            android:paddingLeft="10dip"
+            android:paddingRight="10dip"/>
+
+        <Button
+            android:id="@+id/search_item_choose_add"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:background="@anim/dish_change_count_btn_bg" />
+
+        <Button
+            android:id="@+id/search_item_choose_ok"
+            android:layout_width="70dip"
+            android:layout_height="40dip"
+            android:background="@anim/lvitem_search_dishes_ok_bg"
+            android:text="添加"
+            android:gravity="center"
+            android:textColor="@color/search_item_choose_ok_text"
+            android:layout_marginTop="3dip"
+            android:layout_marginLeft="30dip"/>
+        </LinearLayout>
+    </RelativeLayout>
+
+    <LinearLayout 
+        android:id="@+id/ll_properties"
+        android:layout_below="@+id/search_item_normal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#fbf5cd"
+        android:gravity="center_vertical"
+        android:orientation="vertical"
+        android:visibility="gone">
+    </LinearLayout>
+    
+</RelativeLayout>

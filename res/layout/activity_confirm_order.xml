@@ -1,0 +1,228 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    style="@style/activity_root_style">
+
+    <RelativeLayout
+        android:id="@+id/ll_top"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentTop="true"
+        android:background="@color/white" >
+
+        <Button
+            android:id="@+id/btn_back"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:background="@anim/arrow_to_left_btn_bg" />
+
+        <TextView
+            android:id="@+id/tv_confirm_order_title"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="确认订单"
+            android:textColor="#b94152"
+            android:textSize="@dimen/text_size_large" />
+
+        <TextView
+            android:id="@+id/tv_order_desk"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dip"
+            android:gravity="center"
+            android:text="A21桌"
+            android:textColor="#b94152"
+            android:textSize="@dimen/text_size_middle" />
+
+        <TextView
+            android:id="@+id/tv_bottom_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:layout_alignParentBottom="true"
+            android:background="#C5C5C5" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/tv_space_header"
+        android:layout_width="match_parent"
+        android:layout_height="8dip"
+        android:layout_below="@+id/ll_top"
+        android:background="#eeeeee" />
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rcyv_dishes_info"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rl_bottom"
+        android:layout_below="@+id/tv_space_header"
+        android:cacheColorHint="#00000000"
+        android:fadingEdge="none"
+        android:overScrollMode="never"
+        android:background="#FFFFFF"
+        android:scrollbars="none" >
+    </android.support.v7.widget.RecyclerView>
+
+    <LinearLayout
+        android:id="@+id/rl_bottom"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/white"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tv_top_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:background="#c1c1c1" />
+
+        <RelativeLayout
+            android:id="@+id/rl_sum_price"
+            android:layout_width="match_parent"
+            android:layout_height="40dip" >
+
+            <TextView
+                android:id="@+id/tv_total_count"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/tv_v_line"
+                android:gravity="center"
+                android:text="共4个菜"
+                android:textColor="@color/cl_text_grey_2"
+                android:textSize="@dimen/text_size_small" />
+
+            <TextView
+                android:id="@+id/tv_v_line"
+                android:layout_width="1dip"
+                android:layout_height="match_parent"
+                android:layout_centerVertical="true"
+                android:layout_marginBottom="10dip"
+                android:layout_marginLeft="5dip"
+                android:layout_marginRight="5dip"
+                android:layout_marginTop="10dip"
+                android:layout_toLeftOf="@+id/tv_total_money"
+                android:background="#cdcdcd" />
+
+            <TextView
+                android:id="@+id/tv_total_money"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="20dip"
+                android:gravity="center"
+                android:text="总价239元"
+                android:textColor="@color/cl_text_grey_2"
+                android:textSize="@dimen/text_size_small" />
+        </RelativeLayout>
+
+        <EditText
+            android:id="@+id/edit_remark"
+            android:layout_width="match_parent"
+            android:layout_height="50dip"
+            android:layout_margin="10dip"
+            android:background="@anim/confirm_order_remark_bg"
+            android:hint="输入客人特殊要求"
+            android:padding="5dip"
+            android:textSize="@dimen/text_size_xsmall" />
+
+        <TextView
+            android:id="@+id/tv_space1"
+            android:layout_width="match_parent"
+            android:layout_height="8dip"
+            android:background="#eeeeee" />
+
+        <!-- android:background="@anim/confirm_order_bottom_space_bg" -->
+
+        <LinearLayout
+            android:id="@+id/ll_order_time"
+            android:layout_width="match_parent"
+            android:layout_height="50dip"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:id="@+id/tv_make_order_time"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="下单时间"
+                android:textColor="@color/cl_text_grey_2"
+                android:textSize="@dimen/text_size_small" />
+
+            <RadioGroup
+                android:id="@+id/grp_order_time"
+                android:layout_width="0dip"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:orientation="horizontal" >
+
+                <RadioButton
+                    android:id="@+id/rdo_order_right_now"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_weight="1"
+                    android:background="@anim/confirm_order_time_rdo_bg"
+                    android:button="@null"
+                    android:checked="true"
+                    android:gravity="center"
+                    android:text="立刻下单"
+                    android:textColor="@anim/confirm_order_time_text_selector"
+                    android:textSize="@dimen/text_size_small" />
+
+                <RadioButton
+                    android:id="@+id/rdo_order_later"
+                    android:layout_width="0dip"
+                    android:layout_height="match_parent"
+                    android:layout_marginBottom="5dip"
+                    android:layout_marginLeft="10dip"
+                    android:layout_marginRight="10dip"
+                    android:layout_marginTop="5dip"
+                    android:layout_weight="1"
+                    android:background="@anim/confirm_order_time_rdo_bg"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:text="稍后下单"
+                    android:textColor="@anim/confirm_order_time_text_selector"
+                    android:textSize="@dimen/text_size_small" />
+            </RadioGroup>
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/tv_space2"
+            android:layout_width="match_parent"
+            android:layout_height="8dip"
+            android:background="#eeeeee" />
+
+        <TextView
+            android:id="@+id/divider_line"
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:background="#c1c1c1" />
+
+        <Button
+            android:id="@+id/btn_take_order"
+            android:layout_width="match_parent"
+            android:layout_height="45dip"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="10dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginTop="5dip"
+            android:background="@anim/choose_end_btn_bg"
+            android:button="@null"
+            android:gravity="center"
+            android:text="确认下单"
+            android:textColor="@color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

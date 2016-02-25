@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    tools:context="${relativePackage}.${activityClass}">
+
+    <RelativeLayout
+        android:id="@+id/rl_content_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentTop="true"
+        android:background="@anim/property_selection_top_bg" >
+
+        <ImageView
+            android:id="@+id/img_view_order_icon"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:src="@drawable/view_order_n" />
+
+        <TextView
+            android:id="@+id/tv_order_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/img_view_order_icon"
+            android:gravity="center_vertical|left"
+            android:padding="5dip"
+            android:text="已下订单"
+            android:textSize="@dimen/text_size_middle"
+            android:textColor="#000000"/>
+
+        <Button
+            android:id="@+id/btn_notify_kitchen"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:layout_toRightOf="@+id/tv_order_title"
+            android:gravity="center_vertical|left"
+            android:text="通知后厨"
+            android:button="@null"
+            android:background="@null"
+            android:textColor="@drawable/view_order_notify_text_color"
+            android:textSize="@dimen/text_size_middle"
+            android:visibility="gone"/>
+        
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:padding="10dip"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dip"
+            android:src="@drawable/close" />
+    </RelativeLayout>
+
+    <com.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/lv_order_dishes"
+        android:layout_width="match_parent"
+        android:layout_height="380dip"
+        android:paddingTop="5dip"
+        android:paddingBottom="5dip"
+        android:background="@color/white"
+        android:layout_below="@+id/rl_content_header"
+        android:cacheColorHint="#00000000"
+        android:overScrollMode="never"
+        android:scrollbars="none"
+    />
+
+    <RelativeLayout
+        android:id="@+id/rl_content_footer"
+        android:layout_width="match_parent"
+        android:layout_height="75dip"
+        android:padding="5dip"
+        android:layout_below="@+id/lv_order_dishes"
+        android:background="@anim/property_selection_bottom_bg" >
+
+        <TextView
+            android:id="@+id/tv_dish_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dip"
+            android:layout_marginTop="5dip"
+            android:layout_marginBottom="5dip"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:text="共计8个"
+            android:textColor="@color/dark_red"
+            android:textSize="@dimen/text_size_middle" />
+
+        <Button
+            android:id="@+id/tv_print_order"
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:layout_toRightOf="@+id/tv_dish_count"
+            android:layout_marginLeft="10dip"
+            android:layout_marginBottom="5dip"
+            android:layout_alignParentTop="true"
+            android:text="打印客单"
+            android:textColor="@drawable/view_order_notify_text_color"
+            android:textSize="@dimen/text_size_small"
+            />
+        
+        <TextView
+            android:id="@+id/tv_dish_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="5dip"
+            android:layout_marginRight="10dip"
+            android:layout_marginBottom="5dip"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text="合计￥300元"
+            android:textColor="@color/dark_red"
+            android:textSize="@dimen/text_size_middle" />
+        
+        <TextView
+            android:id="@+id/tv_waiter_info"
+            android:layout_below="@+id/tv_dish_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dip"
+            android:layout_marginLeft="10dip"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:gravity="center"
+            android:text="服务员: 021 张莉"
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_xxsmall" />
+        
+        <TextView
+            android:id="@+id/tv_order_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="10dip"
+            android:layout_marginBottom="5dip"
+            android:layout_below="@+id/tv_dish_price"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:gravity="center"
+            android:text=""
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_xxsmall" />
+    </RelativeLayout>
+
+</RelativeLayout>

@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#FFFFFF" >
+
+    <TextView
+        android:id="@+id/tv_property_name"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignParentLeft="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="40dip"
+        android:layout_marginRight="0dip"
+        android:layout_marginTop="10dip"
+        android:gravity="center"
+        android:text="全熟"
+        android:textSize="@dimen/text_size_small" />
+
+    <CheckBox
+        android:id="@+id/tv_property_ischk"
+        android:layout_width="35dip"
+        android:layout_height="35dip"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginBottom="10dip"
+        android:layout_marginLeft="0dip"
+        android:layout_marginRight="40dip"
+        android:layout_marginTop="10dip"
+        android:background="@anim/dish_compitem_select_chk_bg"
+        android:button="@null"
+        android:gravity="center" />
+
+</RelativeLayout>

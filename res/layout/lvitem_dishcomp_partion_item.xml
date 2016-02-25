@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/white" >
+
+    <RelativeLayout
+        android:id="@+id/rl_dish_comp_nav"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:layout_alignParentTop="true" >
+
+        <TextView
+            android:id="@+id/tv_dish_comp_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:paddingBottom="15dip"
+            android:paddingLeft="10dip"
+            android:paddingTop="15dip"
+            android:text="塔可特级牛排套餐"
+            android:textSize="@dimen/text_size_middle" />
+
+        <CheckBox
+            android:id="@+id/chk_isItemSelect"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dip"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:background="@anim/dish_compitem_select_chk_bg"
+            android:button="@null" />
+            
+      <!--   <com.asiainfo.mealorder.widget.CheckButton
+            android:id="@+id/chk_isItemSelect"
+            android:layout_width="35dip"
+            android:layout_height="35dip"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginEnd="10dip"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dip"
+            android:button="@null" /> -->
+    </RelativeLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_properties"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/rl_dish_comp_nav"
+        android:background="#fbf5cd"
+        android:gravity="center_vertical"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_divider_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:layout_below="@+id/ll_properties"
+        android:background="#F1F1F1" />
+
+</RelativeLayout>

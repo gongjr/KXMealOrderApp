@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <drawable name="btn_tcolor_white">#ffffff</drawable>
+    <drawable name="btn_tcolor_white_">#70ffffff</drawable>
+    <drawable name="btn_tcolor_orange">#DCAD5C</drawable>
+    <drawable name="btn_tcolor_orange_">#70DCAD5C</drawable>
+    <drawable name="cl_bg_desk_loc_item_n">#707070</drawable>
+    <drawable name="cl_bg_desk_loc_item_s">#FF0000</drawable>
+    <drawable name="cl_confirm_order_time_s">#fd1d1d</drawable>
+    <drawable name="cl_confirm_order_time_n">#7d7d7d</drawable>
+    <drawable name="cl_view_order_notify_n">#B94258</drawable>
+    <drawable name="cl_view_order_notify_s">#ccB94258</drawable>
+</resources> 

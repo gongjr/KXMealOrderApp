@@ -1,0 +1,68 @@
+# view res/layout/activity_confirm_order.xml #generated:57
+# view res/layout/activity_make_order.xml #generated:83
+-keep class android.support.v7.widget.RecyclerView { <init>(...); }
+
+# view AndroidManifest.xml #generated:208
+-keep class cn.jpush.android.service.AlarmReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:173
+-keep class cn.jpush.android.service.DaemonService { <init>(...); }
+
+# view AndroidManifest.xml #generated:153
+-keep class cn.jpush.android.service.DownloadService { <init>(...); }
+
+# view AndroidManifest.xml #generated:185
+-keep class cn.jpush.android.service.PushReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:160
+-keep class cn.jpush.android.service.PushService { <init>(...); }
+
+# view AndroidManifest.xml #generated:141
+-keep class cn.jpush.android.ui.PushActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:69
+-keep class com.asiainfo.mealorder.AppApplication { <init>(...); }
+
+# view AndroidManifest.xml #generated:75
+-keep class com.asiainfo.mealorder.LaunchActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:211
+-keep class com.asiainfo.mealorder.receiver.JPushReceiver { <init>(...); }
+
+# view AndroidManifest.xml #generated:92
+-keep class com.asiainfo.mealorder.ui.ChooseDeskActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:123
+-keep class com.asiainfo.mealorder.ui.ConfirmOrderActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:117
+-keep class com.asiainfo.mealorder.ui.DishSetCompActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:98
+-keep class com.asiainfo.mealorder.ui.LocalOrderActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:86
+-keep class com.asiainfo.mealorder.ui.LoginActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:111
+-keep class com.asiainfo.mealorder.ui.MakeOrderActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:129
+-keep class com.asiainfo.mealorder.ui.SearchDishesActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:104
+-keep class com.asiainfo.mealorder.ui.ViewOrderDishesActivity { <init>(...); }
+
+# view AndroidManifest.xml #generated:136
+-keep class com.asiainfo.mealorder.utils.DownloadService { <init>(...); }
+
+# view res/layout/activity_choose_dish_comps_items.xml #generated:76
+-keep class com.asiainfo.mealorder.widget.PinnedSectionListView { <init>(...); }
+
+# view res/layout/activity_localorder.xml #generated:52
+# view res/layout/df_view_order_dishes.xml #generated:62
+-keep class com.baoyz.swipemenulistview.SwipeMenuListView { <init>(...); }
+
+# view res/layout/activity_choose_desk.xml #generated:82
+-keep class com.handmark.pulltorefresh.library.PullToRefreshGridView { <init>(...); }
+

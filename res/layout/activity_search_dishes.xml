@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#EBECED"
+    style="@style/activity_root_style">
+
+    <LinearLayout
+        android:id="@+id/ll_header"
+        android:layout_width="match_parent"
+        android:layout_height="55dip"
+        android:background="#EBECED"
+        android:weightSum="10" >
+
+
+        
+        <EditText
+            android:id="@+id/edit_content"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="5"
+            android:gravity="center_vertical|left"
+            android:layout_marginLeft="10dip"
+            android:textCursorDrawable="@null"
+            android:paddingLeft="5dip"
+            android:layout_marginTop="7dip"
+            android:layout_marginBottom="7dip"
+            android:drawablePadding="5dip"
+            android:textColorHint="#AAAAAA"
+            android:hint="搜索"
+            android:background="@anim/search_input_bg"
+            android:textSize="@dimen/text_size_middle"
+            android:drawableLeft="@drawable/fm_search_btn"/>
+
+        <RelativeLayout
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_weight="3">
+        <TextView
+            android:id="@+id/search_top_num"
+            android:layout_width="30dip"
+            android:layout_height="30dip"
+            android:gravity="center"
+            android:text="4"
+            android:textColor="@color/search_num_text_color"
+            android:textSize="@dimen/text_size_middle"
+            android:background="@anim/search_num_bg"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"/>
+
+        <TextView
+            android:id="@+id/search_top_total"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical"
+            android:textSize="@dimen/text_size_middle"
+            android:text="132元"
+            android:layout_toRightOf="@+id/search_top_num"
+            android:layout_marginLeft="5dip"/>
+        </RelativeLayout>
+        <TextView
+            android:id="@+id/btn_cancel"
+            android:layout_width="0dip"
+            android:layout_height="match_parent"
+            android:layout_weight="2"
+            android:gravity="center"
+            android:text="选好了"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_middle"
+            android:background="@color/search_ok_bg"/>
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_search_desc"
+        android:layout_width="match_parent"
+        android:layout_height="55dip"
+        android:paddingLeft="10dip"
+        android:layout_below="@+id/ll_header"
+        android:gravity="left|center_vertical"
+        android:text="查找"
+        android:textColor="#A0A0A0"
+        android:background="#FFFFFF"
+        android:textSize="@dimen/text_size_small" />
+
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="10dip"
+        android:paddingTop="5dip"
+        android:paddingBottom="5dip"
+        android:layout_below="@+id/tv_search_desc"
+        android:background="#EBECED"
+        android:text="你可能想找" 
+        android:gravity="left|center_vertical"
+        android:textColor="#A0A0A0" />
+
+    <ListView
+        android:id="@+id/lv_search_result_dishes"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_below="@+id/tv_title"
+        android:divider="#dedfe0"
+        android:dividerHeight="1dip"
+        android:background="#FFFFFF" >
+    </ListView>
+
+</RelativeLayout>

@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="#EEEEEE"
+    android:paddingTop="5dip" >
+
+    <ImageView
+        android:id="@+id/img_dish_type_icon"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/dish_type_img_n" />
+
+    <TextView
+        android:id="@+id/tv_dish_type_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/img_dish_type_icon"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="5dip"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_xsmall" />
+
+    <TextView
+        android:id="@+id/tv_dish_type_select_count"
+        android:layout_width="24dip"
+        android:layout_height="24dip"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_marginRight="5dip"
+        android:background="@anim/selected_dishes_count_icon_bg"
+        android:gravity="center"
+        android:text="8"
+        android:textColor="#FFFFFF"
+        android:textSize="@dimen/text_size_xxsmall" />
+
+    <TextView
+        android:id="@+id/tv_dish_type_bottom_line"
+        android:layout_width="match_parent"
+        android:layout_height="2dip"
+        android:layout_below="@+id/tv_dish_type_name"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="8dip"
+        android:layout_marginRight="8dip"
+        android:layout_marginTop="10dip"
+        android:background="#e0e0e0" />
+
+</RelativeLayout>

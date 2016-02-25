@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_checked="true" android:state_enabled="true" android:color="@drawable/cl_confirm_order_time_s">
+    </item>
+    
+    <item android:state_checked="false" android:state_enabled="true" android:color="@drawable/cl_confirm_order_time_n">
+    </item>
+    
+</selector>

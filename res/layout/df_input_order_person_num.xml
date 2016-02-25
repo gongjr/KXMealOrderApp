@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+    
+    <RelativeLayout 
+        android:id="@+id/rl_content_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentTop="true"
+        android:background="@anim/property_selection_top_bg">
+        
+        <TextView 
+            android:id="@+id/tv_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dip"
+            android:text="输入用餐人数"
+            android:inputType="numberSigned"
+            android:textSize="@dimen/text_size_middle"
+            android:gravity="center_vertical|left"
+            android:padding="5dip"/>
+        
+        <ImageView 
+            android:id="@+id/img_close"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:padding="10dip"
+            android:src="@drawable/close"
+            android:layout_marginRight="10dip"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+        
+    </RelativeLayout>
+    
+    <LinearLayout 
+        android:id="@+id/ll_content"
+        android:layout_width="match_parent"
+        android:layout_height="120dip"
+        android:layout_below="@+id/rl_content_header"
+        android:background="@color/white"
+        android:orientation="horizontal">
+        
+        <TextView 
+            android:id="@+id/tv_txt"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:text="用餐人数："
+            android:layout_marginLeft="10dip"
+            android:textSize="@dimen/text_size_small"
+            android:gravity="center"
+            android:layout_weight="1"/>
+        
+        <EditText 
+            android:id="@+id/edit_person_num"
+            android:layout_width="0dip"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="left"
+            android:hint="输入人数"
+            android:inputType="number"
+            android:layout_marginRight="20dip"
+            android:paddingLeft="10dip"
+            android:paddingTop="5dip"
+            android:paddingRight="5dip"
+            android:paddingBottom="5dip"
+            android:textSize="@dimen/text_size_small"
+            android:layout_weight="2"/>
+    </LinearLayout>
+    
+    <RelativeLayout 
+        android:id="@+id/rl_content_footer"
+        android:layout_width="match_parent"
+        android:layout_height="60dip"
+        android:layout_below="@+id/ll_content"
+        android:background="@anim/property_selection_bottom_bg">
+        
+        <Button 
+            android:id="@+id/btn_ensure"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_centerInParent="true"
+            android:layout_marginLeft="20dip"
+            android:layout_marginTop="8dip"
+            android:layout_marginRight="20dip"
+            android:layout_marginBottom="8dip"
+            android:text="确定"
+            android:background="@anim/choose_end_btn_bg"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_middle"
+            android:gravity="center"/>
+        
+    </RelativeLayout>
+</RelativeLayout>

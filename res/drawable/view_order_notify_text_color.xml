@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>  
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" android:state_enabled="true" android:color="@drawable/cl_bg_desk_loc_item_n">
+    </item>
+    
+    <item android:state_enabled="true" android:color="@drawable/cl_view_order_notify_n">
+    </item>
+    
+</selector>
