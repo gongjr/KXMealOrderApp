@@ -288,6 +288,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 								showShortTip("桌子数据有误!");
 							}
 						} catch (JSONException e) {
+                            showShortTip("桌子数据有误!");
 							e.printStackTrace();
 						}
 						mPullRefreshGridView.onRefreshComplete();

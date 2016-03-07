@@ -397,7 +397,7 @@ public class DishCompItemAdapter  extends BaseAdapter{
             goodsItem.setRemark(mRemarkList);
             goodsItem.setSalesId(mDishesCompItem.getDishesId());
             goodsItem.setSalesName(mDishesCompItem.getDishesName());
-            goodsItem.setSalesNum(1);
+            goodsItem.setSalesNum(Integer.valueOf(mDishesCompItem.getDishesNum()));
             goodsItem.setSalesPrice("0");
             goodsItem.setSalesState("1");  //0稍后下单  1立即下单
             goodsItem.setIsCompDish(""+true); //套餐菜固定为true

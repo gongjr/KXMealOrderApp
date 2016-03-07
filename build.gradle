@@ -96,7 +96,7 @@ android {
         release {
             keyAlias 'kxlive'
             keyPassword 'kxlive'
-            storeFile file('F:/adt_64/studiokey_kxlive.jks')
+            storeFile file('/studiokey_kxlive.jks')
             storePassword 'kxlive'
         }
     }

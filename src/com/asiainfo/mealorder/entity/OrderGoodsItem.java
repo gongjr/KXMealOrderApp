@@ -1,9 +1,9 @@
 package com.asiainfo.mealorder.entity;
 
+import org.litepal.crud.DataSupport;
+
 import java.io.Serializable;
 import java.util.List;
-
-import org.litepal.crud.DataSupport;
 
 /**
  *
@@ -30,7 +30,7 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	private int salesNum;
 	private String salesPrice;
 	private String salesState;
-	private String isCompDish;
+	private String isCompDish;//是否套餐子菜,
 	private String action; //对菜的操作类型，从订单中增删改, 1加菜， 2修改， 0删除
     private String memberPrice; //会员价
 	private String isZdzk; //整单折扣
