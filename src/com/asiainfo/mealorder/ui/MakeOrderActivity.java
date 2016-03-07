@@ -54,7 +54,7 @@ import de.greenrobot.event.EventBus;
 import roboguice.inject.InjectView;
 
 /**
- * @author gjr
+ * @author ouyang
  *
  * 2015年6月27日
  * 

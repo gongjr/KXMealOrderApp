@@ -64,7 +64,7 @@ import java.util.Map;
 import de.greenrobot.event.EventBus;
 
 /**
- * @author gjr
+ * @author ouyang
  *
  * 2015年6月25日
  *
