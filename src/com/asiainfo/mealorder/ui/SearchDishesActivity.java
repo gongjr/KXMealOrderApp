@@ -119,8 +119,10 @@ public class SearchDishesActivity extends BaseActivity{
 
                 if((mOrderSubmit==null || mOrderSubmit.getOrderGoods()==null
                         || mOrderSubmit.getOrderGoods().size()==0) && (mNormalDishDataList==null || mNormalDishDataList.size()==0) ){
-                    showShortTip("还没有点菜哦~");
-                    return;
+                    if(mDishesCompDataList==null||mDishesCompDataList.size()==0){
+                        showShortTip("还没有点菜哦~");
+                        return;
+                    }
                 }
                 mOrderSubmit.setOrderGoods(mNormalDishDataList);
                 String dishesCompJsonStr =  gson.toJson(mDishesCompDataList);

@@ -50,7 +50,7 @@ public class DishCompItemAdapter extends BaseAdapter {
     private List<DishesCompItem> defDishesCompItemList;
     private List<OrderGoodsItem> curGoodsItemList;
     private List<DishesCompItem> mDataList;
-    private int selectedPos = -1;
+    private int selectedPos = 0;
     private OnItemClickListener mOnItemClickListener, mOnPropertyDropDownClickListener;
     private Map<String, Boolean> mItemCheckedStateMap;
     private Map<String, String> maxSelect;
@@ -254,11 +254,12 @@ public class DishCompItemAdapter extends BaseAdapter {
                 onDishesCompCheckedChange(position, isChecked, dishesId);
             }
         });
-
+        //重复事件监听,处理规则判断
         viewHolder.chk_isItemSelect.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 updateCheckedStateMap();
+                //每次点击都遍历curGoodsItemList选中数据更新标志集mItemCheckedStateMap
                 String maxCount = maxSelect.get(mDataList.get(position).getDishesTypeCode());
                 int count = 0;
                 for (int j=0; j<mDataList.size(); j++) {
@@ -270,31 +271,40 @@ public class DishCompItemAdapter extends BaseAdapter {
                     }
                 }
 
+                //先判断本菜dishesid是否有选中标志
                 if (!mItemCheckedStateMap.get(mDataList.get(position).getDishesId())) {
                     if (Integer.valueOf(maxCount) == 1) {
-                        Toast.makeText(mContext, "因为只能选一份,所以不能取消", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(mContext, "至少要选择一份", Toast.LENGTH_SHORT).show();
                         mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),true);
                     } else {
-                        mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),false);
                         count --;
+                        if(count<0){
+                            Toast.makeText(mContext, "至少要选择一份", Toast.LENGTH_SHORT).show();
+                            mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),true);
+                        }
+                        else mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),false);
+
                     }
                 } else {
+                    //初始dishesid没有被选中时的操作
+                    //单选项
                     if (Integer.valueOf(maxCount) == 1) {
                         for (int j=0; j<mDataList.size(); j++) {
                             DishesCompItem mDishesCompItemTest = mDataList.get(j);
                             if (mDishesCompItemTest.getDishesTypeCode().equals(mDataList.get(position).getDishesTypeCode())) {
                                 if (mItemCheckedStateMap.get(mDishesCompItemTest.getDishesId())) {
-                                    mItemCheckedStateMap.put(mDishesCompItemTest.getDishesId(), false);
+                                    mItemCheckedStateMap.put(mDishesCompItemTest.getDishesId(), false);//遍历清除旧单选项标志
                                 }
                             }
                         }
-                        mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);
+                        mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);//确认选中新单选项
                     } else {
+                        //复选项
                         if (count > Integer.valueOf(maxCount)) {
                             Toast.makeText(mContext, "最多只能选择" + maxCount + "份", Toast.LENGTH_SHORT).show();
                             mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), false);
                         } else {
-                            mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);
+                            mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);//确认选中新单选项
                         }
                     }
                 }
@@ -532,7 +542,7 @@ public class DishCompItemAdapter extends BaseAdapter {
                 goodsItem.setRemark(getDefPropertyChoice(compItem));
                 goodsItem.setSalesId(compItem.getDishesId());
                 goodsItem.setSalesName(compItem.getDishesName());
-                goodsItem.setSalesNum(1);
+                goodsItem.setSalesNum(Integer.valueOf(compItem.getDishesNum()));
                 goodsItem.setSalesPrice("0");
                 goodsItem.setSalesState("1");  //0稍后下单  1立即下单
                 goodsItem.setIsCompDish("" + true);  //套餐菜固定为true
