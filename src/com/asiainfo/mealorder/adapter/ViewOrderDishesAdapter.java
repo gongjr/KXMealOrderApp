@@ -1,7 +1,5 @@
 package com.asiainfo.mealorder.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +19,8 @@ import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.helper.PropertySelectEntity;
 import com.asiainfo.mealorder.listener.OnItemClickListener;
 import com.google.gson.Gson;
+
+import java.util.List;
 
 public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
     private static final String TAG = ViewOrderDishesAdapter.class.getName();
@@ -112,7 +112,11 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 			viewHolder.tv_dishPrice.setText("￥"+mDeskOrderGoodsItem.getSalesPrice());
 			if(mDeskOrderGoodsItem.getRemark()!=null && !mDeskOrderGoodsItem.getRemark().equals("")){
 				//viewHolder.tv_preperties.setText("("+mDeskOrderGoodsItem.getRemark()+")"); //备注（包含属性信息）
-				viewHolder.tv_preperties.setText(getCompDishesByRemark(mDeskOrderGoodsItem.getRemark())); //备注（包含属性信息）
+                if(mDeskOrderGoodsItem.getIsComp().equals("1")){
+                    viewHolder.tv_preperties.setText(getCompDishesByRemarkWithDeskOrder(mDeskOrderGoodsItem)); //备注（包含属性信息）
+                }else{
+                    viewHolder.tv_preperties.setText(getCompDishesByRemark(mDeskOrderGoodsItem.getRemark())); //备注（包含属性信息）
+                }
 				viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
 			}else{
 				viewHolder.tv_preperties.setText(""); //备注（包含属性信息）
@@ -133,27 +137,47 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 	}
 	
 	private String getCompDishesByRemark(String remark){
-		Log.d(TAG , "remark: " +  remark);
-		String compDishesName = "配置： ";
-		List<DishesCompItem> compDishesItemList = null;
-		if(remark.contains("compDishes")){ //套餐备注，放的是套餐子菜的id
-			int idx_start = remark.indexOf(":");
-			String ids_str = remark.substring(idx_start+1);
-			String[] ids_val = ids_str.split(",");
-			compDishesItemList = mCompDishesEntityService.getCompDishesItemsByIds(ids_val);
-		}else{ //普通菜备注，放的是属性等等
-			compDishesName = "("+ remark +")";
-		}
-		
-		if(compDishesItemList!=null && compDishesItemList.size()>0){
-			for(int i=0; i<compDishesItemList.size(); i++){
-				DishesCompItem compItem = compDishesItemList.get(i);
-				compDishesName = compDishesName + compItem.getDishesName() + "  ";
-			}
-		}
-		
-		return compDishesName;
-	}
+        Log.d(TAG , "remark: " +  remark);
+        String compDishesName = "配置： ";
+        List<DishesCompItem> compDishesItemList = null;
+        if(remark.contains("compDishes")){ //套餐备注，放的是套餐子菜的id
+            int idx_start = remark.indexOf(":");
+            String ids_str = remark.substring(idx_start+1);
+            String[] ids_val = ids_str.split(",");
+            compDishesItemList = mCompDishesEntityService.getCompDishesItemsByIds(ids_val);
+        }else{ //普通菜备注，放的是属性等等
+            compDishesName = "("+ remark +")";
+        }
+
+        if(compDishesItemList!=null && compDishesItemList.size()>0){
+            for(int i=0; i<compDishesItemList.size(); i++){
+                DishesCompItem compItem = compDishesItemList.get(i);
+                compDishesName = compDishesName + compItem.getDishesName() + "  ";
+            }
+        }
+
+        return compDishesName;
+    }
+
+    /**
+     * 服务器订单数据,套餐备注需要组合显示,但是子菜还需要单独显示,以备删菜
+     * @param parentDeskOrderGoodsItem
+     * @return
+     */
+    private String getCompDishesByRemarkWithDeskOrder(DeskOrderGoodsItem parentDeskOrderGoodsItem){
+        String compDishesName = "配置：";
+        for (int i=0;i<mDataList.size();i++){
+            DeskOrderGoodsItem mDeskOrderGoodsItem = (DeskOrderGoodsItem)mDataList.get(i);
+            if(mDeskOrderGoodsItem.getCompId()!=null&&mDeskOrderGoodsItem.getIsCompDish().equals("true")
+                    &&parentDeskOrderGoodsItem.getSalesId().equals(mDeskOrderGoodsItem.getCompId())
+                    &&parentDeskOrderGoodsItem.getInstanceId().equals(mDeskOrderGoodsItem.getInstanceId())){
+                if(mDeskOrderGoodsItem.getRemark().equals(""))
+                compDishesName+=" "+mDeskOrderGoodsItem.getSalesName();
+                else compDishesName+=" "+mDeskOrderGoodsItem.getSalesName()+"("+mDeskOrderGoodsItem.getRemark()+")";
+            }
+        }
+        return compDishesName;
+    }
 	
 	/**
 	 * 当前菜是套餐菜
