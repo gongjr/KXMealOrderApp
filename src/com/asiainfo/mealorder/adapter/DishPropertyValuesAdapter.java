@@ -89,7 +89,7 @@ public class DishPropertyValuesAdapter  extends BaseAdapter{
 	
 	@Override
 	public View getView(final int position, View convertView, ViewGroup parent) {
-		ViewHolder viewHolder;
+		final ViewHolder viewHolder;
 		if(convertView==null){
 			viewHolder = new ViewHolder();
 		    convertView = LayoutInflater.from(mContext).inflate(R.layout.lvitem_dish_property_values, null);
@@ -130,10 +130,27 @@ public class DishPropertyValuesAdapter  extends BaseAdapter{
                 else{
                     mCheckedStateMap.put(StringUtils.str2Int(mDataList.get(positionByTag).getItemId()), isChecked);
                     selected.remove(positionByTag);
-                }
-            }
+				}
+			}
 		});
-		
+
+		viewHolder.chk_isChecked.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				int index = (Integer)v.getTag();
+				selected.clear();
+				if (mCheckedStateMap.get(StringUtils.str2Int(mDataList.get(index).getItemId()))) {
+					for (int i=0; i<mCheckedStateMap.size(); i++) {
+						int key = mCheckedStateMap.keyAt(i);
+						mCheckedStateMap.put(key, false);
+					}
+					selected.put(index, position);
+					mCheckedStateMap.put(StringUtils.str2Int(mDataList.get(index).getItemId()), true);
+				}
+				notifyDataSetChanged();
+			}
+		});
+
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
