@@ -8,7 +8,7 @@
         android:layout_width="match_parent"
         android:layout_height="50dip"
         android:layout_alignParentTop="true"
-        android:background="#FFFFFF" >
+        android:background="#FFFFFF">
 
         <Button
             android:id="@+id/btn_back"
@@ -52,40 +52,39 @@
         android:layout_width="match_parent"
         android:layout_height="fill_parent"
         android:layout_below="@+id/ll_top"
-        android:orientation="horizontal" >
+        android:orientation="horizontal">
 
         <ListView
             android:id="@+id/lv_dish_comp_partions"
-           android:layout_width="0dip"
+            android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="2.5"
             android:cacheColorHint="#00000000"
             android:divider="@null"
             android:fadingEdge="none"
             android:overScrollMode="never"
-            android:scrollbars="none" >
-        </ListView>
+            android:scrollbars="none"></ListView>
 
         <RelativeLayout
             android:id="@+id/rl_dish_comp_partion_items"
             android:layout_width="0dip"
             android:layout_height="match_parent"
             android:layout_weight="7.5"
-            android:background="#FFFFFF" >
+            android:background="#FFFFFF">
 
             <com.asiainfo.mealorder.widget.PinnedSectionListView
                 android:id="@+id/pslv_dish_comp_items"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:background="@color/white"
-                android:choiceMode="singleChoice"
                 android:cacheColorHint="#00000000"
+                android:choiceMode="singleChoice"
                 android:drawSelectorOnTop="true"
                 android:focusable="false"
                 android:gravity="center"
                 android:overScrollMode="never"
-                android:scrollbars="none"
-                android:scrollbarStyle="outsideOverlay" />
+                android:scrollbarStyle="outsideOverlay"
+                android:scrollbars="none" />
         </RelativeLayout>
     </LinearLayout>
 
@@ -94,7 +93,7 @@
         android:layout_width="match_parent"
         android:layout_height="60dip"
         android:layout_alignParentBottom="true"
-        android:background="@color/cl_bottom_layout_bg" >
+        android:background="@color/cl_bottom_layout_bg">
 
         <Button
             android:id="@+id/btn_ensure_comps"

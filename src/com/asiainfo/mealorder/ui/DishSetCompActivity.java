@@ -40,7 +40,9 @@ import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author ouyang
@@ -76,6 +78,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 	private String[] mHeaderNames;
 	private Integer[] mHeaderPositions;
 	private ArrayList<Section> sections = new ArrayList<Section>();
+	private Map<String, String> maxSelectMap = new HashMap<String, String>();
 	
 	/**当前套餐的套餐数据**/
 	private List<DishesCompItem> defDishesCompItemList;
@@ -104,6 +107,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 	@Override
 	protected void onResume() {
 		super.onResume();
+		Log.d(TAG, "initView");
         mDishCompsPartionDataList=sqliteGetDishesCompDataByDishesId2(DISHES_ID);
         if(mDishCompsPartionDataList.size()>0){
             getDishesCompData(mDishCompsPartionDataList);
@@ -114,6 +118,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 	}
 	
 	public void initView(){
+		Log.d(TAG, "initView");
 		mView = (RelativeLayout)findViewById(R.id.main_content_view);
 		
 		btn_back = (Button)findViewById(R.id.btn_back);
@@ -130,6 +135,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 	}
 	
 	public void initData(){
+		Log.d(TAG, "initData");
 		tv_headTitle.setText(DISHES_NAME);
 		tv_dishCompPrice.setText("￥"+DISHES_PRICE);
 		mLoginUserPrefData = new LoginUserPrefData(mActivity);
@@ -143,13 +149,13 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 			curGoodsItemList = new ArrayList<OrderGoodsItem>();
 		}
 		mDishCompPartionAdapter = new DishTypeAdapter<DishesComp>(DishSetCompActivity.this,
-				mDishCompsPartionDataList, -1, mOnDishCompPartionItemClickListener);
+				mDishCompsPartionDataList, 0, mOnDishCompPartionItemClickListener);
 		lv_dishCompPartions.setAdapter(mDishCompPartionAdapter);
 		
 		//汇集所有套餐子项
 		unionDishCompPartionItemsData();
 		mDishCompPartionItemsAdapter = new DishCompItemAdapter(DishSetCompActivity.this, DishSetCompActivity.this, mDishCompsPartionItemsDataList,
-            curGoodsItemList, mOnDishCompPartionItemsItemClickListener);
+            curGoodsItemList, mOnDishCompPartionItemsItemClickListener, maxSelectMap);
 		mDishCompPartionItemsAdapter.setOnPropertyDropDownClickListener(mOnPropertyDropDownClickListener);
 		mSimpleSectionedGridAdapter = new SimpleSectionedListAdapter(this, mDishCompPartionItemsAdapter,
 			R.layout.lvitem_dishcomp_header, R.id.tv_dish_comp_partion_name);
@@ -165,6 +171,9 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 	public void unionDishCompPartionItemsData(){
         for(int m=0; m<mDishCompsPartionDataList.size(); m++){
         	List<DishesCompItem> dishesInfoList = mDishCompsPartionDataList.get(m).getDishesInfoList();
+			String maxSelect = mDishCompsPartionDataList.get(m).getMaxSelect();
+			String typeId = mDishCompsPartionDataList.get(m).getDishesType();
+			maxSelectMap.put(typeId, maxSelect);
         	if(dishesInfoList!=null && dishesInfoList.size()>0){
         		defDishesCompItemList.add(dishesInfoList.get(0));
         	}
@@ -233,6 +242,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase{
 	//private static final int ACT_RES_CHOOSE_COMPS_REQ = 1;
 	private static final int ACT_RES_CHOOSE_COMPS_RESP = 1;
 	public void initListener(){
+		Log.d(TAG, "initListener");
 		btn_chooseDone.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
