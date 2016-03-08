@@ -134,22 +134,22 @@ public class DishPropertyValuesAdapter  extends BaseAdapter{
 			}
 		});
 
-		viewHolder.chk_isChecked.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				int index = (Integer)v.getTag();
-				selected.clear();
-				if (mCheckedStateMap.get(StringUtils.str2Int(mDataList.get(index).getItemId()))) {
-					for (int i=0; i<mCheckedStateMap.size(); i++) {
-						int key = mCheckedStateMap.keyAt(i);
-						mCheckedStateMap.put(key, false);
-					}
-					selected.put(index, position);
-					mCheckedStateMap.put(StringUtils.str2Int(mDataList.get(index).getItemId()), true);
-				}
-				notifyDataSetChanged();
-			}
-		});
+//		viewHolder.chk_isChecked.setOnClickListener(new OnClickListener() {
+//			@Override
+//			public void onClick(View v) {
+//				int index = (Integer)v.getTag();
+//				selected.clear();
+//				if (mCheckedStateMap.get(StringUtils.str2Int(mDataList.get(index).getItemId()))) {
+//					for (int i=0; i<mCheckedStateMap.size(); i++) {
+//						int key = mCheckedStateMap.keyAt(i);
+//						mCheckedStateMap.put(key, false);
+//					}
+//					selected.put(index, position);
+//					mCheckedStateMap.put(StringUtils.str2Int(mDataList.get(index).getItemId()), true);
+//				}
+//				notifyDataSetChanged();
+//			}
+//		});
 
 		convertView.setOnClickListener(new OnClickListener() {
 			@Override
