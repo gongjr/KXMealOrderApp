@@ -1,11 +1,5 @@
 package com.asiainfo.mealorder.ui;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -18,7 +12,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -36,6 +29,12 @@ import com.asiainfo.mealorder.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author gjr
@@ -145,6 +144,9 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
 		btn_ensure.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
+                if(DESK_ORDER_ACTION_TYPE ==Constants.CHOOSE_DESK_DESK_ORDER_HANG_ORDER){
+                    showShortToast("订单已挂单,无法操作!");
+                }else
 				if(DESK_ORDER_ACTION_TYPE==Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
 					//通知后厨
 					btn_ensure.setText("进入订单详情...");
@@ -179,14 +181,20 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
 	 */
 	private void updateOrderOperationType(){
 		btn_ensure.setEnabled(true);
-		if(isDeskOrderHolded()){
+        if(mDeskOrder!=null&&mDeskOrder.getOrderState().equals("1")){
+            //挂单,无操作
+            DESK_ORDER_ACTION_TYPE = Constants.CHOOSE_DESK_DESK_ORDER_HANG_ORDER;
+        }else if(isDeskOrderHolded()){
 			//下一步操作通知后厨
 			DESK_ORDER_ACTION_TYPE = Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN;
 		}else{
 			//下一步操作进入点菜页面选菜，加菜
 			DESK_ORDER_ACTION_TYPE = Constants.DESK_ORDER_ACTION_TYPE_EXTRA_DISHES;
 		}
-		
+
+        if(DESK_ORDER_ACTION_TYPE ==Constants.CHOOSE_DESK_DESK_ORDER_HANG_ORDER){
+            btn_ensure.setText("挂单中");
+        }else
 		if(DESK_ORDER_ACTION_TYPE == Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
 			btn_ensure.setText("查看订单");
 		}else{

@@ -7,7 +7,8 @@ public class Constants {
 	//选择订单完成后的操作类型
 	public static final int CHOOSE_DESK_DESK_ORDER_NOTIFY_KITCHEN = 1; //通知后厨
 	public static final int CHOOSE_DESK_DESK_ORDER_ADD_DISHES = 2; //加菜
-	
+	public static final int CHOOSE_DESK_DESK_ORDER_HANG_ORDER = 3; //挂单
+
 	//弹出套餐选择对话框的类型
 	public static final int CHOOSE_PROPERTY_DIALOG_FROM_MAKE_ORDER = 1;
 	public static final int CHOOSE_PROPERTY_DIALOG_FROM_DISHES_COMP = 2;

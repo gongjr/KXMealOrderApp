@@ -487,6 +487,11 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 		if(mDeskOrderList.size()==1){
 			DeskOrder deskOrder = mDeskOrderList.get(0);
 			if(deskOrder!=null){
+                if(deskOrder.getOrderState().equals("1"))
+                {
+                    showShortTip(deskOrder.getOrderId()+"-本单已挂单,无法操作!");
+                    return;
+                }
 				List<DeskOrderGoodsItem> orderGoods = deskOrder.getOrderGoods();
 				if(orderGoods!=null){
 					for(int i=0; i<orderGoods.size(); i++){
