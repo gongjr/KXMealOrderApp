@@ -10,11 +10,13 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
+import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.db.CompDishesEntityService;
 import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.entity.DishesCompItem;
 import com.asiainfo.mealorder.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.entity.OrderGoodsItem;
+import com.asiainfo.mealorder.entity.helper.DishesCompDeskOrderEntity;
 import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.helper.PropertySelectEntity;
 import com.asiainfo.mealorder.listener.OnItemClickListener;
@@ -28,14 +30,19 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 	private List<T> mDataList;
 	private int selectedPos;
 	private OnItemClickListener mOnItemClickListener;
+    //本地套餐组合数据模型
 	private List<DishesCompSelectionEntity> mDishesCompList;
-	private CompDishesEntityService mCompDishesEntityService;
+    //服务器组合套餐数据模型
+    private List<DishesCompDeskOrderEntity> mDishesCompDeskOrderList;
+    private CompDishesEntityService mCompDishesEntityService;
+    private int VIEW_DIALOG_TYPE;
 	
-	public ViewOrderDishesAdapter(Context mContext, List<T> mDataList, int selectedPos, OnItemClickListener mOnItemClickListener){
+	public ViewOrderDishesAdapter(Context mContext, List<T> mDataList, int selectedPos, OnItemClickListener mOnItemClickListener,int type){
 		this.mContext = mContext;
 		this.mDataList = mDataList;
 		this.selectedPos = selectedPos;
 		this.mOnItemClickListener = mOnItemClickListener;
+        this.VIEW_DIALOG_TYPE=type;
 		mCompDishesEntityService = new CompDishesEntityService();
 	}
 	
@@ -46,6 +53,14 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 	public void setOnDishesCompList(List<DishesCompSelectionEntity> mDishesCompList){
 		this.mDishesCompList = mDishesCompList;
 	}
+
+    /**
+     * 服务器套餐内容
+     * @param mDishesCompList
+     */
+    public void setDeskOrderDishesCompList(List<DishesCompDeskOrderEntity> mDishesCompList){
+        this.mDishesCompDeskOrderList = mDishesCompList;
+    }
 	
 	@SuppressWarnings("unchecked")
 	@Override
@@ -64,78 +79,80 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 		}else{
 			viewHolder = (ViewHolder)convertView.getTag();
 		}
-		
 		viewHolder.tv_seriNo.setText((position+1)+".");
-		//先判定为哪种类型的实体
-		T t = null;
-		if(mDataList!=null && mDataList.size()>0){
-			t = mDataList.get(0);
-		}else if(mDishesCompList!=null && mDishesCompList.size()>0){
-			t = (T)mDishesCompList.get(0).getmCompMainDishes();
-		}
-		if(t instanceof OrderGoodsItem){
-			OrderGoodsItem mOrderGoodsItem = null;
-			List<OrderGoodsItem> compDishesList = null;
-			if(position < mDataList.size()){
-				mOrderGoodsItem = (OrderGoodsItem)mDataList.get(position);
-			}else if(position>=mDataList.size() && mDishesCompList!=null){
-				DishesCompSelectionEntity mDishesCompSelectionEntity = 
-						(DishesCompSelectionEntity)mDishesCompList.get(position - mDataList.size());
-				mOrderGoodsItem = mDishesCompSelectionEntity.getmCompMainDishes();
-				compDishesList = mDishesCompSelectionEntity.getCompItemDishes();
-			}else{
-				return convertView; //直接返回视图
-			}
-			viewHolder.tv_dishName.setText(mOrderGoodsItem.getSalesName());
-			viewHolder.tv_dishCount.setText("x"+mOrderGoodsItem.getSalesNum()+"");
-			viewHolder.tv_dishPrice.setText("￥"+mOrderGoodsItem.getSalesPrice());
-			
-			if(mOrderGoodsItem.getRemark()!=null && mOrderGoodsItem.getRemark().size()>0){
-				//处理有属性的普通菜
-				viewHolder.tv_preperties.setText("(" + fromItemEntityList2Remark(mOrderGoodsItem.getRemark()) + ")"); //备注（包含属性信息）
-				viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
-			}else{
-				//处理没有有属性的普通菜
-				viewHolder.tv_preperties.setText(""); //备注（包含属性信息）
-				viewHolder.ll_propertiesInfo.setVisibility(View.GONE);
-			}
-			//处理套餐菜，这里没有经过isComp字段判断
-			String compParts = getDishesCompParts(compDishesList);
-			if(!compParts.equals("")){
-				viewHolder.tv_preperties.setText("配置： " + compParts); //备注（包含属性信息）
-				viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
-			}
-		}else{
-			DeskOrderGoodsItem mDeskOrderGoodsItem = (DeskOrderGoodsItem)mDataList.get(position);
-			viewHolder.tv_dishName.setText(mDeskOrderGoodsItem.getSalesName());
-			viewHolder.tv_dishCount.setText("x"+mDeskOrderGoodsItem.getSalesNum()+"");
-			viewHolder.tv_dishPrice.setText("￥"+mDeskOrderGoodsItem.getSalesPrice());
-			if(mDeskOrderGoodsItem.getRemark()!=null && !mDeskOrderGoodsItem.getRemark().equals("")){
-				//viewHolder.tv_preperties.setText("("+mDeskOrderGoodsItem.getRemark()+")"); //备注（包含属性信息）
-                if(mDeskOrderGoodsItem.getIsComp().equals("1")){
-                    viewHolder.tv_preperties.setText(getCompDishesByRemarkWithDeskOrder(mDeskOrderGoodsItem)); //备注（包含属性信息）
+		//先判定为哪种类型的实体,只区分本地订单与服务器订单,接口变更数据模型有偏差
+        switch (VIEW_DIALOG_TYPE){
+            case Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER :
+                {
+                    OrderGoodsItem mOrderGoodsItem = null;
+                    List<OrderGoodsItem> compDishesList = null;
+                    if(position < mDataList.size()){
+                        mOrderGoodsItem = (OrderGoodsItem)mDataList.get(position);
+                    }else if(position>=mDataList.size() && mDishesCompList!=null){
+                        DishesCompSelectionEntity mDishesCompSelectionEntity =
+                                (DishesCompSelectionEntity)mDishesCompList.get(position - mDataList.size());
+                        mOrderGoodsItem = mDishesCompSelectionEntity.getmCompMainDishes();
+                        compDishesList = mDishesCompSelectionEntity.getCompItemDishes();
+                    }else{
+                        return convertView; //直接返回视图
+                    }
+                    viewHolder.tv_dishName.setText(mOrderGoodsItem.getSalesName());
+                    viewHolder.tv_dishCount.setText("x"+mOrderGoodsItem.getSalesNum()+"");
+                    viewHolder.tv_dishPrice.setText("￥"+mOrderGoodsItem.getSalesPrice());
+
+                    if(mOrderGoodsItem.getRemark()!=null && mOrderGoodsItem.getRemark().size()>0){
+                        //处理有属性的普通菜
+                        viewHolder.tv_preperties.setText("(" + fromItemEntityList2Remark(mOrderGoodsItem.getRemark()) + ")"); //备注（包含属性信息）
+                        viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
+                    }else{
+                        //处理没有有属性的普通菜
+                        viewHolder.tv_preperties.setText(""); //备注（包含属性信息）
+                        viewHolder.ll_propertiesInfo.setVisibility(View.GONE);
+                    }
+                    //处理套餐菜，这里没有经过isComp字段判断
+                    String compParts = getDishesCompParts(compDishesList);
+                    if(!compParts.equals("")){
+                        viewHolder.tv_preperties.setText("配置： " + compParts); //备注（包含属性信息）
+                        viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
+                    }
+                }break;
+            default:{
+                DeskOrderGoodsItem mDeskOrderGoodsItem = null;
+                List<DeskOrderGoodsItem> compDishesList = null;
+                if(position < mDataList.size()){
+                    mDeskOrderGoodsItem = (DeskOrderGoodsItem)mDataList.get(position);
+                }else if(position>=mDataList.size() && mDishesCompDeskOrderList!=null){
+                    DishesCompDeskOrderEntity mDishesCompDeskOrderEntity =
+                            (DishesCompDeskOrderEntity)mDishesCompDeskOrderList.get(position - mDataList.size());
+                    mDeskOrderGoodsItem = mDishesCompDeskOrderEntity.getmCompMainDishes();
+                    compDishesList = mDishesCompDeskOrderEntity.getCompItemDishes();
                 }else{
-                    viewHolder.tv_preperties.setText(getCompDishesByRemark(mDeskOrderGoodsItem.getRemark())); //备注（包含属性信息）
+                    return convertView; //直接返回视图
                 }
-				viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
-			}else{
-				viewHolder.tv_preperties.setText(""); //备注（包含属性信息）
-				viewHolder.ll_propertiesInfo.setVisibility(View.GONE);
-			}
-		}
-		
-		/*convertView.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-                if(mOnItemClickListener!=null){
-                	mOnItemClickListener.onItemClick(v, position);
-                }				
-			}
-		});*/
-		
+                viewHolder.tv_dishName.setText(mDeskOrderGoodsItem.getSalesName());
+                viewHolder.tv_dishCount.setText("x"+mDeskOrderGoodsItem.getSalesNum()+"");
+                viewHolder.tv_dishPrice.setText("￥"+mDeskOrderGoodsItem.getSalesPrice());
+                if(mDeskOrderGoodsItem.getRemark()!=null && !mDeskOrderGoodsItem.getRemark().equals("")){
+                    if(mDeskOrderGoodsItem.getIsComp().equals("1")){
+                        viewHolder.tv_preperties.setText(getCompDishesByRemarkWithDeskOrder(compDishesList)); //备注（包含属性信息）
+                    }else{
+                        viewHolder.tv_preperties.setText(getCompDishesByRemark(mDeskOrderGoodsItem.getRemark())); //备注（包含属性信息）
+                    }
+                    viewHolder.ll_propertiesInfo.setVisibility(View.VISIBLE);
+                }else{
+                    viewHolder.tv_preperties.setText(""); //备注（包含属性信息）
+                    viewHolder.ll_propertiesInfo.setVisibility(View.GONE);
+                }
+                }break;
+        }
 		return convertView;
 	}
-	
+
+    /**
+     * 本地订单备注解析
+     * @param remark
+     * @return
+     */
 	private String getCompDishesByRemark(String remark){
         Log.d(TAG , "remark: " +  remark);
         String compDishesName = "配置： ";
@@ -175,6 +192,24 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
                 compDishesName+=" "+mDeskOrderGoodsItem.getSalesName();
                 else compDishesName+=" "+mDeskOrderGoodsItem.getSalesName()+"("+mDeskOrderGoodsItem.getRemark()+")";
             }
+        }
+        return compDishesName;
+    }
+
+    /**
+     * 服务器订单数据,套餐备注需要组合显示,子菜不显示,删除是全量删除
+     * @param childDishesCompList
+     * @return
+     */
+    private String getCompDishesByRemarkWithDeskOrder(List<DeskOrderGoodsItem> childDishesCompList){
+        String compDishesName ="" ;
+        if(childDishesCompList!=null&&childDishesCompList.size()>0)compDishesName+="配置：";
+        else return compDishesName;
+        for (int i=0;i<childDishesCompList.size();i++){
+            DeskOrderGoodsItem mDeskOrderGoodsItem = (DeskOrderGoodsItem)childDishesCompList.get(i);
+            if(mDeskOrderGoodsItem.getRemark().equals(""))
+                compDishesName+=" "+mDeskOrderGoodsItem.getSalesName();
+            else compDishesName+=" "+mDeskOrderGoodsItem.getSalesName()+"("+mDeskOrderGoodsItem.getRemark()+")";
         }
         return compDishesName;
     }
@@ -257,24 +292,35 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 	
 	@Override
 	public int getCount() {
-		if(mDataList!=null && mDataList.size()>0){
-			T t = mDataList.get(0);
-			if(t instanceof OrderGoodsItem){
-				if(mDishesCompList!=null && mDishesCompList.size()>0){
-					return mDataList.size() + mDishesCompList.size();
-				}else{
-					return mDataList.size();
-				}
-			}else{
-				return mDataList.size();
-			}
-		}
-		
-		//针对只点了套餐的情况
-		if(mDishesCompList!=null && mDishesCompList.size()>0){
-			return mDishesCompList.size();
-		}
-		
+        switch (VIEW_DIALOG_TYPE){
+            case Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER :
+            {
+                if(mDataList!=null && mDataList.size()>0){
+                    if(mDishesCompList!=null && mDishesCompList.size()>0){
+                        return mDataList.size() + mDishesCompList.size();
+                    }else{
+                        return mDataList.size();
+                    }
+                }
+                //针对只点了套餐的情况
+                if(mDishesCompList!=null && mDishesCompList.size()>0){
+                    return mDishesCompList.size();
+                }
+            }break;
+            default:{
+                if(mDataList!=null && mDataList.size()>0){
+                    if(mDishesCompDeskOrderList!=null && mDishesCompDeskOrderList.size()>0){
+                        return mDataList.size() + mDishesCompDeskOrderList.size();
+                    }else{
+                        return mDataList.size();
+                    }
+                }
+                //针对只点了套餐的情况
+                if(mDishesCompDeskOrderList!=null && mDishesCompDeskOrderList.size()>0){
+                    return mDishesCompDeskOrderList.size();
+                }
+            }
+        }
 		return 0;
 	}
 

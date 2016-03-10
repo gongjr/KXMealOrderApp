@@ -222,7 +222,7 @@ public class ViewOrderDishesDF extends DialogFragmentBase{
 			tv_dishCount.setText("共" + mOrderSubmit.getAllGoodsNum() + "个"); //数量
 			tv_dishPrice.setText("合计￥:" + mOrderSubmit.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mOrderSubmit.getTradeStsffId()); //工号
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<OrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<OrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
 			mViewOrderDishesAdapter.setOnDishesCompList(mOrderDishesCompDataList); //将套餐菜传递到adapter中
 			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 		} break;
@@ -240,7 +240,7 @@ public class ViewOrderDishesDF extends DialogFragmentBase{
 			}else if(createTime!=null){
 				tv_orderTime.setText("下单时间：" + createTime); //订单创建时间
 			}
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
 			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 			
 			lv_orderDishes.setMenuCreator(creator);
@@ -262,7 +262,7 @@ public class ViewOrderDishesDF extends DialogFragmentBase{
 			}else if(createTime!=null){
 				tv_orderTime.setText("下单时间：" + createTime); //订单创建时间
 			}
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
 			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 			
 //			lv_orderDishes.setMenuCreator(creator);
@@ -283,7 +283,7 @@ public class ViewOrderDishesDF extends DialogFragmentBase{
 			}else if(createTime!=null){
 				tv_orderTime.setText("下单时间：" + createTime); //订单创建时间
 			}
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
 			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 			
 			lv_orderDishes.setMenuCreator(creator);

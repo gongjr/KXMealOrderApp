@@ -34,6 +34,7 @@ import com.asiainfo.mealorder.entity.MerchantRegister;
 import com.asiainfo.mealorder.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.entity.eventbus.EventMain;
+import com.asiainfo.mealorder.entity.helper.DishesCompDeskOrderEntity;
 import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.helper.UpdateOrderParam;
 import com.asiainfo.mealorder.entity.http.ResultMapRequest;
@@ -99,6 +100,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
 	private DeskOrder mDeskOrder;
 	private List mOrderDishesDataList;
 	private List<DishesCompSelectionEntity> mOrderDishesCompDataList;
+	private List<DishesCompDeskOrderEntity> mDishesCompDeskOrderList;
 	private UpdateOrderParam mUpdateOrderParam;
 	private LoginUserPrefData mLoginUserPrefData;
 	private Boolean isNotifyKitchen = false;
@@ -174,15 +176,15 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			tv_dishCount.setText("共" + mOrderSubmit.getAllGoodsNum() + "个"); //数量
 			tv_dishPrice.setText("合计￥:" + mOrderSubmit.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mOrderSubmit.getTradeStsffId()); //工号
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<OrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<OrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
 			mViewOrderDishesAdapter.setOnDishesCompList(mOrderDishesCompDataList); //将套餐菜传递到adapter中
 			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 		} break;
 		case Constants.VIEW_ORDER_DIALOG_TYPE_DESK_ORDER: {
 			tv_viewOrderTitle.setText("已点菜");
-			mOrderDishesDataList = mDeskOrder.getOrderGoods();
-			tv_dishCount.setText("共" + mDeskOrder.getAllGoodsNum() + "个"); //数量
-			tv_dishPrice.setText("合计￥:" + getDishesTotalPrice()); //原价
+            getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
+			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+			tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
 			String strCreateTime = mDeskOrder.getStrCreateTime();
@@ -192,8 +194,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			}else if(createTime!=null){
 				tv_orderTime.setText("下单时间：" + createTime); //订单创建时间
 			}
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
-			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
+            mViewOrderDishesAdapter.setDeskOrderDishesCompList(mDishesCompDeskOrderList); //将套餐菜传递到adapter中
+            lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 
 			lv_orderDishes.setMenuCreator(creator);
 	        lv_orderDishes.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
@@ -202,9 +205,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
 		case Constants.VIEW_ORDER_DIALOG_TYPE_WEIXIN_PUSH: {
 			tv_viewOrderTitle.setText("微信订单");
 			btn_notifyKitchen.setVisibility(View.VISIBLE);
-			mOrderDishesDataList = mDeskOrder.getOrderGoods();
-			tv_dishCount.setText("共" + mDeskOrder.getAllGoodsNum() + "个"); //数量
-			tv_dishPrice.setText("合计￥:" + getDishesTotalPrice()); //原价
+            getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
+			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+			tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
 			String strCreateTime = mDeskOrder.getStrCreateTime();
@@ -214,8 +217,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			}else if(createTime!=null){
 				tv_orderTime.setText("下单时间：" + createTime); //订单创建时间
 			}
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
-			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
+            mViewOrderDishesAdapter.setDeskOrderDishesCompList(mDishesCompDeskOrderList); //将套餐菜传递到adapter中
+            lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 
 //			lv_orderDishes.setMenuCreator(creator);
 //	        lv_orderDishes.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
@@ -223,9 +227,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
 		case Constants.VIEW_ORDER_DIALOG_TYPE_NOTIFY_KITCHEN : {
 			tv_viewOrderTitle.setText("查看订单");
 			btn_notifyKitchen.setVisibility(View.VISIBLE);
-			mOrderDishesDataList = mDeskOrder.getOrderGoods();
-			tv_dishCount.setText("共" + mDeskOrder.getAllGoodsNum() + "个"); //数量
-			tv_dishPrice.setText("合计￥：" + getDishesTotalPrice()); //原价
+            getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
+			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+			tv_dishPrice.setText("合计￥：" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
 			String strCreateTime = mDeskOrder.getStrCreateTime();
@@ -235,8 +239,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			}else if(createTime!=null){
 				tv_orderTime.setText("下单时间：" + createTime); //订单创建时间
 			}
-			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener);
-			lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
+			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<DeskOrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
+            mViewOrderDishesAdapter.setDeskOrderDishesCompList(mDishesCompDeskOrderList); //将套餐菜传递到adapter中
+            lv_orderDishes.setAdapter(mViewOrderDishesAdapter);
 
 			lv_orderDishes.setMenuCreator(creator);
 	        lv_orderDishes.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
@@ -253,7 +258,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                     }else{
                         switch (index) {
                             case 0:
-                                if(mOrderDishesDataList.size()>1){
+                                if(mOrderDishesDataList.size()+mDishesCompDeskOrderList.size()>1){
                                     VolleyupdateOrderInfo(position);
                                 }else{
                                     Toast.makeText(mActivity,"无法删除，请取消订单!", Toast.LENGTH_SHORT).show();
@@ -525,21 +530,60 @@ public class ViewOrderDishesActivity extends BaseActivity {
                     public void onResponse(
                             UpdateOrderInfoResultData response) {
                         if(response.getState()==1) try {
-                            DeskOrderGoodsItem deskOrderGoodsItemm=(DeskOrderGoodsItem)mOrderDishesDataList.get(position);
+                            DeskOrderGoodsItem deskOrderGoodsItemm=null;
+                            List<DeskOrderGoodsItem> compDishesList = null;
+                            if(position < mOrderDishesDataList.size()){
+                                deskOrderGoodsItemm = (DeskOrderGoodsItem)mOrderDishesDataList.get(position);
+                            }else if(position>=mOrderDishesDataList.size() && mDishesCompDeskOrderList!=null){
+                                DishesCompDeskOrderEntity mDishesCompSelectionEntity =
+                                        (DishesCompDeskOrderEntity)mDishesCompDeskOrderList.get(position - mOrderDishesDataList.size());
+                                deskOrderGoodsItemm = mDishesCompSelectionEntity.getmCompMainDishes();
+                                compDishesList=mDishesCompSelectionEntity.getCompItemDishes();
+                            }
                             Double oldprice=StringUtils.str2Double(mDeskOrder.getOriginalPrice());
                             Double ordergoodsprice=StringUtils.str2Double(deskOrderGoodsItemm.getSalesPrice());
                             Double newprice=Arith.sub(oldprice,ordergoodsprice);
-                            mDeskOrder.setOriginalPrice(Arith.d2str(newprice));
-                            int i=Integer.valueOf(mDeskOrder.getAllGoodsNum())-Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
-                            mDeskOrder.setAllGoodsNum(i+"");
+                            mDeskOrder.setOriginalPrice(Arith.d2str(newprice));//删菜成功后更新本地桌子订单价格
+                            int i=0;
+                            if(compDishesList!=null&&compDishesList.size()>0){
+                                int numSum=0;
+                                numSum+=Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
+                                for (DeskOrderGoodsItem childDeskOrderGoodsItem:compDishesList){
+                                    numSum+=Integer.valueOf(childDeskOrderGoodsItem.getSalesNum());
+                                }
+                                i=Integer.valueOf(mDeskOrder.getAllGoodsNum())-numSum;
+                            }else{
+                               i=Integer.valueOf(mDeskOrder.getAllGoodsNum())-Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
+                            }
+                            mDeskOrder.setAllGoodsNum(i+"");//删菜成功后更新本地桌子订单菜品数量
                             try {
                                 //防止界面关闭时受到消息更新异常
-                                Toast.makeText(mActivity, "  删除<"+deskOrderGoodsItemm.getSalesName()+">成功!", Toast.LENGTH_SHORT).show();
-                                tv_dishCount.setText("共" + mDeskOrder.getAllGoodsNum() + "个"); //数量
-                                tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
-                                mOrderDishesDataList.remove(position);
-                                mDeskOrder.setOrderGoods(mOrderDishesDataList);
+                                if(position < mOrderDishesDataList.size()){
+                                    mOrderDishesDataList.remove(position);
+                                }else if(position>=mOrderDishesDataList.size() && mDishesCompDeskOrderList!=null){
+                                   mDishesCompDeskOrderList.remove(position - mOrderDishesDataList.size());
+                                }
+                                List<DeskOrderGoodsItem> orderGoods=new ArrayList<DeskOrderGoodsItem>();
+                                if(mOrderDishesDataList.size()>0){
+                                    for(int m=0;m<mOrderDishesDataList.size();m++){
+                                        DeskOrderGoodsItem mdeskOrderGoodsItem=(DeskOrderGoodsItem)mOrderDishesDataList.get(m);
+                                        orderGoods.add(mdeskOrderGoodsItem);
+                                    }
+                                }
+                                if(mDishesCompDeskOrderList.size()>0){
+                                    for (DishesCompDeskOrderEntity mdishesCompDeskOrderEntity:mDishesCompDeskOrderList){
+                                         orderGoods.add(mdishesCompDeskOrderEntity.getmCompMainDishes());
+                                        for (DeskOrderGoodsItem mmDeskOrderGoodsItem:mdishesCompDeskOrderEntity.getCompItemDishes()){
+                                            orderGoods.add(mmDeskOrderGoodsItem);
+                                        }
+                                    }
+                                }
+                                mDeskOrder.setOrderGoods(orderGoods);
                                 mViewOrderDishesAdapter.notifyDataSetChanged();
+                                Toast.makeText(mActivity, "  删除<"+deskOrderGoodsItemm.getSalesName()+">成功!", Toast.LENGTH_SHORT).show();
+                                tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+                                tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
+
                             }catch (Exception e){
                                 e.printStackTrace();
                             }
@@ -601,33 +645,27 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 mOrderdelete.setPersonNum(Integer.valueOf(mDeskOrder.getPersonNum()));
 
                 List<OrderGoodsItem> orderGoods=new ArrayList<OrderGoodsItem>();
-                OrderGoodsItem orderGoodsItem=new OrderGoodsItem();
-                DeskOrderGoodsItem deskOrderGoodsItemm=(DeskOrderGoodsItem)mOrderDishesDataList.get(position);
-                Log.i("oo","size:"+mOrderDishesDataList.size());
+                OrderGoodsItem orderGoodsItem=null;
+                DeskOrderGoodsItem deskOrderGoodsItemm=null;
+                List<DeskOrderGoodsItem> compDishesList = null;
+                if(position < mOrderDishesDataList.size()){
+                    deskOrderGoodsItemm = (DeskOrderGoodsItem)mOrderDishesDataList.get(position);
+                }else if(position>=mOrderDishesDataList.size() && mDishesCompDeskOrderList!=null){
+                    DishesCompDeskOrderEntity mDishesCompSelectionEntity =
+                            (DishesCompDeskOrderEntity)mDishesCompDeskOrderList.get(position - mOrderDishesDataList.size());
+                    deskOrderGoodsItemm = mDishesCompSelectionEntity.getmCompMainDishes();
+                    compDishesList = mDishesCompSelectionEntity.getCompItemDishes();
+                }
                 Log.i("oo","deskOrderGoodsItemm:"+deskOrderGoodsItemm.getSalesName());
-                orderGoodsItem.setOrderId(deskOrderGoodsItemm.getOrderId());
-                orderGoodsItem.setSalesId(deskOrderGoodsItemm.getSalesId());
-                orderGoodsItem.setSalesName(deskOrderGoodsItemm.getSalesName());
-                orderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItemm.getSalesNum()));
-                orderGoodsItem.setSalesPrice(deskOrderGoodsItemm.getSalesPrice());
-                List<String> remark=new ArrayList<String>();
-                remark.add(deskOrderGoodsItemm.getRemark());
-                orderGoodsItem.setRemark(remark);
-                orderGoodsItem.setDishesPrice(deskOrderGoodsItemm.getDishesPrice());
-                orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
-                orderGoodsItem.setSalesState(deskOrderGoodsItemm.getSalesState());
-                orderGoodsItem.setDishesTypeCode(deskOrderGoodsItemm.getDishesTypeCode());
-                orderGoodsItem.setTradeStaffId(deskOrderGoodsItemm.getTradeStaffId());
-                orderGoodsItem.setInterferePrice(deskOrderGoodsItemm.getInterferePrice());
-                orderGoodsItem.setExportId(deskOrderGoodsItemm.getExportId());
-                orderGoodsItem.setInstanceId(deskOrderGoodsItemm.getInstanceId());
-                orderGoodsItem.setDeskId(deskOrderGoodsItemm.getDeskId());
-                orderGoodsItem.setIsZdzk(deskOrderGoodsItemm.getIsZdzk());
-                orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
-                orderGoodsItem.setIsCompDish(deskOrderGoodsItemm.getIsCompDish());
-                orderGoodsItem.setCompId(deskOrderGoodsItemm.getCompId());
-                orderGoodsItem.setAction("0");
+                orderGoodsItem=deskOrderGoodsItemToOrderGoodsItem(deskOrderGoodsItemm);
                 orderGoods.add(orderGoodsItem);
+                if (compDishesList!=null&&compDishesList.size()>0){
+                    for (DeskOrderGoodsItem childDeskOrderGoodsItem:compDishesList){
+                        OrderGoodsItem childOrderGoodsItem=new OrderGoodsItem();
+                        childOrderGoodsItem=deskOrderGoodsItemToOrderGoodsItem(childDeskOrderGoodsItem);
+                        orderGoods.add(childOrderGoodsItem);
+                    }
+                }
                 Double oldprice=StringUtils.str2Double(mOrderdelete.getOriginalPrice());
                 Double ordergoodsprice=StringUtils.str2Double(orderGoodsItem.getSalesPrice());
                 Double newprice=Arith.sub(oldprice,ordergoodsprice);
@@ -750,4 +788,91 @@ public class ViewOrderDishesActivity extends BaseActivity {
         }
     };
 
+    /**
+     * 率先解析分离出服务器订单中ordergoodslist中的套餐数据
+     * @param mDeskOrderGoodList
+     */
+    public void getOrderGoodsInfobyDeskOrderList(List<DeskOrderGoodsItem> mDeskOrderGoodList){
+        mOrderDishesDataList=new ArrayList<DeskOrderGoodsItem>() ;
+        for (DeskOrderGoodsItem mDeskOrderGoodsItem:mDeskOrderGoodList){
+             if(mDeskOrderGoodsItem.getIsCompDish().equals("false")&&mDeskOrderGoodsItem.getIsComp().equals("0")){
+                 mOrderDishesDataList.add(mDeskOrderGoodsItem);
+             }
+          }
+
+        mDishesCompDeskOrderList=new ArrayList<DishesCompDeskOrderEntity>();
+        for (DeskOrderGoodsItem parentDeskOrderGoodsItem:mDeskOrderGoodList){
+            if(parentDeskOrderGoodsItem.getIsComp().equals("1")){
+                DishesCompDeskOrderEntity dishesCompDeskOrderEntity=new DishesCompDeskOrderEntity();
+                dishesCompDeskOrderEntity.setmCompMainDishes(parentDeskOrderGoodsItem);
+                List<DeskOrderGoodsItem> compItemDishes=new ArrayList<DeskOrderGoodsItem>();
+                for (DeskOrderGoodsItem mDeskOrderGoodsItem:mDeskOrderGoodList){
+                    if(mDeskOrderGoodsItem.getCompId()!=null&&mDeskOrderGoodsItem.getIsCompDish().equals("true")
+                            &&parentDeskOrderGoodsItem.getSalesId().equals(mDeskOrderGoodsItem.getCompId())
+                            &&parentDeskOrderGoodsItem.getInstanceId().equals(mDeskOrderGoodsItem.getInstanceId())){
+                        compItemDishes.add(mDeskOrderGoodsItem);
+                    }
+                }
+                dishesCompDeskOrderEntity.setCompItemDishes(compItemDishes);
+                mDishesCompDeskOrderList.add(dishesCompDeskOrderEntity);
+            }
+        }
+    }
+
+    public int getNumInfobyDeskOrder(){
+        int sum=0;
+        if(mOrderDishesDataList!=null && mOrderDishesDataList.size()>0){
+            if(mDishesCompDeskOrderList!=null && mDishesCompDeskOrderList.size()>0){
+                   for (int i=0;i<mOrderDishesDataList.size();i++){
+                       DeskOrderGoodsItem deskOrderGoodsItem=(DeskOrderGoodsItem)mOrderDishesDataList.get(i);
+                       sum+=Integer.valueOf(deskOrderGoodsItem.getSalesNum());
+                   }
+                   for (DishesCompDeskOrderEntity dishesCompDeskOrderEntity:mDishesCompDeskOrderList){
+                       sum+=Integer.valueOf(dishesCompDeskOrderEntity.getmCompMainDishes().getSalesNum());
+                   }
+                return sum;
+            }else{
+                for (int i=0;i<mOrderDishesDataList.size();i++){
+                    DeskOrderGoodsItem deskOrderGoodsItem=(DeskOrderGoodsItem)mOrderDishesDataList.get(i);
+                    sum+=Integer.valueOf(deskOrderGoodsItem.getSalesNum());
+                }
+                return sum;
+            }
+        }
+        //针对只点了套餐的情况
+        if(mDishesCompDeskOrderList!=null && mDishesCompDeskOrderList.size()>0){
+            for (DishesCompDeskOrderEntity dishesCompDeskOrderEntity:mDishesCompDeskOrderList){
+                sum+=Integer.valueOf(dishesCompDeskOrderEntity.getmCompMainDishes().getSalesNum());
+            }
+            return sum;
+        }
+       return sum;
+    }
+
+    public OrderGoodsItem deskOrderGoodsItemToOrderGoodsItem(DeskOrderGoodsItem deskOrderGoodsItemm){
+        OrderGoodsItem orderGoodsItem=new OrderGoodsItem();
+        orderGoodsItem.setOrderId(deskOrderGoodsItemm.getOrderId());
+        orderGoodsItem.setSalesId(deskOrderGoodsItemm.getSalesId());
+        orderGoodsItem.setSalesName(deskOrderGoodsItemm.getSalesName());
+        orderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItemm.getSalesNum()));
+        orderGoodsItem.setSalesPrice(deskOrderGoodsItemm.getSalesPrice());
+        List<String> remark=new ArrayList<String>();
+        remark.add(deskOrderGoodsItemm.getRemark());
+        orderGoodsItem.setRemark(remark);
+        orderGoodsItem.setDishesPrice(deskOrderGoodsItemm.getDishesPrice());
+        orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
+        orderGoodsItem.setSalesState(deskOrderGoodsItemm.getSalesState());
+        orderGoodsItem.setDishesTypeCode(deskOrderGoodsItemm.getDishesTypeCode());
+        orderGoodsItem.setTradeStaffId(deskOrderGoodsItemm.getTradeStaffId());
+        orderGoodsItem.setInterferePrice(deskOrderGoodsItemm.getInterferePrice());
+        orderGoodsItem.setExportId(deskOrderGoodsItemm.getExportId());
+        orderGoodsItem.setInstanceId(deskOrderGoodsItemm.getInstanceId());
+        orderGoodsItem.setDeskId(deskOrderGoodsItemm.getDeskId());
+        orderGoodsItem.setIsZdzk(deskOrderGoodsItemm.getIsZdzk());
+        orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
+        orderGoodsItem.setIsCompDish(deskOrderGoodsItemm.getIsCompDish());
+        orderGoodsItem.setCompId(deskOrderGoodsItemm.getCompId());
+        orderGoodsItem.setAction("0");
+        return orderGoodsItem;
+    }
 }
