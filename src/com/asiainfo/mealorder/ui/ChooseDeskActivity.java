@@ -630,7 +630,13 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 							    if(mDeskOrderList==null || mDeskOrderList.size()==0){
 							    	openNewDeskInputPersonNumDialog();
 							    }else{
-							    	openDeskOrderSelectDialog();
+                                    for (DeskOrder mDeskOrder:mDeskOrderList){
+                                        if(mDeskOrder.getOrderState().equals("11")){
+                                            mDeskOrderList.remove(mDeskOrder);
+                                        }
+                                    }
+                                    if(mDeskOrderList.size()==0)openNewDeskInputPersonNumDialog();
+                                    else openDeskOrderSelectDialog();
 							    }
 							}else{
 							}
