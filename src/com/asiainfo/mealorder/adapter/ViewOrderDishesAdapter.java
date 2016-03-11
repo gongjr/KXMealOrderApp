@@ -326,9 +326,13 @@ public class ViewOrderDishesAdapter<T>  extends BaseAdapter{
 
 	@Override
 	public Object getItem(int position) {
-		if(mDataList!=null){
+		if(mDataList!=null&&position<mDataList.size()){
 			return mDataList.get(position);
-		}
+		}else if(mDishesCompList!=null&&position<mDataList.size()+mDishesCompList.size()){
+            return  mDishesCompList.get(position-mDataList.size());
+        }else if(mDishesCompDeskOrderList!=null&&position<mDataList.size()+mDishesCompDeskOrderList.size()){
+            return  mDishesCompDeskOrderList.get(position-mDataList.size());
+        }
 		return null;
 	}
 

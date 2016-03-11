@@ -484,6 +484,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 	private void openDeskOrderSelectDialog(){
 		Boolean isDirectToDishesPage = true;
 		Boolean isHandled = false;
+        //只有一张订单，并且非保留订单,直接操作,不需要跳出订单列表
 		if(mDeskOrderList.size()==1){
 			DeskOrder deskOrder = mDeskOrderList.get(0);
 			if(deskOrder!=null){
@@ -504,7 +505,6 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 				}
 			}
 			if(isDirectToDishesPage){
-				//只有一张订单，先检查这张订单是否可操作
 				//httpLockDeskOrder(staffId, deskOrder);
 				isHandled = true;
 				Gson gson = new Gson();

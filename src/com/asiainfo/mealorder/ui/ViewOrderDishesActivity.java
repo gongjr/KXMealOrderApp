@@ -556,37 +556,33 @@ public class ViewOrderDishesActivity extends BaseActivity {
                                i=Integer.valueOf(mDeskOrder.getAllGoodsNum())-Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
                             }
                             mDeskOrder.setAllGoodsNum(i+"");//删菜成功后更新本地桌子订单菜品数量
-                            try {
-                                //防止界面关闭时受到消息更新异常
-                                if(position < mOrderDishesDataList.size()){
-                                    mOrderDishesDataList.remove(position);
-                                }else if(position>=mOrderDishesDataList.size() && mDishesCompDeskOrderList!=null){
-                                   mDishesCompDeskOrderList.remove(position - mOrderDishesDataList.size());
-                                }
-                                List<DeskOrderGoodsItem> orderGoods=new ArrayList<DeskOrderGoodsItem>();
-                                if(mOrderDishesDataList.size()>0){
-                                    for(int m=0;m<mOrderDishesDataList.size();m++){
-                                        DeskOrderGoodsItem mdeskOrderGoodsItem=(DeskOrderGoodsItem)mOrderDishesDataList.get(m);
-                                        orderGoods.add(mdeskOrderGoodsItem);
-                                    }
-                                }
-                                if(mDishesCompDeskOrderList.size()>0){
-                                    for (DishesCompDeskOrderEntity mdishesCompDeskOrderEntity:mDishesCompDeskOrderList){
-                                         orderGoods.add(mdishesCompDeskOrderEntity.getmCompMainDishes());
-                                        for (DeskOrderGoodsItem mmDeskOrderGoodsItem:mdishesCompDeskOrderEntity.getCompItemDishes()){
-                                            orderGoods.add(mmDeskOrderGoodsItem);
-                                        }
-                                    }
-                                }
-                                mDeskOrder.setOrderGoods(orderGoods);
-                                mViewOrderDishesAdapter.notifyDataSetChanged();
-                                Toast.makeText(mActivity, "  删除<"+deskOrderGoodsItemm.getSalesName()+">成功!", Toast.LENGTH_SHORT).show();
-                                tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
-                                tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
-
-                            }catch (Exception e){
-                                e.printStackTrace();
+                            if(position < mOrderDishesDataList.size()){
+                                mOrderDishesDataList.remove(position);
+                            }else if(position>=mOrderDishesDataList.size() && mDishesCompDeskOrderList!=null){
+                                mDishesCompDeskOrderList.remove(position - mOrderDishesDataList.size());
                             }
+                            //删菜后将数据还原回去缓存
+                            List<DeskOrderGoodsItem> orderGoods=new ArrayList<DeskOrderGoodsItem>();
+                            if(mOrderDishesDataList.size()>0){
+                                for(int m=0;m<mOrderDishesDataList.size();m++){
+                                    DeskOrderGoodsItem mdeskOrderGoodsItem=(DeskOrderGoodsItem)mOrderDishesDataList.get(m);
+                                    orderGoods.add(mdeskOrderGoodsItem);
+                                }
+                            }
+                            if(mDishesCompDeskOrderList.size()>0){
+                                for (DishesCompDeskOrderEntity mdishesCompDeskOrderEntity:mDishesCompDeskOrderList){
+                                    orderGoods.add(mdishesCompDeskOrderEntity.getmCompMainDishes());
+                                    for (DeskOrderGoodsItem mmDeskOrderGoodsItem:mdishesCompDeskOrderEntity.getCompItemDishes()){
+                                        orderGoods.add(mmDeskOrderGoodsItem);
+                                    }
+                                }
+                            }
+                            mDeskOrder.setOrderGoods(orderGoods);
+                            mViewOrderDishesAdapter.notifyDataSetChanged();
+                            Toast.makeText(mActivity, "  删除<"+deskOrderGoodsItemm.getSalesName()+">成功!", Toast.LENGTH_SHORT).show();
+                            tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+                            tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
+
                             EventMain<DeskOrder> event =new EventMain<DeskOrder>();
                             event.setType(EventMain.TYPE_SECOND);
                             event.setData(mDeskOrder);
