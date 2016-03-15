@@ -34,12 +34,24 @@
             android:textColor="#000000"/>
 
         <Button
+            android:id="@+id/tv_print_order"
+            android:layout_width="wrap_content"
+            android:layout_height="40dip"
+            android:layout_toRightOf="@+id/tv_order_title"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dip"
+            android:text="打印"
+            android:textColor="@drawable/view_order_notify_text_color"
+            android:textSize="@dimen/text_size_small"
+            />
+
+        <Button
             android:id="@+id/btn_notify_kitchen"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_marginLeft="10dip"
-            android:layout_toRightOf="@+id/tv_order_title"
+            android:layout_toRightOf="@+id/tv_print_order"
             android:gravity="center_vertical|left"
             android:text="通知后厨"
             android:button="@null"
@@ -90,23 +102,73 @@
             android:layout_alignParentTop="true"
             android:layout_alignParentLeft="true"
             android:gravity="center"
-            android:text="共计8个"
+            android:text="共8个"
             android:textColor="@color/dark_red"
             android:textSize="@dimen/text_size_middle" />
 
-        <Button
-            android:id="@+id/tv_print_order"
+        <TextView
+            android:id="@+id/tv_dish_order_price_tag"
             android:layout_width="wrap_content"
-            android:layout_height="40dip"
+            android:layout_height="wrap_content"
+            android:text="应收: "
             android:layout_toRightOf="@+id/tv_dish_count"
-            android:layout_marginLeft="10dip"
-            android:layout_marginBottom="5dip"
-            android:layout_alignParentTop="true"
-            android:text="打印客单"
-            android:textColor="@drawable/view_order_notify_text_color"
-            android:textSize="@dimen/text_size_small"
-            />
-        
+            android:layout_alignBottom="@+id/tv_dish_count"
+            android:layout_marginLeft="15dip"
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_xxsmall"/>
+
+        <TextView
+            android:id="@+id/tv_dish_order_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11"
+            android:layout_toRightOf="@+id/tv_dish_order_price_tag"
+            android:layout_alignBottom="@+id/tv_dish_count"
+            android:textColor="@color/dark_red"
+            android:textSize="@dimen/text_size_xxsmall"/>
+
+        <TextView
+            android:id="@+id/tv_dish_order_preferential_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="优惠: "
+            android:layout_toRightOf="@+id/tv_dish_order_price"
+            android:layout_alignBottom="@+id/tv_dish_count"
+            android:layout_marginLeft="15dip"
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_xxsmall"/>
+
+        <TextView
+            android:id="@+id/tv_dish_order_preferential"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11"
+            android:layout_toRightOf="@+id/tv_dish_order_preferential_tag"
+            android:layout_alignBottom="@+id/tv_dish_count"
+            android:textColor="@color/dark_red"
+            android:textSize="@dimen/text_size_xxsmall"/>
+
+        <TextView
+            android:id="@+id/tv_dish_order_pay_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="实收: "
+            android:layout_toRightOf="@+id/tv_dish_order_preferential"
+            android:layout_alignBottom="@+id/tv_dish_count"
+            android:layout_marginLeft="15dip"
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_xxsmall"/>
+
+        <TextView
+            android:id="@+id/tv_dish_order_pay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11"
+            android:layout_toRightOf="@+id/tv_dish_order_pay_tag"
+            android:layout_alignBottom="@+id/tv_dish_count"
+            android:textColor="@color/dark_red"
+            android:textSize="@dimen/text_size_xxsmall"/>
+
         <TextView
             android:id="@+id/tv_dish_price"
             android:layout_width="wrap_content"
@@ -119,7 +181,8 @@
             android:gravity="center"
             android:text="合计￥300元"
             android:textColor="@color/dark_red"
-            android:textSize="@dimen/text_size_middle" />
+            android:textSize="@dimen/text_size_middle"
+            android:visibility="gone"/>
         
         <TextView
             android:id="@+id/tv_waiter_info"

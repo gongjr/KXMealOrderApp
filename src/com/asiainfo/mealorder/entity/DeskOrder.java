@@ -1,10 +1,9 @@
 package com.asiainfo.mealorder.entity;
 
-import java.io.Serializable;
-import java.util.List;
-
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import java.util.List;
 
 /**
  *
@@ -70,6 +69,7 @@ public class DeskOrder implements Parcelable{
 	private String personNum;
 	private String desk;
 	private String userName;
+	private String needPay;
 
 	public DeskOrder() {
 	}
@@ -548,4 +548,12 @@ public class DeskOrder implements Parcelable{
         desk = in.readString();
         userName = in.readString();
     }
+
+	public String getNeedPay() {
+		return needPay;
+	}
+
+	public void setNeedPay(String needPay) {
+		this.needPay = needPay;
+	}
 }

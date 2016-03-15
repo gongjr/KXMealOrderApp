@@ -94,6 +94,12 @@ public class ViewOrderDishesActivity extends BaseActivity {
     private TextView tv_orderTime;
     @InjectView(R.id.lv_order_dishes)
     private SwipeMenuListView lv_orderDishes;
+	@InjectView(R.id.tv_dish_order_price)
+	private TextView tv_orderPrice;
+	@InjectView(R.id.tv_dish_order_preferential)
+	private TextView tv_orderPreferential;
+	@InjectView(R.id.tv_dish_order_pay)
+	private TextView tv_orderPay;
 
 	private ViewOrderDishesAdapter mViewOrderDishesAdapter;
 	private OrderSubmit mOrderSubmit;
@@ -174,6 +180,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
             mOrderDishesDataList = mOrderSubmit.getOrderGoods();
 			tv_viewOrderTitle.setText("当前点菜");
 			tv_dishCount.setText("共" + mOrderSubmit.getAllGoodsNum() + "个"); //数量
+			tv_orderPrice.setText(mOrderSubmit.getOriginalPrice());
+			tv_orderPreferential.setText("0");
+			tv_orderPay.setText(mOrderSubmit.getOriginalPrice());
 			tv_dishPrice.setText("合计￥:" + mOrderSubmit.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mOrderSubmit.getTradeStsffId()); //工号
 			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<OrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
@@ -184,6 +193,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			tv_viewOrderTitle.setText("已点菜");
             getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
 			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+			setOrderPrice();
 			tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
@@ -207,6 +217,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			btn_notifyKitchen.setVisibility(View.VISIBLE);
             getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
 			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+			setOrderPrice();
 			tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
@@ -229,6 +240,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			btn_notifyKitchen.setVisibility(View.VISIBLE);
             getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
 			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+			setOrderPrice();
 			tv_dishPrice.setText("合计￥：" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
@@ -871,4 +883,17 @@ public class ViewOrderDishesActivity extends BaseActivity {
         orderGoodsItem.setAction("0");
         return orderGoodsItem;
     }
+
+	private void setOrderPrice() {
+		if (mDeskOrder.getNeedPay() == null || mDeskOrder.getNeedPay().equals("")) {
+			tv_orderPrice.setText(mDeskOrder.getOriginalPrice());
+			tv_orderPreferential.setText("0");
+			tv_orderPay.setText(mDeskOrder.getOriginalPrice());
+		} else {
+			tv_orderPrice.setText(mDeskOrder.getNeedPay());
+			tv_orderPay.setText(mDeskOrder.getOriginalPrice());
+			int preferential = Math.abs(Integer.valueOf(mDeskOrder.getNeedPay()) - Integer.valueOf(mDeskOrder.getOriginalPrice()));
+			tv_orderPreferential.setText("" + preferential);
+		}
+	}
 }
