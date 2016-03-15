@@ -17,7 +17,7 @@
             android:layout_width="35dip"
             android:layout_height="35dip"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="5dip"
             android:src="@drawable/view_order_n" />
 
         <TextView
@@ -25,7 +25,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="5dip"
             android:layout_toRightOf="@+id/img_view_order_icon"
             android:gravity="center_vertical|left"
             android:padding="5dip"
@@ -39,10 +39,12 @@
             android:layout_height="40dip"
             android:layout_toRightOf="@+id/tv_order_title"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
+            android:gravity="center"
+            android:layout_marginLeft="5dip"
+            android:layout_marginTop="5dip"
             android:text="打印"
             android:textColor="@drawable/view_order_notify_text_color"
-            android:textSize="@dimen/text_size_small"
+            android:textSize="@dimen/text_size_xsmall"
             />
 
         <Button
@@ -50,7 +52,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="5dip"
             android:layout_toRightOf="@+id/tv_print_order"
             android:gravity="center_vertical|left"
             android:text="通知后厨"
@@ -62,12 +64,12 @@
         
         <ImageView
             android:id="@+id/img_close"
-            android:layout_width="50dip"
-            android:layout_height="50dip"
-            android:padding="10dip"
+            android:layout_width="45dip"
+            android:layout_height="45dip"
+            android:padding="8dip"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
-            android:layout_marginRight="5dip"
+            android:layout_marginRight="1dip"
             android:src="@drawable/close" />
     </RelativeLayout>
 
@@ -96,7 +98,7 @@
             android:id="@+id/tv_dish_count"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="5dip"
             android:layout_marginTop="5dip"
             android:layout_marginBottom="5dip"
             android:layout_alignParentTop="true"
@@ -106,75 +108,75 @@
             android:textColor="@color/dark_red"
             android:textSize="@dimen/text_size_middle" />
 
+        <LinearLayout
+            android:id="@+id/desk_order_price_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="3dip"
+            android:layout_marginBottom="5dip"
+            android:layout_alignParentTop="true"
+            android:layout_alignParentRight="true">
+
+
         <TextView
             android:id="@+id/tv_dish_order_price_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="应收: "
-            android:layout_toRightOf="@+id/tv_dish_count"
-            android:layout_alignBottom="@+id/tv_dish_count"
-            android:layout_marginLeft="15dip"
+            android:layout_marginLeft="10dip"
             android:textColor="@color/cl_text_grey_2"
-            android:textSize="@dimen/text_size_xxsmall"/>
+            android:textSize="@dimen/text_size_small"/>
 
         <TextView
             android:id="@+id/tv_dish_order_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="11"
-            android:layout_toRightOf="@+id/tv_dish_order_price_tag"
-            android:layout_alignBottom="@+id/tv_dish_count"
             android:textColor="@color/dark_red"
-            android:textSize="@dimen/text_size_xxsmall"/>
+            android:textSize="@dimen/text_size_small"/>
 
         <TextView
             android:id="@+id/tv_dish_order_preferential_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="优惠: "
-            android:layout_toRightOf="@+id/tv_dish_order_price"
-            android:layout_alignBottom="@+id/tv_dish_count"
-            android:layout_marginLeft="15dip"
+            android:layout_marginLeft="10dip"
             android:textColor="@color/cl_text_grey_2"
-            android:textSize="@dimen/text_size_xxsmall"/>
+            android:textSize="@dimen/text_size_small"/>
 
         <TextView
             android:id="@+id/tv_dish_order_preferential"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="11"
-            android:layout_toRightOf="@+id/tv_dish_order_preferential_tag"
-            android:layout_alignBottom="@+id/tv_dish_count"
             android:textColor="@color/dark_red"
-            android:textSize="@dimen/text_size_xxsmall"/>
+            android:textSize="@dimen/text_size_small"/>
 
         <TextView
             android:id="@+id/tv_dish_order_pay_tag"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="实收: "
-            android:layout_toRightOf="@+id/tv_dish_order_preferential"
-            android:layout_alignBottom="@+id/tv_dish_count"
-            android:layout_marginLeft="15dip"
+            android:layout_marginLeft="10dip"
             android:textColor="@color/cl_text_grey_2"
-            android:textSize="@dimen/text_size_xxsmall"/>
+            android:textSize="@dimen/text_size_small"/>
 
         <TextView
             android:id="@+id/tv_dish_order_pay"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="11"
-            android:layout_toRightOf="@+id/tv_dish_order_pay_tag"
-            android:layout_alignBottom="@+id/tv_dish_count"
             android:textColor="@color/dark_red"
-            android:textSize="@dimen/text_size_xxsmall"/>
-
+            android:textSize="@dimen/text_size_large"/>
+        </LinearLayout>
         <TextView
             android:id="@+id/tv_dish_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip"
-            android:layout_marginRight="10dip"
+            android:layout_marginRight="5dip"
             android:layout_marginBottom="5dip"
             android:layout_alignParentTop="true"
             android:layout_alignParentRight="true"
@@ -190,7 +192,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dip"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="5dip"
             android:layout_alignParentBottom="true"
             android:layout_alignParentLeft="true"
             android:gravity="center"
@@ -202,7 +204,7 @@
             android:id="@+id/tv_order_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginRight="10dip"
+            android:layout_marginRight="5dip"
             android:layout_marginBottom="5dip"
             android:layout_below="@+id/tv_dish_price"
             android:layout_alignParentBottom="true"

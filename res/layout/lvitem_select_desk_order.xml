@@ -52,7 +52,9 @@
             android:layout_marginLeft="10dip"
             android:gravity="center_vertical"
             android:text="优惠: "
-            android:textSize="@dimen/text_size_small" />
+            android:textSize="@dimen/text_size_small"
+            android:visibility="gone"
+            />
 
         <TextView
             android:id="@+id/tv_desk_order_preferential"
@@ -62,7 +64,8 @@
             android:layout_below="@+id/tv_desk_order_no"
             android:gravity="center_vertical"
             android:text=""
-            android:textSize="@dimen/text_size_small" />
+            android:textSize="@dimen/text_size_small"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/tv_desk_order_pay_tag"
@@ -70,7 +73,7 @@
             android:layout_height="wrap_content"
             android:layout_toRightOf="@+id/tv_desk_order_preferential"
             android:layout_below="@+id/tv_desk_order_no"
-            android:layout_marginLeft="10dip"
+            android:layout_marginLeft="20dip"
             android:gravity="center_vertical"
             android:text="实收: "
             android:textSize="@dimen/text_size_small" />

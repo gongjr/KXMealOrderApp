@@ -12,6 +12,7 @@ import android.view.View.OnClickListener;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -100,6 +101,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
 	private TextView tv_orderPreferential;
 	@InjectView(R.id.tv_dish_order_pay)
 	private TextView tv_orderPay;
+    @InjectView(R.id.desk_order_price_group)
+    private LinearLayout deskOrderPriceGroup;
 
 	private ViewOrderDishesAdapter mViewOrderDishesAdapter;
 	private OrderSubmit mOrderSubmit;
@@ -184,6 +187,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			tv_orderPreferential.setText("0");
 			tv_orderPay.setText(mOrderSubmit.getOriginalPrice());
 			tv_dishPrice.setText("合计￥:" + mOrderSubmit.getOriginalPrice()); //原价
+            tv_dishPrice.setVisibility(View.VISIBLE);
+            deskOrderPriceGroup.setVisibility(View.GONE);
 			tv_waiterInfo.setText("服务员：" + mOrderSubmit.getTradeStsffId()); //工号
 			mViewOrderDishesAdapter = new ViewOrderDishesAdapter<OrderGoodsItem>(mActivity, mOrderDishesDataList, -1, mOnItemClickListener,VIEW_DIALOG_TYPE);
 			mViewOrderDishesAdapter.setOnDishesCompList(mOrderDishesCompDataList); //将套餐菜传递到adapter中
@@ -194,6 +199,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
             getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
 			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
 			setOrderPrice();
+            tv_dishPrice.setVisibility(View.GONE);
+            deskOrderPriceGroup.setVisibility(View.VISIBLE);
 			tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
@@ -218,6 +225,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
             getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
 			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
 			setOrderPrice();
+            tv_dishPrice.setVisibility(View.GONE);
+            deskOrderPriceGroup.setVisibility(View.VISIBLE);
 			tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
@@ -241,6 +250,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
             getOrderGoodsInfobyDeskOrderList(mDeskOrder.getOrderGoods());
 			tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
 			setOrderPrice();
+            tv_dishPrice.setVisibility(View.GONE);
+            deskOrderPriceGroup.setVisibility(View.VISIBLE);
 			tv_dishPrice.setText("合计￥：" + mDeskOrder.getOriginalPrice()); //原价
 			tv_waiterInfo.setText("服务员：" + mDeskOrder.getTradeStaffId()); //工号
 			String createTime = mDeskOrder.getCreateTime();
