@@ -61,6 +61,8 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -476,6 +478,13 @@ public class ViewOrderDishesActivity extends BaseActivity {
 		btn_notifyKitchen.setEnabled(false);
 		Gson gson = new Gson();
 		String orderSubmitData = gson.toJson(mUpdateOrderParam);
+        try {
+            //get请求时包含中文,需先强制对内容进行UTF-8编码
+            Log.d(TAG, "orderSubmitData: " + orderSubmitData);
+            orderSubmitData = URLEncoder.encode(orderSubmitData, "utf-8");
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 		String url = "/appController/updateOrderInfo.do?orderSubmitData="+orderSubmitData;
 		Log.d(TAG, "uri: " + HttpHelper.HOST + url);
 		JsonObjectRequest httpDeskOrderNotifyKitchen = new JsonObjectRequest(
@@ -502,7 +511,17 @@ public class ViewOrderDishesActivity extends BaseActivity {
 					public void onErrorResponse(VolleyError arg0) {
 						onDeskOrderNotifyKitchenFailed("网络异常！");
 					}
-				});
+				}){
+            //设置get请求的头，编码格式也为UTF-8
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Charset", "utf-8");
+                headers.put("Content-Type", "application/x-javascript");
+                headers.put("Accept-Encoding", "gzip,deflate");
+                return headers;
+            }
+        };
 	    executeRequest(httpDeskOrderNotifyKitchen);
 	}
 
