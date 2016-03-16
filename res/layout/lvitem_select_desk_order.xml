@@ -75,7 +75,7 @@
             android:layout_below="@+id/tv_desk_order_no"
             android:layout_marginLeft="20dip"
             android:gravity="center_vertical"
-            android:text="实收: "
+            android:text="原价: "
             android:textSize="@dimen/text_size_small" />
 
         <TextView

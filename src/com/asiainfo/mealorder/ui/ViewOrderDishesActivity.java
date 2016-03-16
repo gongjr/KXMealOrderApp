@@ -901,8 +901,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
 			tv_orderPreferential.setText("0");
 			tv_orderPay.setText(mDeskOrder.getOriginalPrice());
 		} else {
-			tv_orderPrice.setText(mDeskOrder.getNeedPay());
-			tv_orderPay.setText(mDeskOrder.getOriginalPrice());
+			tv_orderPrice.setText(mDeskOrder.getOriginalPrice());
+			tv_orderPay.setText(mDeskOrder.getNeedPay());
 			int preferential = Math.abs(Integer.valueOf(mDeskOrder.getNeedPay()) - Integer.valueOf(mDeskOrder.getOriginalPrice()));
 			tv_orderPreferential.setText("" + preferential);
 		}
