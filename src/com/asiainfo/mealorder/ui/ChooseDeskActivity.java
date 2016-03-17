@@ -630,11 +630,14 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 							    if(mDeskOrderList==null || mDeskOrderList.size()==0){
 							    	openNewDeskInputPersonNumDialog();
 							    }else{
+                                    List<DeskOrder> abandonedOrder =new ArrayList<DeskOrder>();
                                     for (DeskOrder mDeskOrder:mDeskOrderList){
                                         if(mDeskOrder.getOrderState().equals("11")){
-                                            mDeskOrderList.remove(mDeskOrder);
+                                            abandonedOrder.add(mDeskOrder);
                                         }
                                     }
+                                    if(abandonedOrder.size()>0&&mDeskOrderList.size()>=abandonedOrder.size())
+                                        mDeskOrderList.removeAll(abandonedOrder);
                                     if(mDeskOrderList.size()==0)openNewDeskInputPersonNumDialog();
                                     else openDeskOrderSelectDialog();
 							    }
