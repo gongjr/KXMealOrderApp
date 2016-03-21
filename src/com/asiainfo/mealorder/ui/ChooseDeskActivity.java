@@ -492,6 +492,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                 {
                     showShortTip(deskOrder.getOrderId()+"-本单已挂单,无法操作!");
                     return;
+                }else if(deskOrder.getOrderState().equals("8")){
+                    showShortTip(deskOrder.getOrderId()+"-本单扫码支付中,无法操作!");
+                    return;
                 }
 				List<DeskOrderGoodsItem> orderGoods = deskOrder.getOrderGoods();
 				if(orderGoods!=null){
