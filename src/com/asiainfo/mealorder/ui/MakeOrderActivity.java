@@ -964,6 +964,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
         args.putInt("VIEW_ORDER_DIALOG_TYPE", dialogType);
         args.putString("ORDER_CONTENT_STR", orderContent);
         args.putString("ORDER_CONTENT_COMP_STR", orderDishesComp);
+		args.putString("deskName", mCurDesk.getDeskName());
         intent.putExtras(args);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
