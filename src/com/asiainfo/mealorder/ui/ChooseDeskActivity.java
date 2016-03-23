@@ -492,6 +492,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                 {
                     showShortTip(deskOrder.getOrderId()+"-本单已挂单,无法操作!");
                     return;
+                }else if(deskOrder.getOrderState().equals("8")){
+                    showShortTip(deskOrder.getOrderId()+"-本单扫码支付中,无法操作!");
+                    return;
                 }
 				List<DeskOrderGoodsItem> orderGoods = deskOrder.getOrderGoods();
 				if(orderGoods!=null){
@@ -630,11 +633,14 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 							    if(mDeskOrderList==null || mDeskOrderList.size()==0){
 							    	openNewDeskInputPersonNumDialog();
 							    }else{
+                                    List<DeskOrder> abandonedOrder =new ArrayList<DeskOrder>();
                                     for (DeskOrder mDeskOrder:mDeskOrderList){
                                         if(mDeskOrder.getOrderState().equals("11")){
-                                            mDeskOrderList.remove(mDeskOrder);
+                                            abandonedOrder.add(mDeskOrder);
                                         }
                                     }
+                                    if(abandonedOrder.size()>0&&mDeskOrderList.size()>=abandonedOrder.size())
+                                        mDeskOrderList.removeAll(abandonedOrder);
                                     if(mDeskOrderList.size()==0)openNewDeskInputPersonNumDialog();
                                     else openDeskOrderSelectDialog();
 							    }

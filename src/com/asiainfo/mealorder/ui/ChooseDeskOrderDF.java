@@ -146,8 +146,9 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
 			public void onClick(View v) {
                 if(DESK_ORDER_ACTION_TYPE ==Constants.CHOOSE_DESK_DESK_ORDER_HANG_ORDER){
                     showShortToast("订单已挂单,无法操作!");
-                }else
-				if(DESK_ORDER_ACTION_TYPE==Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
+                }else if(DESK_ORDER_ACTION_TYPE ==Constants.CHOOSE_DESK_DESK_ORDER_SCANCODE_PAYMENT){
+                    showShortToast("订单扫码支付中,无法操作!");
+                }else if(DESK_ORDER_ACTION_TYPE==Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
 					//通知后厨
 					btn_ensure.setText("进入订单详情...");
 					btn_ensure.setEnabled(false);
@@ -184,7 +185,11 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
         if(mDeskOrder!=null&&mDeskOrder.getOrderState().equals("1")){
             //挂单,无操作
             DESK_ORDER_ACTION_TYPE = Constants.CHOOSE_DESK_DESK_ORDER_HANG_ORDER;
-        }else if(isDeskOrderHolded()){
+        }else if(mDeskOrder!=null&&mDeskOrder.getOrderState().equals("8")){
+            //扫码支付中,无操作
+            DESK_ORDER_ACTION_TYPE = Constants.CHOOSE_DESK_DESK_ORDER_SCANCODE_PAYMENT;
+        }
+        else if(isDeskOrderHolded()){
 			//下一步操作通知后厨
 			DESK_ORDER_ACTION_TYPE = Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN;
 		}else{
@@ -194,8 +199,9 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
 
         if(DESK_ORDER_ACTION_TYPE ==Constants.CHOOSE_DESK_DESK_ORDER_HANG_ORDER){
             btn_ensure.setText("挂单中");
-        }else
-		if(DESK_ORDER_ACTION_TYPE == Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
+        }else if(DESK_ORDER_ACTION_TYPE ==Constants.CHOOSE_DESK_DESK_ORDER_SCANCODE_PAYMENT){
+            btn_ensure.setText("扫码支付中");
+        }else if(DESK_ORDER_ACTION_TYPE == Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
 			btn_ensure.setText("查看订单");
 		}else{
 			btn_ensure.setText("加菜");
