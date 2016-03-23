@@ -963,10 +963,10 @@ public class ViewOrderDishesActivity extends BaseActivity {
     }
 
     private void VolleyHurryOrder(final int position) {
-        String param = "http://139.129.35.66:30080/tacos/printRemindOrder.do";
-        Log.d(TAG, "hurryOrderInfo:" + param);
+        String param = "/printRemindOrder.do";
+        Log.d(TAG, "hurryOrderInfo:" + HttpHelper.HOST + param);
         ResultMapRequest<HurryOrderResult> ResultMapRequest = new ResultMapRequest<HurryOrderResult>(Request.Method.POST,
-                param, HurryOrderResult.class,
+                HttpHelper.HOST + param, HurryOrderResult.class,
                 new Listener<HurryOrderResult>() {
                     @Override
                     public void onResponse(HurryOrderResult hurryOrderResult) {
