@@ -184,7 +184,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                         mActivity);
                 deleteItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
                         0x3F, 0x25)));
-                deleteItem.setTitle("删 除");
+                deleteItem.setTitle("退 菜");
                 deleteItem.setTitleSize(18);
                 deleteItem.setTitleColor(Color.WHITE);
                 deleteItem.setWidth(dp2px(90));
@@ -192,7 +192,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
 
                 SwipeMenuItem hurryItem = new SwipeMenuItem(mActivity);
                 hurryItem.setBackground(new ColorDrawable(Color.rgb(0xF9,
-                        0x3F, 0x25)));
+                        0xD5, 0x5B)));
                 hurryItem.setTitle("催 菜");
                 hurryItem.setTitleSize(18);
                 hurryItem.setTitleColor(Color.WHITE);
