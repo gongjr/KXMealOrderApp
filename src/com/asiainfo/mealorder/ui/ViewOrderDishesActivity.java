@@ -195,7 +195,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                         0xD5, 0x5B)));
                 hurryItem.setTitle("催 菜");
                 hurryItem.setTitleSize(18);
-                hurryItem.setTitleColor(Color.WHITE);
+                hurryItem.setTitleColor(Color.BLACK);
                 hurryItem.setWidth(dp2px(90));
                 menu.addMenuItem(hurryItem);
             }
