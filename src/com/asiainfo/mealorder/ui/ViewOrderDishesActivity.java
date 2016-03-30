@@ -1010,7 +1010,11 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 hurryOrder.setChildMerchantId(mDeskOrder.getChildMerchantId());
                 hurryOrder.setCreateTime(mDeskOrder.getStrCreateTime());
                 hurryOrder.setTradeStaffId(mDeskOrder.getTradeStaffId());
-                hurryOrder.setRemark(mDeskOrder.getRemark());
+                if(mDeskOrder.getRemark() == null) {
+                    hurryOrder.setRemark("");
+                } else {
+                    hurryOrder.setRemark(mDeskOrder.getRemark());
+                }
                 HurryOrderDesk hurryOrderDesk = new HurryOrderDesk();
                 hurryOrderDesk.setDeskName(deskName);
                 hurryOrder.setMerchantDesk(hurryOrderDesk);
@@ -1051,7 +1055,11 @@ public class ViewOrderDishesActivity extends BaseActivity {
         HurryOrderGoodsItem hurryOrderGoodsItem = new HurryOrderGoodsItem();
         hurryOrderGoodsItem.setExportId(Integer.valueOf(deskOrderGoodsItem.getExportId()));
         if (!isComps) {
-            hurryOrderGoodsItem.setRemark(deskOrderGoodsItem.getRemark());
+            if (deskOrderGoodsItem.getRemark() == null) {
+                hurryOrderGoodsItem.setRemark("");
+            } else {
+                hurryOrderGoodsItem.setRemark(deskOrderGoodsItem.getRemark());
+            }
         } else {
             hurryOrderGoodsItem.setRemark("");
         }
