@@ -22,6 +22,7 @@ import android.widget.Toast;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.entity.DishesComp;
 import com.asiainfo.mealorder.entity.DishesCompItem;
 import com.asiainfo.mealorder.entity.DishesProperty;
 import com.asiainfo.mealorder.entity.DishesPropertyItem;
@@ -60,9 +61,11 @@ public class DishCompItemAdapter extends BaseAdapter {
     private MerchantDesk mCurDesk;
     private String DISHES_ID;
     private Gson gson = new Gson();
+    private List<DishesComp> mDishCompsPartionDataList;
 
     public DishCompItemAdapter(Context mContext, FragmentActivity mActivity, List<DishesCompItem> mDataList,
-                               List<OrderGoodsItem> curGoodsItemList, OnItemClickListener mOnItemClickListener, Map<String, String> maxSelect) {
+                               List<OrderGoodsItem> curGoodsItemList, OnItemClickListener mOnItemClickListener,
+                               Map<String, String> maxSelect, List<DishesComp> mDishCompsPartionDataList) {
         this.mContext = mContext;
         this.mActivity = mActivity;
         this.curGoodsItemList = curGoodsItemList;
@@ -72,6 +75,7 @@ public class DishCompItemAdapter extends BaseAdapter {
         this.maxSelect = maxSelect;
         this.mLoginUserPrefData = new LoginUserPrefData(mContext);
         this.mInflater = LayoutInflater.from(mContext);
+        this.mDishCompsPartionDataList = mDishCompsPartionDataList;
         updateCheckedStateMap();
     }
 
@@ -273,13 +277,22 @@ public class DishCompItemAdapter extends BaseAdapter {
 
                 //先判断本菜dishesid是否有选中标志
                 if (!mItemCheckedStateMap.get(mDataList.get(position).getDishesId())) {
+                    String dishesTypeCode = mDataList.get(position).getDishesTypeCode();
+                    int size = mDishCompsPartionDataList.size();
+                    String dishesType = "";
+                    for (int i=0; i<size; i++) {
+                        if (mDishCompsPartionDataList.get(i).getDishesType().equals(dishesTypeCode)){
+                            dishesType = mDishCompsPartionDataList.get(i).getDishesTypeName();
+                        }
+                    }
+
                     if (Integer.valueOf(maxCount) == 1) {
-                        Toast.makeText(mContext, "至少要选择一份", Toast.LENGTH_SHORT).show();
-                        mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),true);
+                        Toast.makeText(mContext, dishesType + ":至少要选择一份", Toast.LENGTH_SHORT).show();
+                        mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);
                     } else {
                         count --;
                         if(count<0){
-                            Toast.makeText(mContext, "至少要选择一份", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(mContext, dishesType +":至少要选择一份", Toast.LENGTH_SHORT).show();
                             mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),true);
                         }
                         else mItemCheckedStateMap.put(mDataList.get(position).getDishesId(),false);
@@ -301,7 +314,16 @@ public class DishCompItemAdapter extends BaseAdapter {
                     } else {
                         //复选项
                         if (count > Integer.valueOf(maxCount)) {
-                            Toast.makeText(mContext, "最多只能选择" + maxCount + "份", Toast.LENGTH_SHORT).show();
+                            String dishesTypeCode = mDataList.get(position).getDishesTypeCode();
+                            int size = mDishCompsPartionDataList.size();
+                            String dishesType = "";
+                            for (int i=0; i<size; i++) {
+                                if (mDishCompsPartionDataList.get(i).getDishesType().equals(dishesTypeCode)){
+                                    dishesType = mDishCompsPartionDataList.get(i).getDishesTypeName();
+                                }
+                            }
+
+                            Toast.makeText(mContext, dishesType + ":最多只能选择" + maxCount + "份", Toast.LENGTH_SHORT).show();
                             mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), false);
                         } else {
                             mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);//确认选中新单选项
@@ -645,5 +667,9 @@ public class DishCompItemAdapter extends BaseAdapter {
         //		CheckButton chk_isItemSelect;
         ImageView img_dropDown;
         Button btn_ensure;
+    }
+
+    public void onRefreshPartionList(List<DishesComp> mDishCompsPartionDataList) {
+       this.mDishCompsPartionDataList = mDishCompsPartionDataList;
     }
 }

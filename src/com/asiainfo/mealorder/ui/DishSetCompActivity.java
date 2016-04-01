@@ -151,7 +151,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
         //汇集所有套餐子项
         unionDishCompPartionItemsData();
         mDishCompPartionItemsAdapter = new DishCompItemAdapter(DishSetCompActivity.this, DishSetCompActivity.this, mDishCompsPartionItemsDataList,
-                curGoodsItemList, mOnDishCompPartionItemsItemClickListener, maxSelectMap);
+                curGoodsItemList, mOnDishCompPartionItemsItemClickListener, maxSelectMap, mDishCompsPartionDataList);
         mDishCompPartionItemsAdapter.setOnPropertyDropDownClickListener(mOnPropertyDropDownClickListener);
         mSimpleSectionedGridAdapter = new SimpleSectionedListAdapter(this, mDishCompPartionItemsAdapter,
                 R.layout.lvitem_dishcomp_header, R.id.tv_dish_comp_partion_name);
@@ -180,6 +180,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
             maxSelectMap.put(typeId, maxSelect);
             int selectedCount = 0;
             if (dishesInfoList != null && dishesInfoList.size() > 0) {
+                //套餐子菜默认选择
                 for (int k=0; k<dishesInfoList.size(); k++) {
                     if (selectedCount < Integer.valueOf(maxSelect)) {
                         defDishesCompItemList.add(dishesInfoList.get(selectedCount));
@@ -291,6 +292,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
         mSimpleSectionedGridAdapter.onRefreshSection(sections.toArray(new Section[0]));
         mDishCompPartionItemsAdapter.onRefreshDefCompItemList(defDishesCompItemList);
         mDishCompPartionItemsAdapter.onRefresh(mDishCompsPartionItemsDataList);
+        mDishCompPartionItemsAdapter.onRefreshPartionList(mDishCompsPartionDataList);
     }
 
     /**
