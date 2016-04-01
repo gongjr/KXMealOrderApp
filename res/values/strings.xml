@@ -48,10 +48,12 @@
     <!-- Volley异常提示信息 -->
     <string name="no_internet">请检查您的网络是否正常！</string>
     <string name="timeout">连接超时,请重新尝试！</string>
-    <string name="unknow_error">发生未知异常，请重新尝试！</string>
     <string name="serverproblen_error">数据有误，请重新尝试！</string>
     <string name="no_server_error">服务器异常，请重新尝试！</string>
     <string name="submit_dialog_title">您已完成点菜，提交菜单吗?</string>
+    <string name="Connect_timeout">建立连接超时,请重新尝试！</string>
+    <string name="Socket_timeout">服务器响应超时,请确认结果后尝试！</string>
+    <string name="unCatch_error">发生未知异常，请重新尝试！</string>
 
     <!-- View Tag 常量标识 -->
     <item name="tag_first" type="id"></item>

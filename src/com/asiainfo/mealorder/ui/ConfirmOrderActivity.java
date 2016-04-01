@@ -778,13 +778,7 @@ public class ConfirmOrderActivity extends BaseActivity{
                 VolleyErrors errors=VolleyErrorHelper.getVolleyErrors(error,
                         mActivity);
                 switch (errors.getErrorType()){
-                    case 1:
-                        Log.e(TAG,
-                                "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
-                        break;
-                    case 5:
+                    case VolleyErrorHelper.ErrorType_Connect_Timeout:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
                         onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
@@ -847,17 +841,11 @@ public class ConfirmOrderActivity extends BaseActivity{
                 VolleyErrors errors= VolleyErrorHelper.getVolleyErrors(error,
                         mActivity);
                 switch (errors.getErrorType()){
-                    case 1:
+                    case VolleyErrorHelper.ErrorType_Connect_Timeout:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
                         onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
 //                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
-                        break;
-                    case 5:
-                        Log.e(TAG,
-                                "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
                         break;
                     default:
                         Log.e(TAG,
