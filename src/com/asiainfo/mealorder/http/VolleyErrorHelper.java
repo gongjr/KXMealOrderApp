@@ -30,11 +30,11 @@ import java.util.Map;
  */
 public class VolleyErrorHelper {
 
-    public static final int ErrorType_Connect_Timeout =1;
+    public static final int ErrorType_Socket_Timeout =1;
     public static final int ErrorType_ServerProblem =2;
     public static final int ErrorType_No_Internet =3;
     public static final int ErrorType_NetworkError =4;
-    public static final int ErrorType_Socket_Timeout =5;
+    public static final int ErrorType_Connect_Timeout =5;
     public static final int ErrorType_UnCatch_Error =6;
 
     public static String getMessage(Object error, Context context) {

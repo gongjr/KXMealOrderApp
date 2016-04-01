@@ -778,7 +778,7 @@ public class ConfirmOrderActivity extends BaseActivity{
                 VolleyErrors errors=VolleyErrorHelper.getVolleyErrors(error,
                         mActivity);
                 switch (errors.getErrorType()){
-                    case VolleyErrorHelper.ErrorType_Connect_Timeout:
+                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
                         onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
@@ -841,7 +841,7 @@ public class ConfirmOrderActivity extends BaseActivity{
                 VolleyErrors errors= VolleyErrorHelper.getVolleyErrors(error,
                         mActivity);
                 switch (errors.getErrorType()){
-                    case VolleyErrorHelper.ErrorType_Connect_Timeout:
+                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
                         onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
