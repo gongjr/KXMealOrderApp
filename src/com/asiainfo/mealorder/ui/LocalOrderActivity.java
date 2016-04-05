@@ -8,11 +8,20 @@ import android.widget.Button;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.adapter.ViewOrderDishesAdapter;
+import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.db.DataBinder;
+import com.asiainfo.mealorder.entity.OrderGoodsItem;
+import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
+import com.asiainfo.mealorder.utils.KLog;
+import com.asiainfo.mealorder.utils.StringUtils;
 import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
+
+import java.util.Date;
+import java.util.List;
 
 import roboguice.inject.InjectView;
 
@@ -27,10 +36,14 @@ public class LocalOrderActivity extends BaseActivity{
     @InjectView(R.id.localorder_exit)
     private Button exit;
     private ViewOrderDishesAdapter mLocalOrderAdapter=null;
+    String day=StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1);
+    private LoginUserPrefData mLoginUserPrefData;
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_localorder);
+        mLoginUserPrefData=new LoginUserPrefData(this);
+        quaryLocalOrder();
         exit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -65,5 +78,21 @@ public class LocalOrderActivity extends BaseActivity{
                 finish();
             }
         });
+    }
+
+    public void quaryLocalOrder(){
+        List<OrderSubmit> localOrder= DataBinder.binder.findWithWhere(OrderSubmit.class,"childmerchantId=? and createtimeday =?",mLoginUserPrefData.getChildMerchantId(),day);
+        if (localOrder!=null&&localOrder.size()>0){
+            for (OrderSubmit mOrderSubmit:localOrder){
+                String orderData = gson.toJson(mOrderSubmit);
+                KLog.i(orderData);
+                List<OrderGoodsItem> orderGoodsItemList=DataBinder.binder.findWithWhere(OrderGoodsItem.class,"ordersubmit_id=?",mOrderSubmit.getId()+"");
+                for (OrderGoodsItem mOrderGoodsItem:orderGoodsItemList){
+                    String orderGoodsItem = gson.toJson(mOrderGoodsItem);
+                    KLog.i(orderGoodsItem);
+                }
+            }
+        }
+
     }
 }

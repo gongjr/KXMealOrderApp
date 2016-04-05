@@ -54,6 +54,7 @@ import com.google.gson.reflect.TypeToken;
 import org.litepal.crud.DataSupport;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -209,6 +210,13 @@ public class ConfirmOrderActivity extends BaseActivity{
                 //本地缓存订单
                 if(mOrderSubmit.getOrderGoods()!=null || mOrderSubmit.getOrderGoods().size()>0){
                     KLog.i("保存前:",mOrderSubmit.getId());
+                    mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
+                    if(mOrderSubmit.getOrderGoods()!=null&&mOrderSubmit.getOrderGoods().size()>0){
+                        for (OrderGoodsItem orderGoodsItem:mOrderSubmit.getOrderGoods()){
+                            String remarkString=gson.toJson(orderGoodsItem.getRemark());
+                            orderGoodsItem.setRemarkString(remarkString);
+                        }
+                    }
                     mOrderSubmit.save();
                     DataSupport.saveAll(mOrderSubmit.getOrderGoods());
                     KLog.i("保存后:",mOrderSubmit.getId());
@@ -781,15 +789,29 @@ public class ConfirmOrderActivity extends BaseActivity{
                     case VolleyErrorHelper.ErrorType_Socket_Timeout:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
+                        //本地缓存订单
+                        if(mOrderSubmit.getOrderGoods()!=null || mOrderSubmit.getOrderGoods().size()>0){
+                            KLog.i("保存前:",mOrderSubmit.getId());
+                            mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
+                            if(mOrderSubmit.getOrderGoods()!=null&&mOrderSubmit.getOrderGoods().size()>0){
+                                for (OrderGoodsItem orderGoodsItem:mOrderSubmit.getOrderGoods()){
+                                    String remarkString=gson.toJson(orderGoodsItem.getRemark());
+                                    orderGoodsItem.setRemarkString(remarkString);
+                                }
+                            }
+                            mOrderSubmit.save();
+                            DataSupport.saveAll(mOrderSubmit.getOrderGoods());
+                            KLog.i("保存后:",mOrderSubmit.getId());
+                        }
+                        onMakeOrderFailed("服务器响应超时,订单已本地保存,请退出确认结果后,再重新尝试!",VOLLEY_ERROR_BACK_YES);
 //                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
                         break;
                     default:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
-//                        disMakeOrderDF();
-//                        showEnsureDialog("newOrderError");
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
+                        disMakeOrderDF();
+                        showEnsureDialog("newOrderError");
                         break;
                 }
             }
