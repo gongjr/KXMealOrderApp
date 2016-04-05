@@ -83,6 +83,7 @@ public class LocalOrderActivity extends BaseActivity{
     public void quaryLocalOrder(){
         List<OrderSubmit> localOrder= DataBinder.binder.findWithWhere(OrderSubmit.class,"childmerchantId=? and createtimeday =?",mLoginUserPrefData.getChildMerchantId(),day);
         if (localOrder!=null&&localOrder.size()>0){
+            deleteLocalOrder(localOrder.get(0));
             for (OrderSubmit mOrderSubmit:localOrder){
                 String orderData = gson.toJson(mOrderSubmit);
                 KLog.i(orderData);
@@ -94,5 +95,13 @@ public class LocalOrderActivity extends BaseActivity{
             }
         }
 
+    }
+
+    public void deleteLocalOrder(OrderSubmit orderSubmit){
+        if(orderSubmit.getOrderGoods()!=null&&orderSubmit.getOrderGoods().size()>0){
+            for (OrderGoodsItem orderGoodsItem:orderSubmit.getOrderGoods())
+            DataBinder.binder.delete(OrderGoodsItem.class,orderGoodsItem.getId());
+        }
+        DataBinder.binder.delete(OrderSubmit.class,orderSubmit.getId());
     }
 }

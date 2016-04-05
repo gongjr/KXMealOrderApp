@@ -195,4 +195,7 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
     public void setRemarkString(String remarkString) {
         this.remarkString = remarkString;
     }
+    public long getId(){
+        return getBaseObjId();
+    }
 }
