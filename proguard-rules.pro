@@ -124,3 +124,7 @@
 -dontwarn com.thoughtworks.xstream.**
 -keep class com.thoughtworks.xstream.**{*;}
 
+#Okio库补充了java.io和java.nio的不足,能够更加方便，快速的访问、存储和处理你的数据。
+#而OkHttp的底层也使用该库作为支持,部分不会用到的类引用了,跳过检查
+-dontwarn okio.**
+
