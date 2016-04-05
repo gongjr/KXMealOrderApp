@@ -24,6 +24,7 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	private String instanceId;
 	private String interferePrice;
 	private String orderId;
+    private String remarkString;
 	private List<String> remark;
 	private String salesId;
 	private String salesName;
@@ -186,4 +187,15 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	public void setRemark(List<String> remark) {
 		this.remark = remark;
 	}
+
+    public String getRemarkString() {
+        return remarkString;
+    }
+
+    public void setRemarkString(String remarkString) {
+        this.remarkString = remarkString;
+    }
+    public long getId(){
+        return getBaseObjId();
+    }
 }

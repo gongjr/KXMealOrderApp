@@ -61,7 +61,7 @@ public class DataBinder<T> {
     }
 
     public int delete(Class<T> modelClass, long id) {
-        return DataSupport.delete(modelClass, 2);
+        return DataSupport.delete(modelClass, id);
 
     }
 

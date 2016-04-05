@@ -19,7 +19,9 @@ public class OrderSubmit extends DataSupport implements Serializable{
 	private int allGoodsNum; 
 	private Long childMerchantId;
 	/**订单创建时间**/
-	private String createTime;
+    private String createTime;
+    /**订单创建时间**/
+    private String createTimeDay;
 	private String deskId;
 	/**优惠金额**/
 	private String giftMoney;
@@ -259,4 +261,11 @@ public class OrderSubmit extends DataSupport implements Serializable{
 		this.remark = remark;
 	}
 
+    public String getCreateTimeDay() {
+        return createTimeDay;
+    }
+
+    public void setCreateTimeDay(String createTimeDay) {
+        this.createTimeDay = createTimeDay;
+    }
 }

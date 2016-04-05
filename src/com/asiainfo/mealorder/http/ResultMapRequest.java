@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.http;
 
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
@@ -11,8 +12,11 @@ import com.android.volley.Response.Listener;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.google.gson.Gson;
 
+import org.apache.http.protocol.HTTP;
+
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Type;
+import java.util.Map;
 
 /**
  * @author gjr
@@ -27,12 +31,23 @@ public class ResultMapRequest<T> extends Request<T> {
 
     private Type modelClass;
 
+    private Map<String, String> params;
+
     public ResultMapRequest(int method, String url, Type model, Listener<T> listener,
                             ErrorListener errorListener) {
         super(method, url, errorListener);
         mGson = new Gson();
         modelClass = model;
         mListener = listener;
+    }
+
+    public ResultMapRequest(int method, String url,Map<String, String> param , Type model,Listener<T> listener,
+                            ErrorListener errorListener) {
+        super(method, url, errorListener);
+        mGson = new Gson();
+        modelClass = model;
+        mListener = listener;
+        this.params=param;
     }
 
     public ResultMapRequest(String url, Type model, Listener<T> listener,
@@ -44,9 +59,12 @@ public class ResultMapRequest<T> extends Request<T> {
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
             String jsonString = new String(response.data,
-                    HttpHeaderParser.parseCharset(response.headers));
+                    HttpHeaderParser.parseCharset(response.headers, HTTP.UTF_8));
             Log.d("VolleyLogTag", "result : " + jsonString);
-            //关键在此处，将服务器内容解析为String字符串，之后再根据对应接口文档生成的实体类的modelClass，生成对应对象
+            // 关键在此处
+            // 先判断服务器的返回数据的header,获取字符集编码格式,如果服务器的返回数据的header中没有指定字符集那么就会默认使用HTTP.UTF_8
+            // 按编码格式解析出String字符串，
+            // 再根据对应接口文档生成的实体类的modelClass，利用Gson生成对应对象
             T result = mGson.fromJson(jsonString, modelClass);
             return Response.success(result,
                     HttpHeaderParser.parseCacheHeaders(response));
@@ -55,9 +73,18 @@ public class ResultMapRequest<T> extends Request<T> {
         }
     }
 
+    /**
+     * 成功解析后,响应分发接口
+     */
     @Override
     protected void deliverResponse(T response) {
         mListener.onResponse(response);
+    }
+
+    @Override
+    protected Map<String, String> getParams() throws AuthFailureError {
+        Log.i("VolleyLogTag", "params:" + params.toString());
+        return params;
     }
 
 
