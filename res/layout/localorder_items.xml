@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="15dp">
+
+    <TextView
+        android:id="@+id/localorder_time"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="今天 11:40"
+        android:layout_centerVertical="true"
+        android:textSize="@dimen/text_size_small"/>
+
+
+    <TextView
+        android:id="@+id/localorder_deskname"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="16号桌"
+        android:textSize="@dimen/text_size_small"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        />
+
+    <ImageButton
+        android:id="@+id/localorder_upload_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/upload_btn"
+        />
+
+
+</RelativeLayout>

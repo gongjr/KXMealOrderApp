@@ -217,6 +217,7 @@ public class ConfirmOrderActivity extends BaseActivity{
                             orderGoodsItem.setRemarkString(remarkString);
                         }
                     }
+					mOrderSubmit.setDeskName(mCurDesk.getDeskName());
                     mOrderSubmit.save();
                     DataSupport.saveAll(mOrderSubmit.getOrderGoods());
                     KLog.i("保存后:",mOrderSubmit.getId());
@@ -766,8 +767,8 @@ public class ConfirmOrderActivity extends BaseActivity{
         String param = "/appController/submitOrderInfo.do?";
         Log.i(TAG,"submitOrderInfo_url:" + HttpHelper.HOST + param);
         ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                Request.Method.POST, HttpHelper.HOST + param, SubmitOrderId.class,
-                new Response.Listener<SubmitOrderId>() {
+				Request.Method.POST, HttpHelper.HOST + param, SubmitOrderId.class,
+				new Response.Listener<SubmitOrderId>() {
                     @Override
                     public void onResponse(
                             SubmitOrderId response) {
@@ -795,10 +796,14 @@ public class ConfirmOrderActivity extends BaseActivity{
                             mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
                             if(mOrderSubmit.getOrderGoods()!=null&&mOrderSubmit.getOrderGoods().size()>0){
                                 for (OrderGoodsItem orderGoodsItem:mOrderSubmit.getOrderGoods()){
-                                    String remarkString=gson.toJson(orderGoodsItem.getRemark());
+									String remarkString = "";
+									if (orderGoodsItem.getRemark().size() > 0) {
+										remarkString=gson.toJson(orderGoodsItem.getRemark());
+									}
                                     orderGoodsItem.setRemarkString(remarkString);
                                 }
                             }
+							mOrderSubmit.setDeskName(mCurDesk.getDeskName());
                             mOrderSubmit.save();
                             DataSupport.saveAll(mOrderSubmit.getOrderGoods());
                             KLog.i("保存后:",mOrderSubmit.getId());

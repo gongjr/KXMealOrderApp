@@ -23,6 +23,7 @@ public class OrderSubmit extends DataSupport implements Serializable{
     /**订单创建时间**/
     private String createTimeDay;
 	private String deskId;
+	private String deskName;
 	/**优惠金额**/
 	private String giftMoney;
 	private String inMode;
@@ -268,4 +269,12 @@ public class OrderSubmit extends DataSupport implements Serializable{
     public void setCreateTimeDay(String createTimeDay) {
         this.createTimeDay = createTimeDay;
     }
+
+	public String getDeskName() {
+		return deskName;
+	}
+
+	public void setDeskName(String deskName) {
+		this.deskName = deskName;
+	}
 }
