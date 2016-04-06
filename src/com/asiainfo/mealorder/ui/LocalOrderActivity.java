@@ -20,6 +20,8 @@ import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
 import com.asiainfo.mealorder.http.HttpHelper;
 import com.asiainfo.mealorder.http.ResultMapRequest;
+import com.asiainfo.mealorder.http.VolleyErrorHelper;
+import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.listener.LocalOrderUploadListener;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
@@ -179,7 +181,9 @@ public class LocalOrderActivity extends BaseActivity{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         disMakeOrderDF();
-                        showShortTip("订单上传失败: " + error.getMessage());
+                        VolleyErrors errors= VolleyErrorHelper.getVolleyErrors(error,
+                                mActivity);
+                        showShortTip("订单上传失败: " + errors.getErrorMsg());
                     }
                 }
         ) {
