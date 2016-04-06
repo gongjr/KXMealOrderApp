@@ -303,8 +303,16 @@ public class ViewOrderDishesActivity extends BaseActivity {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
 //                ApplicationInfo item = mAppList.get(position);
+                //稍后下单的情况下不通知后厨信息
                 if (!isNotifyKitchen && VIEW_DIALOG_TYPE == Constants.VIEW_ORDER_DIALOG_TYPE_NOTIFY_KITCHEN) {
-                    Toast.makeText(mActivity, "菜品没有通知后厨无法退菜!", Toast.LENGTH_SHORT).show();
+                    switch (index) {
+                        case 0:
+                            Toast.makeText(mActivity, "菜品没有通知后厨无法退菜!", Toast.LENGTH_SHORT).show();
+                            break;
+                        case 1:
+                            Toast.makeText(mActivity, "菜品没有通知后厨无法催菜!", Toast.LENGTH_SHORT).show();
+                            break;
+                    }
                 } else {
                     switch (index) {
                         case 0:
