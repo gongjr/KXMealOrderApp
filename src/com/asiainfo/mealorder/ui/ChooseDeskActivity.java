@@ -146,9 +146,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
         merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
         quickAction=new QuickAction(this, QuickAction.VERTICAL);
 
-        ActionItem refreshDishesItem 	= new ActionItem(ID_refresh, "刷新",ic_actionitem_refresh);
-        ActionItem exitItem 	= new ActionItem(ID_exit, "退出", ic_actionitem_exit);
-        ActionItem localOrder 	= new ActionItem(ID_localOrder, "订单", ic_actionitem_order);
+        ActionItem refreshDishesItem 	= new ActionItem(ID_refresh, "刷新菜单",ic_actionitem_refresh);
+        ActionItem exitItem 	= new ActionItem(ID_exit, "退出登录", ic_actionitem_exit);
+        ActionItem localOrder 	= new ActionItem(ID_localOrder, "本地订单", ic_actionitem_order);
         localOrder.setSticky(true);
         refreshDishesItem.setSticky(true);
         exitItem.setSticky(true);

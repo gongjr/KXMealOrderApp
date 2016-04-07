@@ -130,7 +130,7 @@ public class LocalOrderActivity extends BaseActivity{
                 mOrderSubmit.setOrderGoods(orderGoodsItemList);
             }
         } else  {
-            showShortTip("亲,本地没有订单信息~.~");
+            showShortTip("亲,本地没有保存的离线订单信息~.~");
         }
     }
 
