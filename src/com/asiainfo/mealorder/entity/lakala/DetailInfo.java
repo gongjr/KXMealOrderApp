@@ -2,9 +2,10 @@ package com.asiainfo.mealorder.entity.lakala;
 
 /**
  * 附录 B:交易详情 JSON 结构
+ * 来源文档版本lkl_api_1.11-api.pdf
  * Created by gjr on 2016/4/8.
  */
-public class TradeDetail {
+public class DetailInfo {
 
     /**
      * 商户号
