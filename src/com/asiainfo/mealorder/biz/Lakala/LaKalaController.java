@@ -48,8 +48,6 @@ public class LaKalaController {
         return laKalaController;
     }
 
-
-
     public int getCurrentLakalaInfoType() {
         return currentLakalaInfoType;
     }
