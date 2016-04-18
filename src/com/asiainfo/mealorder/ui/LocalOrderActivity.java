@@ -33,6 +33,7 @@ import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.reflect.TypeToken;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -123,6 +124,7 @@ public class LocalOrderActivity extends BaseActivity{
                     List<String> stringList = gson.fromJson(strings,
                             new TypeToken<List<String>>() {
                             }.getType());
+                    if(stringList==null)stringList=new ArrayList<String>();
                     mOrderGoodsItem.setRemark(stringList);
                     String orderGoodsItem = gson.toJson(mOrderGoodsItem);
                     KLog.i(orderGoodsItem);
