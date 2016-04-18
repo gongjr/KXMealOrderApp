@@ -35,7 +35,7 @@
     <uses-permission android:name="com.asiainfo.mealorder.permission.JPUSH_MESSAGE" />
     //用户唤醒机器的权限
     <uses-permission android:name="android.permission.RECEIVE_USER_PRESENT" />
-    //允许程序在手机屏幕关闭后后台进程仍然运行
+    //允许程序在手机屏幕关闭后后台进程仍然运行,尾锁,唤醒机制
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     //允许程序访问电话状态
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
@@ -62,8 +62,7 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     //允许程序访问额外的定位提供者指令
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
-    //尾锁,唤醒机制
-    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
 
     <application
         android:name="com.asiainfo.mealorder.AppApplication"
