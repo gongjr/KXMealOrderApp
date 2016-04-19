@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:descendantFocusability="blocksDescendants"
     android:padding="15dp">
 
     <TextView
@@ -21,6 +22,18 @@
         android:textSize="@dimen/text_size_small"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
+        />
+
+    <TextView
+        android:id="@+id/localorder_state"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="@dimen/text_size_xsmall"
+        android:layout_toLeftOf="@+id/localorder_upload_btn"
+        android:layout_marginRight="10dp"
+        android:layout_centerVertical="true"
+        android:textColor="@color/cl_bg_desk_loc_color_item_s"
         />
 
     <ImageButton

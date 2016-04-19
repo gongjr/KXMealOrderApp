@@ -9,6 +9,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
+import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.listener.LocalOrderUploadListener;
 
@@ -56,12 +57,19 @@ public class LocalOrderAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.localorder_items, null);
             viewHolder.time = (TextView) convertView.findViewById(R.id.localorder_time);
             viewHolder.deskName = (TextView) convertView.findViewById(R.id.localorder_deskname);
+            viewHolder.state = (TextView) convertView.findViewById(R.id.localorder_state);
             viewHolder.imageButton = (ImageButton) convertView.findViewById(R.id.localorder_upload_btn);
             convertView.setTag(viewHolder);
         } else {
             viewHolder = (LocalOrderViewHolder) convertView.getTag();
         }
         final OrderSubmit orderSubmit = orderSubmitList.get(position);
+        int type = orderSubmit.getOrderConfirmType();
+        if (type == Constants.ORDER_CONFIRM_TYPE_NEW_ORDER) {
+            viewHolder.state.setText("新增");
+        } else if (type == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
+            viewHolder.state.setText("加菜");
+        }
         viewHolder.time.setText("今天 " + orderSubmit.getCreateTime());
         viewHolder.deskName.setText(orderSubmit.getDeskName());
         viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
@@ -74,7 +82,7 @@ public class LocalOrderAdapter extends BaseAdapter {
     }
 
     private class LocalOrderViewHolder {
-        private TextView time, deskName;
+        private TextView time, deskName, state;
         private ImageButton imageButton;
     }
 }

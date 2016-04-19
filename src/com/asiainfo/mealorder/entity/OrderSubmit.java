@@ -47,7 +47,9 @@ public class OrderSubmit extends DataSupport implements Serializable{
 	private String remark;
 	private String tradeStsffId;
 	private int personNum;
-	
+
+	private int orderConfirmType;
+
 	private List<OrderGoodsItem>  OrderGoods;
 
     public long getId(){
@@ -276,5 +278,13 @@ public class OrderSubmit extends DataSupport implements Serializable{
 
 	public void setDeskName(String deskName) {
 		this.deskName = deskName;
+	}
+
+	public int getOrderConfirmType() {
+		return orderConfirmType;
+	}
+
+	public void setOrderConfirmType(int orderConfirmType) {
+		this.orderConfirmType = orderConfirmType;
 	}
 }

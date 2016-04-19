@@ -98,6 +98,7 @@ public class ConfirmOrderActivity extends BaseActivity{
         Bundle mBundle = getIntent().getBundleExtra("DATA_BUNDLE");
         ORDER_CONFIRM_TYPE = mBundle.getInt("ORDER_CONFIRM_TYPE");
         mOrderSubmit = (OrderSubmit)mBundle.getSerializable("ORDER_SUBMIT");
+		mOrderSubmit.setOrderConfirmType(ORDER_CONFIRM_TYPE);
         mCurDesk = (MerchantDesk)mBundle.getSerializable("MERCHANT_DESK");
         String dishesCompJsonStr = mBundle.getString("ORDER_DISHES_COMP");
         deskOrderPrice = mBundle.getString("DESK_ORDER_PRICE");
@@ -534,7 +535,7 @@ public class ConfirmOrderActivity extends BaseActivity{
         if(gitc!=null && ditc!=null && gitc.equals(ditc)
                 && gidid!=null && didid!=null && gidid.equals(didid) ){
             goodsItem.setSalesNum(selectedCount);
-            dishesItem.setDishesPrice(""+priceRatio);
+            dishesItem.setDishesPrice("" + priceRatio);
             goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
             //分标签组更新
             List<String> remarkList = updateOrderGoodsRemarkTypeObj2(mDishesPropertyChoice);
@@ -792,24 +793,7 @@ public class ConfirmOrderActivity extends BaseActivity{
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
                         //本地缓存订单
-                        if(mOrderSubmit.getOrderGoods()!=null || mOrderSubmit.getOrderGoods().size()>0){
-                            KLog.i("保存前:",mOrderSubmit.getId());
-                            mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
-                            if(mOrderSubmit.getOrderGoods()!=null&&mOrderSubmit.getOrderGoods().size()>0){
-                                for (OrderGoodsItem orderGoodsItem:mOrderSubmit.getOrderGoods()){
-									String remarkString = "";
-									if (orderGoodsItem.getRemark().size() > 0) {
-										remarkString=gson.toJson(orderGoodsItem.getRemark());
-									}
-                                    orderGoodsItem.setRemarkString(remarkString);
-                                }
-                            }
-							mOrderSubmit.setDeskName(mCurDesk.getDeskName());
-                            mOrderSubmit.save();
-                            DataSupport.saveAll(mOrderSubmit.getOrderGoods());
-                            KLog.i("保存后:",mOrderSubmit.getId());
-                        }
-                        onMakeOrderFailed("服务器响应超时,订单已本地保存,请退出确认结果后,再重新尝试!",VOLLEY_ERROR_BACK_YES);
+						storeLocalOrder();
 //                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
                         break;
                     default:
@@ -872,13 +856,14 @@ public class ConfirmOrderActivity extends BaseActivity{
                     case VolleyErrorHelper.ErrorType_Socket_Timeout:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
+						storeLocalOrder();
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
 //                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
                         break;
                     default:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
+                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
                         //加菜单缓存后提交,可能原订单状态已经更改,导致数据有误,暂不支持
 //                        disMakeOrderDF();
 //                        showEnsureDialog("addOrderError");
@@ -966,7 +951,7 @@ public class ConfirmOrderActivity extends BaseActivity{
         try {
             Log.d(TAG, "下单成功！");
             if(mMakeOrderFinishDF!=null){
-                mMakeOrderFinishDF.updateNoticeText("下单成功!",type);
+                mMakeOrderFinishDF.updateNoticeText("下单成功!", type);
             }
         }catch (Exception e){
             e.printStackTrace();
@@ -1002,6 +987,28 @@ public class ConfirmOrderActivity extends BaseActivity{
             e.printStackTrace();
         }
 
+	}
+
+	//本地保存订单
+	private void storeLocalOrder() {
+		if(mOrderSubmit.getOrderGoods()!=null || mOrderSubmit.getOrderGoods().size()>0){
+			KLog.i("保存前:",mOrderSubmit.getId());
+			mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
+			if(mOrderSubmit.getOrderGoods()!=null&&mOrderSubmit.getOrderGoods().size()>0){
+				for (OrderGoodsItem orderGoodsItem:mOrderSubmit.getOrderGoods()){
+					String remarkString = "";
+					if (orderGoodsItem.getRemark().size() > 0) {
+						remarkString=gson.toJson(orderGoodsItem.getRemark());
+					}
+					orderGoodsItem.setRemarkString(remarkString);
+				}
+			}
+			mOrderSubmit.setDeskName(mCurDesk.getDeskName());
+			mOrderSubmit.save();
+			DataSupport.saveAll(mOrderSubmit.getOrderGoods());
+			KLog.i("保存后:",mOrderSubmit.getId());
+		}
+		onMakeOrderFailed("服务器响应超时,订单已本地保存,请退出确认结果后,再重新尝试!",VOLLEY_ERROR_BACK_YES);
 	}
 
     @Override
