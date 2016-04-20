@@ -703,7 +703,7 @@ public class ConfirmOrderActivity extends BaseActivity{
          }
 
         mOrderSubmit.setOrderState(orderState);
-        mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.TIME_FORMAT_1));
+        mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));
          mOrderSubmit.setRemark(remark);
          mOrderSubmit.setOrderGoods(mCommitList);
 	}

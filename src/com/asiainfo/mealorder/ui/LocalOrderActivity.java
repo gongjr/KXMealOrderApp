@@ -179,7 +179,7 @@ public class LocalOrderActivity extends BaseActivity {
                     String orderGoodsItem = gson.toJson(mOrderGoodsItem);
                     KLog.i(orderGoodsItem);
                 }
-                mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.TIME_FORMAT_1));//更新最后变更时间
+                mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));//更新最后变更时间
                 mOrderSubmit.setOrderGoods(orderGoodsItemList);
             }
         } else {

@@ -655,7 +655,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	public void prepareNewOrderSummaryInfo(Boolean isCalDeskOrderPrice){
 		mOrderSubmit.setAllGoodsNum(getOrderSubmitAllGoodsNum()); /**商品数量**/   
 		mOrderSubmit.setChildMerchantId(StringUtils.str2Long(childMerchantId)); /**子商户id**/  
-		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.TIME_FORMAT_1)); /**订单创建时间**/ 
+		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 		mOrderSubmit.setDeskId(mCurDesk.getDeskId());
 		mOrderSubmit.setGiftMoney("0");
 		mOrderSubmit.setInMode("1");
@@ -690,7 +690,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	private void prepareDeskCurOrderSummaryInfo(){
 		mOrderSubmit.setAllGoodsNum(getOrderSubmitAllGoodsNum()); /**商品数量**/   
 		mOrderSubmit.setChildMerchantId(StringUtils.str2Long(childMerchantId)); /**子商户id**/  
-		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.TIME_FORMAT_1)); /**订单创建时间**/ 
+		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 		mOrderSubmit.setDeskId(mCurDesk.getDeskId());
 		mOrderSubmit.setGiftMoney(mDeskOrder.getGiftMoney());
 		mOrderSubmit.setInMode(mDeskOrder.getInMode());
