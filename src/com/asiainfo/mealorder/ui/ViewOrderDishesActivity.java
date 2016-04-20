@@ -754,7 +754,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 mOrderdelete.setTradeStsffId(mLoginUserPrefData.getStaffId());
                 mOrderdelete.setOriginalPrice(Arith.d2str(newprice));
                 mOrderdelete.setAllGoodsNum(Integer.valueOf(mDeskOrder.getAllGoodsNum()) - orderGoodsItem.getSalesNum());
-                mOrderdelete.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.TIME_FORMAT_1)); /**订单创建时间**/
+                mOrderdelete.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 
                 Map<String, String> paramList = new HashMap<String, String>();
                 Gson gson = new Gson();
