@@ -68,7 +68,6 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -754,7 +753,6 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 mOrderdelete.setTradeStsffId(mLoginUserPrefData.getStaffId());
                 mOrderdelete.setOriginalPrice(Arith.d2str(newprice));
                 mOrderdelete.setAllGoodsNum(Integer.valueOf(mDeskOrder.getAllGoodsNum()) - orderGoodsItem.getSalesNum());
-                mOrderdelete.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 
                 Map<String, String> paramList = new HashMap<String, String>();
                 Gson gson = new Gson();

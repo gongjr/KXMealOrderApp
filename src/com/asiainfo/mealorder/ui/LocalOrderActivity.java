@@ -179,7 +179,6 @@ public class LocalOrderActivity extends BaseActivity {
                     String orderGoodsItem = gson.toJson(mOrderGoodsItem);
                     KLog.i(orderGoodsItem);
                 }
-                mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));//更新最后变更时间
                 mOrderSubmit.setOrderGoods(orderGoodsItemList);
             }
         } else {
@@ -212,6 +211,7 @@ public class LocalOrderActivity extends BaseActivity {
         public void uploadOrder(int position, OrderSubmit orderSubmit) {
             int type = localOrder.get(position).getOrderConfirmType();
             if (type == Constants.ORDER_CONFIRM_TYPE_NEW_ORDER) {
+                orderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));//更新最后变更时间
                 VolleysubmitOrderInfo(position, orderSubmit);
             } else if (type == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
                 VolleyupdateOrderInfo(position, orderSubmit);
