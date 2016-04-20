@@ -66,7 +66,7 @@ public class LocalOrderAdapter extends BaseAdapter {
         final OrderSubmit orderSubmit = orderSubmitList.get(position);
         int type = orderSubmit.getOrderConfirmType();
         if (type == Constants.ORDER_CONFIRM_TYPE_NEW_ORDER) {
-            viewHolder.state.setText("新增");
+            viewHolder.state.setText("新单");
         } else if (type == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
             viewHolder.state.setText("加菜");
         }

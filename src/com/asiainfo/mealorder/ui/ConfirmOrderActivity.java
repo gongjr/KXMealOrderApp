@@ -863,10 +863,10 @@ public class ConfirmOrderActivity extends BaseActivity{
                     default:
                         Log.e(TAG,
                                 "VolleyError:" + errors.getErrorMsg(), error);
-                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
+//                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
                         //加菜单缓存后提交,可能原订单状态已经更改,导致数据有误,暂不支持
-//                        disMakeOrderDF();
-//                        showEnsureDialog("addOrderError");
+                        disMakeOrderDF();
+                        showEnsureDialog("addOrderError");
                         break;
                 }
             }
@@ -1008,7 +1008,7 @@ public class ConfirmOrderActivity extends BaseActivity{
 			DataSupport.saveAll(mOrderSubmit.getOrderGoods());
 			KLog.i("保存后:",mOrderSubmit.getId());
 		}
-		onMakeOrderFailed("服务器响应超时,订单已本地保存,请退出确认结果后,再重新尝试!",VOLLEY_ERROR_BACK_YES);
+		onMakeOrderFailed("服务器连接中断,订单已本地保存,请退出确认结果后,再重新尝试!",VOLLEY_ERROR_BACK_YES);
 	}
 
     @Override

@@ -52,7 +52,7 @@
     <string name="no_server_error">服务器异常，请重新尝试！</string>
     <string name="submit_dialog_title">您已完成点菜，提交菜单吗?</string>
     <string name="Connect_timeout">建立连接超时,请重新尝试！</string>
-    <string name="Socket_timeout">服务器响应超时,请确认结果后尝试！</string>
+    <string name="Socket_timeout">服务器连接中断,请确认结果后尝试！</string>
     <string name="unCatch_error">发生未知异常，请重新尝试！</string>
 
     <!-- View Tag 常量标识 -->
