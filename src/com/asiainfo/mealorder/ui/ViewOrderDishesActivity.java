@@ -499,7 +499,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
         List<String> mOrderGoodsList = new ArrayList<String>();
         mUpdateOrderParam.setAllGoodsNum(StringUtils.str2Int(mDeskOrder.getAllGoodsNum()));
         mUpdateOrderParam.setChildMerchantId(mDeskOrder.getChildMerchantId());
-        mUpdateOrderParam.setCreateTime(mDeskOrder.getCreateTime());
+        mUpdateOrderParam.setCreateTime(mDeskOrder.getStrCreateTime());
         mUpdateOrderParam.setDeskId(mDeskOrder.getDeskId());
         mUpdateOrderParam.setMerchantId(mDeskOrder.getMerchantId());
         mUpdateOrderParam.setOrderGoods(mOrderGoodsList);
@@ -706,7 +706,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 mOrderdelete.setOrderid(mDeskOrder.getOrderId());
                 mOrderdelete.setOrderType(mDeskOrder.getOrderType());
                 mOrderdelete.setOrderTypeName(mDeskOrder.getOrderTypeName());
-                mOrderdelete.setCreateTime(mDeskOrder.getCreateTime());
+                mOrderdelete.setCreateTime(mDeskOrder.getStrCreateTime());
                 mOrderdelete.setOrderState(mDeskOrder.getOrderState());
                 mOrderdelete.setRemark(mDeskOrder.getRemark());
                 mOrderdelete.setOriginalPrice(mDeskOrder.getOriginalPrice());
