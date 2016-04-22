@@ -72,7 +72,7 @@ public class LakalaController {
         LakalaController.isRun = isRun;
     }
 
-    private void startLakalaForResult(Activity mActivity,int lakalaInfoType){
+    public void startLakalaForResult(Activity mActivity,int lakalaInfoType){
         if(!isRun)return;//false阻塞状态,不可以调用,退出
         try {
             setCurrentLakalaInfoType(lakalaInfoType);
@@ -105,7 +105,7 @@ public class LakalaController {
         }
     }
 
-    private void startLakalaForResult(Activity mActivity,LakalaInfo lakalaInfo){
+    public void startLakalaForResult(Activity mActivity,LakalaInfo lakalaInfo){
         if(!isRun)return;
         try {
             ComponentName component =

@@ -32,6 +32,9 @@ public class LakalaInfo {
      */
     private int type=LakalaInfo_Type_Trade;
 
+    public LakalaInfo(){
+    }
+
     public LakalaInfo(int type){
         this.type=type;
     }
@@ -111,9 +114,39 @@ public class LakalaInfo {
                     KLog.i("无法识别的消息类型");
                     return 0;
             }
-
         }
         return infoMap.size();
+    }
+
+    /**
+     * 显示当前内容字符创
+     * @return
+     */
+    public String showInfo(){
+        String info="";
+        synchronized (this){
+            if (infoMap.size()>0){
+                Iterator iterator=infoMap.entrySet().iterator();
+                while(iterator.hasNext()){
+                    Map.Entry entry=(Map.Entry)iterator.next();
+                    String vaule=(String)entry.getValue();
+                    switch (type){
+                        case LakalaInfo_Type_Trade:
+                            TradeKey tradeKey=(TradeKey)entry.getKey();
+                            info+=tradeKey.getValue()+":"+vaule+",";
+                            break;
+                        case LakalaInfo_Type_Query:
+                            QueryKey queryKey=(QueryKey)entry.getKey();
+                            info+=queryKey.getValue()+":"+vaule+",";
+                            break;
+                        default:
+                            KLog.i("无法识别的消息类型");
+                            return info;
+                    }
+                }
+                return info;
+            }else return info;
+        }
     }
 
 }

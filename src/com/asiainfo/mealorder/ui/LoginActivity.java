@@ -1,5 +1,6 @@
 package com.asiainfo.mealorder.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -16,6 +17,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.R;
+import com.asiainfo.mealorder.biz.lakala.LakalaController;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.config.SystemPrefData;
@@ -32,11 +34,14 @@ import com.asiainfo.mealorder.entity.eventbus.EventMain;
 import com.asiainfo.mealorder.entity.eventbus.post.DishesListEntity;
 import com.asiainfo.mealorder.entity.http.PublicDishesItem;
 import com.asiainfo.mealorder.entity.http.QueryAppMerchantPublicAttr;
+import com.asiainfo.mealorder.entity.lakala.LakalaInfo;
+import com.asiainfo.mealorder.entity.lakala.TradeKey;
 import com.asiainfo.mealorder.http.HttpHelper;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.HttpDialogLogin;
 import com.asiainfo.mealorder.utils.JPushUtils;
+import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Logger;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.utils.Tools;
@@ -193,6 +198,21 @@ public class LoginActivity extends BaseActivity {
                     httpAttendantLogin();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
+                    LakalaInfo lakalaInfo=new LakalaInfo(LakalaInfo.LakalaInfo_Type_Trade);
+                    lakalaInfo.setDate(TradeKey.Msg_tp,"0200");
+//                    lakalaInfo.setDate(TradeKey.Pay_tp,"1");
+                    lakalaInfo.setDate(TradeKey.Pay_tp,"0");
+                    lakalaInfo.setDate(TradeKey.Proc_tp,"00");
+//                    lakalaInfo.setDate(TradeKey.Proc_cd,"660000");
+                    lakalaInfo.setDate(TradeKey.Proc_cd,"000000");
+                    lakalaInfo.setDate(TradeKey.Amt,"0.01");
+                    lakalaInfo.setDate(TradeKey.Order_no,"18512543197");
+                    lakalaInfo.setDate(TradeKey.Time_stamp,""+new Date().getTime());
+                    lakalaInfo.setDate(TradeKey.Appid,Tools.getPackageName(mActivity));
+                    lakalaInfo.setDate(TradeKey.Print_info,"订单结算测试");
+                    LakalaController.init(mActivity);
+                    KLog.i("info:"+lakalaInfo.showInfo());
+                    LakalaController.getInstance().startLakalaForResult(mActivity,lakalaInfo);
                 }
             }
         });
@@ -205,6 +225,40 @@ public class LoginActivity extends BaseActivity {
                 edit.apply();
             }
         });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
+        Bundle bundle=data.getExtras();
+        LakalaInfo lakalaInfo=new LakalaInfo();
+        lakalaInfo.FromBundle(bundle);
+        KLog.i("info:"+lakalaInfo.showInfo());
+        LakalaController.getInstance().setIsRun(true);//恢复
+        switch (resultCode) {
+            // 支付成功
+            case Activity.RESULT_OK:
+                String reasonSucess = lakalaInfo.getDate(TradeKey.Reason);
+                if (reasonSucess != null) {
+                    showShortTip(reasonSucess);
+                }
+                break;
+            // 支付取消
+            case Activity.RESULT_CANCELED:
+                String reasonCancle = lakalaInfo.getDate(TradeKey.Reason);
+                if (reasonCancle != null) {
+                    showShortTip(reasonCancle);
+                }
+                break;
+            //交易失败
+            case -2:
+                String reasonFail = lakalaInfo.getDate(TradeKey.Reason);
+                if (reasonFail != null) {
+                    showShortTip(reasonFail);
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     /**
