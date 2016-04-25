@@ -200,11 +200,11 @@ public class LoginActivity extends BaseActivity {
                     showShortTip("请输入正确的用户名或密码!");
                     LakalaInfo lakalaInfo=new LakalaInfo(LakalaInfo.LakalaInfo_Type_Trade);
                     lakalaInfo.setDate(TradeKey.Msg_tp,"0200");
-//                    lakalaInfo.setDate(TradeKey.Pay_tp,"1");
-                    lakalaInfo.setDate(TradeKey.Pay_tp,"0");
+                    lakalaInfo.setDate(TradeKey.Pay_tp,"1");
+//                    lakalaInfo.setDate(TradeKey.Pay_tp,"0");
                     lakalaInfo.setDate(TradeKey.Proc_tp,"00");
-//                    lakalaInfo.setDate(TradeKey.Proc_cd,"660000");
-                    lakalaInfo.setDate(TradeKey.Proc_cd,"000000");
+                    lakalaInfo.setDate(TradeKey.Proc_cd,"660000");
+//                    lakalaInfo.setDate(TradeKey.Proc_cd,"000000");
                     lakalaInfo.setDate(TradeKey.Amt,"0.01");
                     lakalaInfo.setDate(TradeKey.Order_no,"18512543197");
                     lakalaInfo.setDate(TradeKey.Time_stamp,""+new Date().getTime());
@@ -229,8 +229,9 @@ public class LoginActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)  {
+        if(data!=null){
         Bundle bundle=data.getExtras();
-        LakalaInfo lakalaInfo=new LakalaInfo();
+        LakalaInfo lakalaInfo=new LakalaInfo(requestCode);
         lakalaInfo.FromBundle(bundle);
         KLog.i("info:"+lakalaInfo.showInfo());
         LakalaController.getInstance().setIsRun(true);//恢复
@@ -258,6 +259,9 @@ public class LoginActivity extends BaseActivity {
                 break;
             default:
                 break;
+        }
+        }else{
+            showShortTip("返回数据为空");
         }
     }
 

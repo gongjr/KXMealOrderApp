@@ -16,11 +16,11 @@ public class LakalaInfo {
     /**
      * 拉卡拉sdk请求信息类型,交易类请求
      */
-    public static final int LakalaInfo_Type_Trade=1;
+    public static final int LakalaInfo_Type_Trade=1100;
     /**
      * 拉卡拉sdk请求信息类型,查询类请求
      */
-    public static final int LakalaInfo_Type_Query=2;
+    public static final int LakalaInfo_Type_Query=1200;
 
     /**
      * 交易数据集合
@@ -37,6 +37,14 @@ public class LakalaInfo {
 
     public LakalaInfo(int type){
         this.type=type;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
     }
 
     /**
