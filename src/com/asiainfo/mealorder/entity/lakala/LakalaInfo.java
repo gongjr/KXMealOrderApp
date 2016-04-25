@@ -14,13 +14,21 @@ import java.util.Map;
  */
 public class LakalaInfo {
     /**
-     * 拉卡拉sdk请求信息类型,交易类请求
+     * 拉卡拉sdk请求信息类型,银行卡交易类请求
      */
-    public static final int LakalaInfo_Type_Trade=1100;
+    public static final int LakalaInfo_Type_Card_Trade=1100;
     /**
-     * 拉卡拉sdk请求信息类型,查询类请求
+     * 拉卡拉sdk请求信息类型,银行卡查询类请求
      */
-    public static final int LakalaInfo_Type_Query=1200;
+    public static final int LakalaInfo_Type_Card_Query=1200;
+    /**
+     * 拉卡拉sdk请求信息类型,二维码交易类请求
+     */
+    public static final int LakalaInfo_Type_Code_Trade=2100;
+    /**
+     * 拉卡拉sdk请求信息类型,二维码查询类请求
+     */
+    public static final int LakalaInfo_Type_Code_Query=2200;
 
     /**
      * 交易数据集合
@@ -30,7 +38,7 @@ public class LakalaInfo {
     /**
      * 默认交易类请求
      */
-    private int type=LakalaInfo_Type_Trade;
+    private int type=LakalaInfo_Type_Card_Trade;
 
     public LakalaInfo(){
     }
@@ -82,13 +90,21 @@ public class LakalaInfo {
                     Map.Entry entry=(Map.Entry)iterator.next();
                     String vaule=(String)entry.getValue();
                     switch (type){
-                        case LakalaInfo_Type_Trade:
-                            TradeKey tradeKey=(TradeKey)entry.getKey();
-                            bundle.putString(tradeKey.getValue(),vaule);
+                        case LakalaInfo_Type_Card_Trade:
+                            TradeKey tradeKeyCard=(TradeKey)entry.getKey();
+                            bundle.putString(tradeKeyCard.getValue(),vaule);
                             break;
-                        case LakalaInfo_Type_Query:
-                            QueryKey queryKey=(QueryKey)entry.getKey();
-                            bundle.putString(queryKey.getValue(),vaule);
+                        case LakalaInfo_Type_Code_Trade:
+                            TradeKey tradeKeyCode=(TradeKey)entry.getKey();
+                            bundle.putString(tradeKeyCode.getValue(),vaule);
+                            break;
+                        case LakalaInfo_Type_Code_Query:
+                            QueryKey queryKeyCode=(QueryKey)entry.getKey();
+                            bundle.putString(queryKeyCode.getValue(),vaule);
+                            break;
+                        case LakalaInfo_Type_Card_Query:
+                            QueryKey queryKeyCard=(QueryKey)entry.getKey();
+                            bundle.putString(queryKeyCard.getValue(),vaule);
                             break;
                         default:
                             KLog.i("无法识别的消息类型");
@@ -108,12 +124,22 @@ public class LakalaInfo {
     public int FromBundle(Bundle bundle){
         synchronized (this){
             switch (type){
-                case LakalaInfo_Type_Trade:
+                case LakalaInfo_Type_Card_Trade:
                     for(TradeKey key:TradeKey.values()){
                         if(bundle.containsKey(key.getValue()))setDate(key,bundle.getString(key.getValue()));
                     }
                     break;
-                case LakalaInfo_Type_Query:
+                case LakalaInfo_Type_Code_Trade:
+                    for(TradeKey key:TradeKey.values()){
+                        if(bundle.containsKey(key.getValue()))setDate(key,bundle.getString(key.getValue()));
+                    }
+                    break;
+                case LakalaInfo_Type_Card_Query:
+                    for(QueryKey key:QueryKey.values()){
+                        if(bundle.containsKey(key.getValue()))setDate(key,bundle.getString(key.getValue()));
+                    }
+                    break;
+                case LakalaInfo_Type_Code_Query:
                     for(QueryKey key:QueryKey.values()){
                         if(bundle.containsKey(key.getValue()))setDate(key,bundle.getString(key.getValue()));
                     }
@@ -139,13 +165,21 @@ public class LakalaInfo {
                     Map.Entry entry=(Map.Entry)iterator.next();
                     String vaule=(String)entry.getValue();
                     switch (type){
-                        case LakalaInfo_Type_Trade:
-                            TradeKey tradeKey=(TradeKey)entry.getKey();
-                            info+=tradeKey.getValue()+":"+vaule+",";
+                        case LakalaInfo_Type_Card_Trade:
+                            TradeKey tradeKeyCard=(TradeKey)entry.getKey();
+                            info+=tradeKeyCard.getValue()+":"+vaule+",";
                             break;
-                        case LakalaInfo_Type_Query:
-                            QueryKey queryKey=(QueryKey)entry.getKey();
-                            info+=queryKey.getValue()+":"+vaule+",";
+                        case LakalaInfo_Type_Code_Trade:
+                            TradeKey tradeKeyCode=(TradeKey)entry.getKey();
+                            info+=tradeKeyCode.getValue()+":"+vaule+",";
+                            break;
+                        case LakalaInfo_Type_Card_Query:
+                            QueryKey queryKeyCard=(QueryKey)entry.getKey();
+                            info+=queryKeyCard.getValue()+":"+vaule+",";
+                            break;
+                        case LakalaInfo_Type_Code_Query:
+                            QueryKey queryKeyCode=(QueryKey)entry.getKey();
+                            info+=queryKeyCode.getValue()+":"+vaule+",";
                             break;
                         default:
                             KLog.i("无法识别的消息类型");

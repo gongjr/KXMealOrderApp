@@ -34,6 +34,7 @@ import com.asiainfo.mealorder.entity.eventbus.EventMain;
 import com.asiainfo.mealorder.entity.eventbus.post.DishesListEntity;
 import com.asiainfo.mealorder.entity.http.PublicDishesItem;
 import com.asiainfo.mealorder.entity.http.QueryAppMerchantPublicAttr;
+import com.asiainfo.mealorder.entity.lakala.CodePayTypeKey;
 import com.asiainfo.mealorder.entity.lakala.LakalaInfo;
 import com.asiainfo.mealorder.entity.lakala.TradeKey;
 import com.asiainfo.mealorder.http.HttpHelper;
@@ -198,30 +199,20 @@ public class LoginActivity extends BaseActivity {
                     httpAttendantLogin();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
-                    LakalaInfo lakalaInfo=new LakalaInfo(LakalaInfo.LakalaInfo_Type_Trade);
-                    lakalaInfo.setDate(TradeKey.Msg_tp,"0200");
-                    lakalaInfo.setDate(TradeKey.Pay_tp,"1");
-//                    lakalaInfo.setDate(TradeKey.Pay_tp,"0");
-                    lakalaInfo.setDate(TradeKey.Proc_tp,"00");
-                    lakalaInfo.setDate(TradeKey.Proc_cd,"660000");
-//                    lakalaInfo.setDate(TradeKey.Proc_cd,"000000");
-                    lakalaInfo.setDate(TradeKey.Amt,"0.01");
-                    lakalaInfo.setDate(TradeKey.Order_no,"18512543197");
-                    lakalaInfo.setDate(TradeKey.Time_stamp,""+new Date().getTime());
-                    lakalaInfo.setDate(TradeKey.Appid,Tools.getPackageName(mActivity));
-                    lakalaInfo.setDate(TradeKey.Print_info,"订单结算测试");
                     LakalaController.init(mActivity);
-                    KLog.i("info:"+lakalaInfo.showInfo());
-                    LakalaController.getInstance().startLakalaForResult(mActivity,lakalaInfo);
+//                    LakalaController.getInstance().startLakalaWithCardForResult(mActivity,
+//                            LakalaInfo.LakalaInfo_Type_Card_Trade,"0.01","18512543197","订单结算测试");
+                    LakalaController.getInstance().startLakalaWithCodeForResult(mActivity,
+                            LakalaInfo.LakalaInfo_Type_Code_Trade,"0.01","18512543197","订单结算测试");
                 }
             }
         });
         remember_password.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                SharedPreferences.Editor edit=login.edit();
-                edit.putBoolean(Constants.Preferences_Login_IsCheck,b);
-                if(!b) edit.clear();
+                SharedPreferences.Editor edit = login.edit();
+                edit.putBoolean(Constants.Preferences_Login_IsCheck, b);
+                if (!b) edit.clear();
                 edit.apply();
             }
         });
@@ -238,7 +229,18 @@ public class LoginActivity extends BaseActivity {
         switch (resultCode) {
             // 支付成功
             case Activity.RESULT_OK:
-                String reasonSucess = lakalaInfo.getDate(TradeKey.Reason);
+                String reasonSucess = "交易成功";
+                if(requestCode==LakalaInfo.LakalaInfo_Type_Code_Trade){
+                    String pay_tp=lakalaInfo.getDate(TradeKey.Pay_tp);
+                    for (CodePayTypeKey codePayTypeKey:CodePayTypeKey.values()){
+                        if(codePayTypeKey.getValue().equals(pay_tp)){
+                            reasonSucess=codePayTypeKey.getTitle()+reasonSucess;
+                            break;
+                        }
+                    }
+                }else if(requestCode==LakalaInfo.LakalaInfo_Type_Card_Trade){
+                    reasonSucess="银行卡"+reasonSucess;
+                }
                 if (reasonSucess != null) {
                     showShortTip(reasonSucess);
                 }
