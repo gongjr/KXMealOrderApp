@@ -25,9 +25,8 @@ import com.asiainfo.mealorder.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.entity.eventbus.EventMain;
 import com.asiainfo.mealorder.entity.MerchantDishes;
 import com.asiainfo.mealorder.entity.MerchantDishesType;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.service.base.BaseService;
-import com.asiainfo.mealorder.ui.LoginActivity;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -71,9 +70,9 @@ public class MerchantDishesDataSynchService extends BaseService{
     }
 	private void httpGetMerchantDishes(){
 		String url = "/appController/queryAllDishesInfoByMerchantId.do?childMerchantId="+childMerchantId;
-		Log.d(TAG, "httpGetMerchantDishes: " + HttpHelper.HOST+url);
+		Log.d(TAG, "httpGetMerchantDishes: " + HttpController.HOST+url);
 		JsonObjectRequest httpGetMerchantDishes = new JsonObjectRequest(
-				HttpHelper.HOST+url, null, 
+				HttpController.HOST+url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {
@@ -191,9 +190,9 @@ public class MerchantDishesDataSynchService extends BaseService{
 	 */
 	private void httpGetDishesCompItemsData(final String dishesId){
 		String url = "/appController/queryComboInfoForApp.do?dishesId="+dishesId+"&childMerchantId="+childMerchantId;
-		Log.d(TAG, HttpHelper.HOST + url);
+		Log.d(TAG, HttpController.HOST + url);
 		JsonObjectRequest httpGetDishesCompItemsData = new JsonObjectRequest(
-				HttpHelper.HOST + url, null,
+				HttpController.HOST + url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {

@@ -24,7 +24,7 @@ import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.entity.helper.UpdateOrderParam;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
 import com.asiainfo.mealorder.utils.StringUtils;
@@ -260,9 +260,9 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
 		Gson gson = new Gson();
 		String orderSubmitData = gson.toJson(mUpdateOrderParam);
 		String url = "/appController/updateOrderInfo.do?orderSubmitData="+orderSubmitData;
-		Log.d(TAG, "uri: " + HttpHelper.HOST + url);
+		Log.d(TAG, "uri: " + HttpController.HOST + url);
 		JsonObjectRequest httpDeskOrderNotifyKitchen = new JsonObjectRequest(
-				HttpHelper.HOST + url, null, 
+				HttpController.HOST + url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {

@@ -28,7 +28,7 @@ public class DetailInfo {
     private String systraceno;
 
     /**
-     * 凭证号
+     * 授权号
      */
     private String authcode;
 

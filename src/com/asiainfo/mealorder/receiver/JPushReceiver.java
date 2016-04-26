@@ -21,7 +21,7 @@ import com.asiainfo.mealorder.config.SystemPrefData;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.KXPushModel;
 import com.asiainfo.mealorder.entity.MerchantDesk;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.ui.MakeOrderActivity;
 import com.asiainfo.mealorder.utils.Logger;
 import com.asiainfo.mealorder.utils.StringUtils;
@@ -96,9 +96,9 @@ public class JPushReceiver extends BaseBroadcastReceiver {
 	 */
 	private void httpGetDeskOrderByDeskId(String childMerchantId, String deskId){
 		String url = "/appController/queryUnfinishedOrder.do?childMerchantId="+childMerchantId+"&deskId="+deskId;
-	    Log.d(TAG, "httpGetDeskOrderBydeskId:" + HttpHelper.HOST + url);
+	    Log.d(TAG, "httpGetDeskOrderBydeskId:" + HttpController.HOST + url);
 		JsonObjectRequest httpGetDeskOrderByDeskId = new JsonObjectRequest(
-	    		HttpHelper.HOST+url, null, 
+	    		HttpController.HOST+url, null,
 	    		new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {

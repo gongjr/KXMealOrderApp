@@ -22,7 +22,7 @@ import com.asiainfo.mealorder.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.ResultMapRequest;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
@@ -222,9 +222,9 @@ public class LocalOrderActivity extends BaseActivity {
 
     private void VolleysubmitOrderInfo(final int position, final OrderSubmit orderSubmit) {
         String param = "/appController/submitOrderInfo.do?";
-        Log.i(TAG, "submitOrderInfo_url:" + HttpHelper.HOST + param);
+        Log.i(TAG, "submitOrderInfo_url:" + HttpController.HOST + param);
         ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                Request.Method.POST, HttpHelper.HOST + param, SubmitOrderId.class,
+                Request.Method.POST, HttpController.HOST + param, SubmitOrderId.class,
                 new Response.Listener<SubmitOrderId>() {
                     @Override
                     public void onResponse(SubmitOrderId response) {
@@ -273,9 +273,9 @@ public class LocalOrderActivity extends BaseActivity {
      */
     public void VolleyupdateOrderInfo(final int position, final OrderSubmit orderSubmit) {
         String param = "/appController/updateOrderInfo.do?";
-        Log.i(TAG, "updateOrderInfo_url:" + HttpHelper.HOST + param);
+        Log.i(TAG, "updateOrderInfo_url:" + HttpController.HOST + param);
         ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                Request.Method.POST, HttpHelper.HOST + param, SubmitOrderId.class,
+                Request.Method.POST, HttpController.HOST + param, SubmitOrderId.class,
                 new Response.Listener<SubmitOrderId>() {
                     @Override
                     public void onResponse(SubmitOrderId response) {

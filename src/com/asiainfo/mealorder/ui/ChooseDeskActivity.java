@@ -45,7 +45,7 @@ import com.asiainfo.mealorder.entity.eventbus.EventMain;
 import com.asiainfo.mealorder.entity.eventbus.post.DishesListEntity;
 import com.asiainfo.mealorder.entity.http.PublicDishesItem;
 import com.asiainfo.mealorder.entity.http.QueryAppMerchantPublicAttr;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.ChooseDeskOrderDF.OnFinishChooseDeskOrderListener;
@@ -228,9 +228,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
     private void initLocDeskData(){
         onShowLoading();
         String url = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
-        Log.d(TAG, "initLocDeskData: " + HttpHelper.HOST+url);
+        Log.d(TAG, "initLocDeskData: " + HttpController.HOST+url);
         JsonObjectRequest httpGetLocDeskData = new JsonObjectRequest(
-                HttpHelper.HOST+url, null,
+                HttpController.HOST+url, null,
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
@@ -269,9 +269,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 	 */
 	private void httpGetLocDeskData(){
 		String url = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
-		Log.d(TAG, "httpGetLocDeskData: " + HttpHelper.HOST+url);
+		Log.d(TAG, "httpGetLocDeskData: " + HttpController.HOST+url);
 		JsonObjectRequest httpGetLocDeskData = new JsonObjectRequest(
-				HttpHelper.HOST+url, null, 
+				HttpController.HOST+url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {
@@ -616,9 +616,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 
 		showCommonDialog("正在获取订单...");
 		String url = "/appController/queryUnfinishedOrder.do?childMerchantId="+childMerchantId+"&deskId="+mCurDesk.getDeskId();
-	    Log.d(TAG, "httpGetDeskOrderBydeskId:" + HttpHelper.HOST + url);
+	    Log.d(TAG, "httpGetDeskOrderBydeskId:" + HttpController.HOST + url);
 		JsonObjectRequest httpGetDeskOrderByDeskId = new JsonObjectRequest(
-	    		HttpHelper.HOST+url, null, 
+	    		HttpController.HOST+url, null,
 	    		new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {
@@ -715,9 +715,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
         showCommonDialog("正在更新菜单...");
         String dishesWithAttrs = "/appController/queryDishesInfoNoComp.do?childMerchantId=" + childMerchantId+"&merchantId="+MerchantId;
         String url = "/appController/queryAllDishesInfoByMerchantId.do?childMerchantId=" + childMerchantId;
-        Log.d(TAG, "httpGetMerchantDishes: " + HttpHelper.HOST + dishesWithAttrs);
+        Log.d(TAG, "httpGetMerchantDishes: " + HttpController.HOST + dishesWithAttrs);
         JsonObjectRequest httpGetMerchantDishes = new JsonObjectRequest(
-                HttpHelper.HOST + dishesWithAttrs, null,
+                HttpController.HOST + dishesWithAttrs, null,
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {

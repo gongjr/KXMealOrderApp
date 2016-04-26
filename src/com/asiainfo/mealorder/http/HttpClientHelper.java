@@ -2,12 +2,10 @@ package com.asiainfo.mealorder.http;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.net.UnknownHostException;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpVersion;
@@ -30,11 +28,7 @@ import org.apache.http.params.HttpParams;
 import org.apache.http.params.HttpProtocolParams;
 import org.apache.http.protocol.HTTP;
 import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import android.os.AsyncTask;
-import android.os.Handler;
-import android.os.Message;
+
 import android.util.Log;
 
 /**
@@ -53,7 +47,7 @@ public class HttpClientHelper {
 	/**
 	 * 应用连接的地址
 	 */
-	public String urladdress = HttpHelper.HOST;
+	public String urladdress = HttpController.HOST;
 
 	private HttpClientHelper() {
 	}

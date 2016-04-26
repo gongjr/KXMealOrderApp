@@ -45,7 +45,7 @@ import com.asiainfo.mealorder.entity.http.HurryOrderResult;
 import com.asiainfo.mealorder.entity.http.ResultMapRequest;
 import com.asiainfo.mealorder.entity.http.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.entity.volley.appPrintDeskOrderInfoResultData;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.listener.DialogDelayListener;
@@ -526,9 +526,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
             e.printStackTrace();
         }
         String url = "/appController/updateOrderInfo.do?orderSubmitData=" + orderSubmitData;
-        Log.d(TAG, "uri: " + HttpHelper.HOST + url);
+        Log.d(TAG, "uri: " + HttpController.HOST + url);
         JsonObjectRequest httpDeskOrderNotifyKitchen = new JsonObjectRequest(
-                HttpHelper.HOST + url, null,
+                HttpController.HOST + url, null,
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
@@ -606,9 +606,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
      */
     public void VolleyupdateOrderInfo(final int position) {
         String param = "/appController/updateOrderInfo.do?";
-        System.out.println("submitOrderInfo:" + HttpHelper.HOST + param);
+        System.out.println("submitOrderInfo:" + HttpController.HOST + param);
         ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
-                Request.Method.POST, HttpHelper.HOST + param, UpdateOrderInfoResultData.class,
+                Request.Method.POST, HttpController.HOST + param, UpdateOrderInfoResultData.class,
                 new Listener<UpdateOrderInfoResultData>() {
                     @Override
                     public void onResponse(
@@ -780,9 +780,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
      */
     public void VolleyNotityPersistOrder() {
         String param = "/appController/appPrintDeskOrderInfo.do?childMerchantId=" + merchantRegister.getChildMerchantId() + "&orderId=" + orderId;
-        KLog.i("URL:" + HttpHelper.HOST + param);
+        KLog.i("URL:" + HttpController.HOST + param);
         ResultMapRequest<appPrintDeskOrderInfoResultData> ResultMapRequest = new ResultMapRequest<appPrintDeskOrderInfoResultData>(
-                Request.Method.GET, HttpHelper.HOST + param, appPrintDeskOrderInfoResultData.class,
+                Request.Method.GET, HttpController.HOST + param, appPrintDeskOrderInfoResultData.class,
                 new Response.Listener<appPrintDeskOrderInfoResultData>() {
                     @Override
                     public void onResponse(
@@ -970,9 +970,9 @@ public class ViewOrderDishesActivity extends BaseActivity {
 
     private void VolleyHurryOrder(final int position) {
         String param = "/printRemindOrder.do";
-        Log.d(TAG, "hurryOrderInfo:" + HttpHelper.HOST + param);
+        Log.d(TAG, "hurryOrderInfo:" + HttpController.HOST + param);
         ResultMapRequest<HurryOrderResult> ResultMapRequest = new ResultMapRequest<HurryOrderResult>(Request.Method.POST,
-                HttpHelper.HOST + param, HurryOrderResult.class,
+                HttpController.HOST + param, HurryOrderResult.class,
                 new Listener<HurryOrderResult>() {
                     @Override
                     public void onResponse(HurryOrderResult hurryOrderResult) {

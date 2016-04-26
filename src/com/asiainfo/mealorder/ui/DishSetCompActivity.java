@@ -26,7 +26,7 @@ import com.asiainfo.mealorder.entity.MerchantDesk;
 import com.asiainfo.mealorder.entity.MerchantDishes;
 import com.asiainfo.mealorder.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.base.MakeOrderActivityBase;
@@ -356,9 +356,9 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
      */
     private void httpGetDishesCompItemsData(final String dishesId) {
         String url = "/appController/queryComboInfoForApp.do?dishesId=" + dishesId + "&childMerchantId=" + childMerchantId;
-        Log.d(TAG, HttpHelper.HOST + url);
+        Log.d(TAG, HttpController.HOST + url);
         JsonObjectRequest httpGetDishesCompItemsData = new JsonObjectRequest(
-                HttpHelper.HOST + url, null,
+                HttpController.HOST + url, null,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {

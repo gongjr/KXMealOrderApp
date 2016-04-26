@@ -38,7 +38,7 @@ import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.helper.UpdateOrderParam;
 import com.asiainfo.mealorder.entity.http.ResultMapRequest;
 import com.asiainfo.mealorder.entity.http.UpdateOrderInfoResultData;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.listener.OnItemClickListener;
@@ -454,9 +454,9 @@ public class ViewOrderDishesDF extends DialogFragmentBase{
 		Gson gson = new Gson();
 		String orderSubmitData = gson.toJson(mUpdateOrderParam);
 		String url = "/appController/updateOrderInfo.do?orderSubmitData="+orderSubmitData;
-		Log.d(TAG, "uri: " + HttpHelper.HOST + url);
+		Log.d(TAG, "uri: " + HttpController.HOST + url);
 		JsonObjectRequest httpDeskOrderNotifyKitchen = new JsonObjectRequest(
-				HttpHelper.HOST + url, null, 
+				HttpController.HOST + url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {
@@ -527,9 +527,9 @@ public class ViewOrderDishesDF extends DialogFragmentBase{
      */
     public void VolleyupdateOrderInfo(final int position) {
         String param = "/appController/updateOrderInfo.do?";
-        System.out.println("submitOrderInfo:" + HttpHelper.HOST + param);
+        System.out.println("submitOrderInfo:" + HttpController.HOST + param);
         ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
-                Request.Method.POST, HttpHelper.HOST + param, UpdateOrderInfoResultData.class,
+                Request.Method.POST, HttpController.HOST + param, UpdateOrderInfoResultData.class,
                 new Response.Listener<UpdateOrderInfoResultData>() {
                     @Override
                     public void onResponse(

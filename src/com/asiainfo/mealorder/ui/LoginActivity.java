@@ -37,7 +37,7 @@ import com.asiainfo.mealorder.entity.http.QueryAppMerchantPublicAttr;
 import com.asiainfo.mealorder.entity.lakala.CodePayTypeKey;
 import com.asiainfo.mealorder.entity.lakala.LakalaInfo;
 import com.asiainfo.mealorder.entity.lakala.TradeKey;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.HttpDialogLogin;
@@ -200,10 +200,10 @@ public class LoginActivity extends BaseActivity {
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
                     LakalaController.init(mActivity);
-//                    LakalaController.getInstance().startLakalaWithCardForResult(mActivity,
-//                            LakalaInfo.LakalaInfo_Type_Card_Trade,"0.01","18512543197","订单结算测试");
-                    LakalaController.getInstance().startLakalaWithCodeForResult(mActivity,
-                            LakalaInfo.LakalaInfo_Type_Code_Trade,"0.01","18512543197","订单结算测试");
+                    LakalaController.getInstance().startLakalaWithCardForResult(mActivity,
+                            LakalaInfo.LakalaInfo_Type_Card_Trade, "0.01", "18512543197", "订单结算测试");
+//                    LakalaController.getInstance().startLakalaWithCodeForResult(mActivity,
+//                            LakalaInfo.LakalaInfo_Type_Code_Trade,"0.01","18512543197","订单结算测试");
                 }
             }
         });
@@ -274,9 +274,9 @@ public class LoginActivity extends BaseActivity {
         userName = edit_username.getText().toString();
         passwd = edit_password.getText().toString();
         String url = "/appController/merchantLogin.do?userName=" + userName + "&passwd=" + passwd;
-        Log.d(TAG, "Login URL:" + HttpHelper.HOST + url);
+        Log.d(TAG, "Login URL:" + HttpController.HOST + url);
         JsonObjectRequest httpLogin = new JsonObjectRequest(
-                HttpHelper.HOST + url, null,
+                HttpController.HOST + url, null,
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
@@ -375,9 +375,9 @@ public class LoginActivity extends BaseActivity {
      */
     private void httpAutoUpdate() {
         String url = "/appController/queryAppUpdate.do?appKey=com.asiainfo.mealorder.KXMealOrderApp";
-        Log.d(TAG, "appAutoUpdate: " + HttpHelper.HOST + url);
+        Log.d(TAG, "appAutoUpdate: " + HttpController.HOST + url);
         JsonObjectRequest httpAutoUpdate = new JsonObjectRequest(
-                HttpHelper.HOST + url, null,
+                HttpController.HOST + url, null,
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
@@ -424,9 +424,9 @@ public class LoginActivity extends BaseActivity {
     private void httpGetMerchantDishes(String childMerchantId,String MerchantId) {
         String dishesWithAttrs = "/appController/queryDishesInfoNoComp.do?childMerchantId=" + childMerchantId+"&merchantId="+MerchantId;
         String url = "/appController/queryAllDishesInfoByMerchantId.do?childMerchantId=" + childMerchantId;
-        Log.d(TAG, "httpGetMerchantDishes: " + HttpHelper.HOST + dishesWithAttrs);
+        Log.d(TAG, "httpGetMerchantDishes: " + HttpController.HOST + dishesWithAttrs);
         JsonObjectRequest httpGetMerchantDishes = new JsonObjectRequest(
-                HttpHelper.HOST + dishesWithAttrs, null,
+                HttpController.HOST + dishesWithAttrs, null,
                 new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {

@@ -7,7 +7,6 @@ import org.json.JSONObject;
 import org.litepal.crud.DataSupport;
 
 import android.content.Intent;
-import android.os.IBinder;
 import android.util.Log;
 
 import com.android.volley.Response.ErrorListener;
@@ -24,7 +23,7 @@ import com.asiainfo.mealorder.entity.DishesProperty;
 import com.asiainfo.mealorder.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.entity.MerchantDishes;
 import com.asiainfo.mealorder.entity.MerchantDishesType;
-import com.asiainfo.mealorder.http.HttpHelper;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.service.base.BaseIntentService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -61,9 +60,9 @@ public class MerchantDishesDataSynchIntentService extends BaseIntentService{
 	private void httpGetMerchantDishes(){
 //		childMerchantId = "10000347";
 		String url = "/appController/queryAllDishesInfoByMerchantId.do?childMerchantId="+childMerchantId;
-		Log.d(TAG, "httpGetMerchantDishes: " + HttpHelper.HOST+url);
+		Log.d(TAG, "httpGetMerchantDishes: " + HttpController.HOST+url);
 		JsonObjectRequest httpGetMerchantDishes = new JsonObjectRequest(
-				HttpHelper.HOST+url, null, 
+				HttpController.HOST+url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {
@@ -174,7 +173,7 @@ public class MerchantDishesDataSynchIntentService extends BaseIntentService{
 	private void httpGetDishesCompItemsData(final String dishesId){
 		String url = "/appController/queryComboInfoForApp.do?dishesId="+dishesId+"&childMerchantId="+childMerchantId;
 		JsonObjectRequest httpGetDishesCompItemsData = new JsonObjectRequest(
-				HttpHelper.HOST + url, null,
+				HttpController.HOST + url, null,
 				new Listener<JSONObject>() {
 					@Override
 					public void onResponse(JSONObject data) {
