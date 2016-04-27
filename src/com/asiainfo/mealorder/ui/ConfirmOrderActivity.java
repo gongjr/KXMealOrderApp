@@ -181,12 +181,12 @@ public class ConfirmOrderActivity extends BaseActivity{
                     switch(ORDER_CONFIRM_TYPE){
                         case Constants.ORDER_CONFIRM_TYPE_NEW_ORDER : {
                             //新单
-                            VolleysubmitOrderInfo(orderData);
+                            VolleysubmitOrderInfo2(orderData);
                             btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_BACK);
                         } break;
                         case Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES : {
                             //加菜
-                            VolleyupdateOrderInfo(orderData);
+                            VolleyupdateOrderInfo2(orderData);
                             btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_BACK);
                         } break;
                         case Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER : {
@@ -766,7 +766,7 @@ public class ConfirmOrderActivity extends BaseActivity{
     /**
      * 向服务器新增订单，开桌
      */
-    public void VolleysubmitOrderInfo(final String order) {
+    public void VolleysubmitOrderInfo1(final String order) {
         String param = "/appController/submitOrderInfo.do?";
         Log.i(TAG,"submitOrderInfo_url:" + HttpController.HOST + param);
         ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
@@ -826,11 +826,56 @@ public class ConfirmOrderActivity extends BaseActivity{
         executeRequest(ResultMapRequest,0);
     }
 
+    /**
+     * 向服务器新增订单，开桌
+     */
+    public void VolleysubmitOrderInfo2(final String order) {
+        Map<String, String> paramList = new HashMap<String, String>();
+        paramList.put("orderSubmitData", order);
+        HttpController.getInstance().postSubmitOrderInfo(paramList,
+                new Response.Listener<SubmitOrderId>() {
+            @Override
+            public void onResponse(
+                    SubmitOrderId response) {
+                releaseMakeOrderBtn();
+                if (response.getState() == 1) {
+                    onMakeOrderOK(VOLLEY_ERROR_BACK_YES);
+                }
+                else if(response.getState()==0) {
+                    onMakeOrderFailed(response.getError(),response.getState());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                releaseMakeOrderBtn();
+                VolleyErrors errors=VolleyErrorHelper.getVolleyErrors(error,
+                        mActivity);
+                switch (errors.getErrorType()){
+                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
+                        Log.e(TAG,
+                                "VolleyError:" + errors.getErrorMsg(), error);
+                        //本地缓存订单
+                        storeLocalOrder();
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
+                        break;
+                    default:
+                        Log.e(TAG,
+                                "VolleyError:" + errors.getErrorMsg(), error);
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
+                        disMakeOrderDF();
+                        showEnsureDialog("newOrderError");
+                        break;
+                }
+            }
+        });
+    }
+
 
     /**
      * 修改订单，加菜
      */
-    public void VolleyupdateOrderInfo(final String order) {
+    public void VolleyupdateOrderInfo1(final String order) {
         String param = "/appController/updateOrderInfo.do?";
         Log.i(TAG,"updateOrderInfo_url:" + HttpController.HOST + param);
         ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
@@ -889,6 +934,52 @@ public class ConfirmOrderActivity extends BaseActivity{
             }
         };
         executeRequest(ResultMapRequest,0);
+    }
+
+    /**
+     * 修改订单，加菜
+     */
+    public void VolleyupdateOrderInfo2(final String order) {
+        Map<String, String> paramList = new HashMap<String, String>();
+        paramList.put("orderSubmitData", order);
+        HttpController.getInstance().postUpdateOrderInfo(paramList,
+                new Response.Listener<UpdateOrderInfoResultData>() {
+            @Override
+            public void onResponse(
+                    UpdateOrderInfoResultData response) {
+                releaseMakeOrderBtn();
+                if(response.getState()==1) {
+                    onMakeOrderOK(response.getState());
+                }
+                else if(response.getState()==0) {
+                    onMakeOrderFailed(response.getError(),response.getState());
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                releaseMakeOrderBtn();
+                VolleyErrors errors= VolleyErrorHelper.getVolleyErrors(error,
+                        mActivity);
+                switch (errors.getErrorType()){
+                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
+                        Log.e(TAG,
+                                "VolleyError:" + errors.getErrorMsg(), error);
+                        storeLocalOrder();
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
+                        break;
+                    default:
+                        Log.e(TAG,
+                                "VolleyError:" + errors.getErrorMsg(), error);
+//                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
+                        //加菜单缓存后提交,可能原订单状态已经更改,导致数据有误,暂不支持
+                        disMakeOrderDF();
+                        showEnsureDialog("addOrderError");
+                        break;
+                }
+            }
+        });
     }
 
 	/**

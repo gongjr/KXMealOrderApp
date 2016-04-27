@@ -165,7 +165,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
             getDishesCompData(mDishCompsPartionDataList);
         } else {
             showCommonDialog("正在加载套餐详情···");
-            httpGetDishesCompItemsData(DISHES_ID);
+            httpGetDishesCompItemsData2(DISHES_ID);
         }
     }
 
@@ -354,7 +354,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
      *
      * @param dishesId
      */
-    private void httpGetDishesCompItemsData(final String dishesId) {
+    private void httpGetDishesCompItemsData1(final String dishesId) {
         String url = "/appController/queryComboInfoForApp.do?dishesId=" + dishesId + "&childMerchantId=" + childMerchantId;
         Log.d(TAG, HttpController.HOST + url);
         JsonObjectRequest httpGetDishesCompItemsData = new JsonObjectRequest(
@@ -438,5 +438,89 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
                 });
 
         executeRequest(httpGetDishesCompItemsData);
+    }
+
+    /**
+     * 根据套餐菜的dishesId获取套餐的数据
+     * @param dishesId
+     */
+    private void httpGetDishesCompItemsData2(final String dishesId) {
+        HttpController.getInstance().getDishesCompItemsData(childMerchantId,dishesId,new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject data) {
+                        Log.d(TAG, "data: " + data);
+                        try {
+                            if (!data.equals("") && !data.equals("{}")) {
+                                String dataStr = data.getString("compDishesTypeList");
+                                if (dataStr != null) {
+                                    Gson gson = new Gson();
+                                    List<DishesComp> mDishesCompList = gson.fromJson(dataStr, new TypeToken<List<DishesComp>>() {
+                                    }.getType());
+                                    //Log.d(TAG, "mDishCompsPartionDataList size: " + mDishesCompList.size());
+                                    dismissCommonDialog();
+                                    getDishesCompData(mDishesCompList);
+                                    if (mDishesCompList != null) {
+                                        for (int i = 0; i < mDishesCompList.size(); i++) {
+                                            DishesComp dishesComp = mDishesCompList.get(i);
+                                            dishesComp.setDishesId(dishesId);
+                                            mDishesCompList.set(i, dishesComp);
+                                        }
+
+                                        DataSupport.saveAll(mDishesCompList);
+                                        for (int i = 0; i < mDishesCompList.size(); i++) {
+                                            DishesComp dishesComp = mDishesCompList.get(i);
+                                            List<DishesCompItem> mCompItemsList = dishesComp.getDishesInfoList();
+                                            DataSupport.saveAll(mCompItemsList);
+                                            for (DishesCompItem dishesCompItem : mCompItemsList) {
+                                                List<DishesProperty> dpList = dishesCompItem.getDishesItemTypelist();
+                                                if (dpList != null && dpList.size() > 0) {
+
+                                                    for (int j = 0; j < dpList.size(); j++) {
+                                                        DishesProperty dpItem = dpList.get(j);
+                                                        dpItem.setIsCompProperty("1");
+                                                        dpItem.setDishesId(dishesCompItem.getDishesId());
+                                                        dpList.set(j, dpItem);
+                                                        DataSupport.saveAll(dpList); //缓存菜品属性类型数据
+                                                        List<DishesPropertyItem> dpiList = dpItem.getItemlist();
+                                                        for (int m = 0; m < dpiList.size(); m++) {
+                                                            DishesPropertyItem item = dpiList.get(m);
+                                                            item.setIsCompProperty("1");
+                                                            item.setDishesId(dishesCompItem.getDishesId());
+                                                            item.setItemType(dpItem.getItemType());
+                                                            dpiList.set(m, item);
+                                                        }
+                                                        DataSupport.saveAll(dpiList); //缓存菜品属性值数据
+                                                    }
+                                                }
+                                            }
+                                        }
+                                        Log.d(TAG, "DishesId = " + dishesId + " 同步套餐数据完成!");
+                                    }
+                                } else {
+                                    dismissCommonDialog();
+                                    Log.d(TAG, "套餐数据有误,请后台确认!");
+                                    showShortTip("套餐数据有误,请后台确认!");
+                                }
+                            } else {
+                                dismissCommonDialog();
+                                showShortTip("套餐数据有误,请后台确认!");
+                                Log.d(TAG, "套餐数据有误,请后台确认!");
+                            }
+                        } catch (JSONException e) {
+                            dismissCommonDialog();
+                            showShortTip("套餐数据有误,请后台确认!");
+                            Log.d(TAG, "套餐数据有误,json解析错误!");
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dismissCommonDialog();
+                        Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    }
+                });
     }
 }

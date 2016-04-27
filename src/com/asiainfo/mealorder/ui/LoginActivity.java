@@ -212,7 +212,7 @@ public class LoginActivity extends BaseActivity {
     /**
      * 登录请求
      */
-    public void httpAttendantLogin() {
+    public void httpAttendantLogin1() {
         userName = edit_username.getText().toString();
         passwd = edit_password.getText().toString();
         String url = "/appController/merchantLogin.do?userName=" + userName + "&passwd=" + passwd;
@@ -365,7 +365,7 @@ public class LoginActivity extends BaseActivity {
     /**
      * 应用自动更新检测
      */
-    private void httpAutoUpdate() {
+    private void httpAutoUpdate1() {
         String url = "/appController/queryAppUpdate.do?appKey=com.asiainfo.mealorder.KXMealOrderApp";
         Log.d(TAG, "appAutoUpdate: " + HttpController.HOST + url);
         JsonObjectRequest httpAutoUpdate = new JsonObjectRequest(
@@ -443,7 +443,7 @@ public class LoginActivity extends BaseActivity {
         super.onDestroy();
     }
 
-    private void httpGetMerchantDishes(String childMerchantId,String MerchantId) {
+    private void httpGetMerchantDishes1(String childMerchantId,String MerchantId) {
         String dishesWithAttrs = "/appController/queryDishesInfoNoComp.do?childMerchantId=" + childMerchantId+"&merchantId="+MerchantId;
         String url = "/appController/queryAllDishesInfoByMerchantId.do?childMerchantId=" + childMerchantId;
         Log.d(TAG, "httpGetMerchantDishes: " + HttpController.HOST + dishesWithAttrs);

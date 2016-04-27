@@ -187,18 +187,18 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 			@Override
 			public void onPullDownToRefresh(PullToRefreshBase<GridView> refreshView) {
 				Log.d(TAG, "下拉刷新");
-				httpGetLocDeskData();
+				httpGetLocDeskData2();
 			}
 			@Override
 			public void onPullUpToRefresh(PullToRefreshBase<GridView> refreshView) {
 				Log.d(TAG, "上拉刷新");
-				httpGetLocDeskData();
+				httpGetLocDeskData2();
 			}
         });
 		mDeskList = new ArrayList<MerchantDesk>();
 		mChooseDeskAdapter = new ChooseDeskAdapter(ChooseDeskActivity.this, mDeskList, -1, onDeskItemClickListener);
 		grid_deskItem.setAdapter(mChooseDeskAdapter);
-        initLocDeskData();
+        initLocDeskData2();
 	}
 	
 	@Override
@@ -225,7 +225,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
     /**
      * 获取桌子区域和桌子数据
      */
-    private void initLocDeskData(){
+    private void initLocDeskData1(){
         onShowLoading();
         String url = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
         Log.d(TAG, "initLocDeskData: " + HttpController.HOST+url);
@@ -264,10 +264,47 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
         executeRequest(httpGetLocDeskData);
     }
 
+    /**
+     * 获取桌子区域和桌子数据
+     */
+    private void initLocDeskData2(){
+        onShowLoading();
+        HttpController.getInstance().getDeskLocation(childMerchantId,new Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject data) {
+                        Log.d(TAG, "data: " + data);
+                        try {
+                            if(data.getString("msg").equals("ok")){
+                                String info = data.getJSONObject("data").getString("info");
+                                Gson gson = new Gson();
+                                mMerchantDeskLocList = gson.fromJson(info,
+                                        new TypeToken<List<MerchantDeskLocation>>(){}.getType());
+                                initDeskLocData();
+                            }else{
+                                onShowEmpty();
+                                showShortTip("桌子数据有误!");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        mPullRefreshGridView.onRefreshComplete();
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mPullRefreshGridView.onRefreshComplete();
+                        onShowError();
+                        Log.e(TAG, "VolleyError:" + error.getMessage(), error);
+                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    }
+                });
+    }
+
 	/**
 	 * 获取桌子区域和桌子数据
 	 */
-	private void httpGetLocDeskData(){
+	private void httpGetLocDeskData1(){
 		String url = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
 		Log.d(TAG, "httpGetLocDeskData: " + HttpController.HOST+url);
 		JsonObjectRequest httpGetLocDeskData = new JsonObjectRequest(
@@ -304,6 +341,42 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 				});
 		executeRequest(httpGetLocDeskData);
 	}
+
+    /**
+     * 获取桌子区域和桌子数据
+     */
+    private void httpGetLocDeskData2(){
+        HttpController.getInstance().getDeskLocation(childMerchantId,new Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject data) {
+                        Log.d(TAG, "data: " + data);
+                        try {
+                            if(data.getString("msg").equals("ok")){
+                                String info = data.getJSONObject("data").getString("info");
+                                Gson gson = new Gson();
+                                mMerchantDeskLocList = gson.fromJson(info,
+                                        new TypeToken<List<MerchantDeskLocation>>(){}.getType());
+//							    initDeskLocData();
+                                refreshDeskLocData();
+                            }else{
+                                showShortTip("桌子数据有误!");
+                            }
+                        } catch (JSONException e) {
+                            showShortTip("桌子数据有误!");
+                            e.printStackTrace();
+                        }
+                        mPullRefreshGridView.onRefreshComplete();
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        mPullRefreshGridView.onRefreshComplete();
+                        Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    }
+                });
+    }
 	
 	/**
 	 * 初始化桌子区域数据
@@ -443,7 +516,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                 if(mChooseDeskAdapter.getCount()>=position){
                     mChooseDeskAdapter.setSelectedPos(position);
                     mCurDesk = (MerchantDesk)mChooseDeskAdapter.getItem(position);
-                    httpGetDeskOrderByDeskId(); //获取桌子订单，根据情况进行后续操作
+                    httpGetDeskOrderByDeskId2(); //获取桌子订单，根据情况进行后续操作
                 }
             }catch (Exception e){
                 e.printStackTrace();
@@ -612,7 +685,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 	 * 根据桌子id，获取该桌子对应的订单
 	 * @param
 	 */
-	private void httpGetDeskOrderByDeskId(){
+	private void httpGetDeskOrderByDeskId1(){
 
 		showCommonDialog("正在获取订单...");
 		String url = "/appController/queryUnfinishedOrder.do?childMerchantId="+childMerchantId+"&deskId="+mCurDesk.getDeskId();
@@ -661,6 +734,53 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 				});
 	    executeRequest(httpGetDeskOrderByDeskId);
 	}
+
+    /**
+     * 根据桌子id，获取该桌子对应的订单
+     */
+    private void httpGetDeskOrderByDeskId2(){
+        showCommonDialog("正在获取订单...");
+        HttpController.getInstance().getUnfinishedOrderByDeskId(childMerchantId,mCurDesk.getDeskId(),new Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject data) {
+                        Log.d(TAG, "httpGetDeskOrderByDeskId: "+data.toString());
+                        dismissCommonDialog();
+                        try {
+                            if(data.getString("msg").equals("ok")){
+                                String info = data.getJSONObject("data").getString("info");
+                                Gson gson = new Gson();
+                                mDeskOrderList = gson.fromJson(info, new TypeToken<List<DeskOrder>>(){}.getType());
+                                Log.d(TAG, "mDeskOrderList.size(): " + mDeskOrderList.size());
+                                if(mDeskOrderList==null || mDeskOrderList.size()==0){
+                                    openNewDeskInputPersonNumDialog();
+                                }else{
+                                    List<DeskOrder> abandonedOrder =new ArrayList<DeskOrder>();
+                                    for (DeskOrder mDeskOrder:mDeskOrderList){
+                                        if(mDeskOrder.getOrderState().equals("11")){
+                                            abandonedOrder.add(mDeskOrder);
+                                        }
+                                    }
+                                    if(abandonedOrder.size()>0&&mDeskOrderList.size()>=abandonedOrder.size())
+                                        mDeskOrderList.removeAll(abandonedOrder);
+                                    if(mDeskOrderList.size()==0)openNewDeskInputPersonNumDialog();
+                                    else openDeskOrderSelectDialog();
+                                }
+                            }else{
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dismissCommonDialog();
+                        Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    }
+                });
+    }
 
 	@Override
 	protected void onPause() {

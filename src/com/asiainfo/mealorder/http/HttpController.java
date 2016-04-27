@@ -6,7 +6,9 @@ import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
+import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -142,6 +144,92 @@ public class HttpController {
         String param1 = "/appController/queryAllDishesInfoByMerchantId.do?childMerchantId=" + childMerchantId;
         JsonObjectRequest merchantDishes = new JsonObjectRequest(HOST + param, null,listener,errorListener);
         executeRequest(merchantDishes);
+    }
+
+    /**
+     * 获取套餐菜品信息
+     * @param childMerchantId 子商户
+     * @param dishesId 套餐菜品id
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getDishesCompItemsData(String childMerchantId,String dishesId, Response.Listener listener,
+                                  Response.ErrorListener errorListener){
+        String param = "/appController/queryComboInfoForApp.do?dishesId=" + dishesId + "&childMerchantId=" + childMerchantId;
+        JsonObjectRequest merchantDishes = new JsonObjectRequest(HOST + param, null,listener,errorListener);
+        executeRequest(merchantDishes);
+    }
+
+    /**
+     * 获取桌子区域和桌子数据
+     * @param childMerchantId 子商户
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getDeskLocation(String childMerchantId,Response.Listener listener,
+                                  Response.ErrorListener errorListener){
+        String param = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
+        JsonObjectRequest merchantDishes = new JsonObjectRequest(HOST + param, null,listener,errorListener);
+        executeRequest(merchantDishes);
+    }
+
+    /**
+     * 获取桌子区域和桌子数据
+     * @param childMerchantId 子商户
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getUnfinishedOrderByDeskId(String childMerchantId,String deskId,Response.Listener listener,
+                                           Response.ErrorListener errorListener){
+        String param = "/appController/queryUnfinishedOrder.do?childMerchantId="+childMerchantId+"&deskId="+deskId;
+        JsonObjectRequest merchantDishes = new JsonObjectRequest(HOST + param, null,listener,errorListener);
+        executeRequest(merchantDishes);
+    }
+
+    /**
+     * 提交订单接口
+     * @param postParams post参数
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void postSubmitOrderInfo(Map<String, String> postParams,Response.Listener<SubmitOrderId> listener,
+                              Response.ErrorListener errorListener){
+        String param = "/appController/submitOrderInfo.do?";
+        ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
+                Request.Method.POST, HOST + param, postParams,SubmitOrderId.class,listener,errorListener)
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type",
+                        "application/x-www-form-urlencoded; charset=utf-8");
+                return headers;
+            }
+        };
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 修改订单接口
+     * @param postParams post参数
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void postUpdateOrderInfo(Map<String, String> postParams,Response.Listener<UpdateOrderInfoResultData> listener,
+                                    Response.ErrorListener errorListener){
+        String param = "/appController/updateOrderInfo.do?";
+        ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
+                Request.Method.POST, HOST + param, postParams,UpdateOrderInfoResultData.class,listener,errorListener)
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type",
+                        "application/x-www-form-urlencoded; charset=utf-8");
+                return headers;
+            }
+        };
+        executeRequest(ResultMapRequest);
     }
     
 }
