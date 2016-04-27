@@ -162,7 +162,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                 if (actionId == ID_refresh) {
                     source.dismiss();
                     MerchantRegister merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
-                    httpGetMerchantDishes(childMerchantId,merchantRegister.getMerchantId());
+                    httpGetMerchantDishes2(childMerchantId,merchantRegister.getMerchantId());
                 } else if (actionId == ID_exit) {
                     source.dismiss();
                     finish();
@@ -772,6 +772,62 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                     }
                 });
         executeRequest(httpGetMerchantDishes);
+    }
+
+    private void httpGetMerchantDishes2(String childMerchantId,String MerchantId) {
+        showCommonDialog("正在更新菜单...");
+        HttpController.getInstance().getMerchantDishes(childMerchantId,MerchantId,new Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject data) {
+                        try {
+                            if (data.getString("msg").equals("ok")) {
+                                Gson gson = new Gson();
+                                JSONObject datainfo=data.getJSONObject("data");
+                                mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
+                                }.getType());
+                                Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
+                                mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
+                                }.getType());
+                                Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
+
+                                if(datainfo.has("attrs")){
+                                    QueryAppMerchantPublicAttr attr=new QueryAppMerchantPublicAttr();
+                                    ArrayList<PublicDishesItem> attrInfos=gson.fromJson(datainfo.getString("attrs"), new TypeToken<ArrayList<PublicDishesItem>>() {
+                                    }.getType());
+                                    attr.setInfo(attrInfos);
+                                    baseApp.assignData(baseApp.KEY_GLOABLE_PUBLICATTR,attr);
+//                                    baseApp.setPublicAttr(attr);
+                                }
+//                                else   baseApp.setPublicAttr(null);
+                                EventBackground event = new EventBackground();
+                                DishesListEntity DishesListEntity = new DishesListEntity();
+                                DishesListEntity.setmDishTypeDataList(mDishTypeDataList);
+                                DishesListEntity.setmAllDishesDataList(mAllDishesDataList);
+                                event.setData(DishesListEntity);
+                                event.setName(ChooseDeskActivity.class.getName());
+                                event.setType(EventBackground.TYPE_FIRST);
+                                event.setDescribe("菜单数据传入后台线程存入数据库");
+                                EventBus.getDefault().post(event);
+                                dismissCommonDialog();
+                            } else {
+                                dismissCommonDialog();
+                                showShortTip("菜品更新失败! " + data.getString("msg"));
+                                Log.d(TAG, "菜品更新失败,请确认菜单!");
+                            }
+                        } catch (JSONException e) {
+                            dismissCommonDialog();
+                            showShortTip("菜品更新失败,请确认菜单! ");
+                            e.printStackTrace();
+                        }
+                    }
+                },new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dismissCommonDialog();
+                        Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    }
+                });
     }
 
     @Override

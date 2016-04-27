@@ -175,7 +175,7 @@ public class LoginActivity extends BaseActivity {
 //            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
 
         }
-        httpAutoUpdate();
+        httpAutoUpdate2();
     }
 
     public void initData() {
@@ -190,7 +190,7 @@ public class LoginActivity extends BaseActivity {
             public void onClick(View v) {
                 if (checkLoginInfo()) {
                     showLoginDialog();
-                    httpAttendantLogin();
+                    httpAttendantLogin2();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
 //                    LakalaController.init(mActivity);
@@ -242,7 +242,7 @@ public class LoginActivity extends BaseActivity {
                                     mRegister = gson.fromJson(info, MerchantRegister.class);
                                     mLoginUserPrefData.saveMerchantRegister(mRegister);                                    baseApp.assignData(baseApp.KEY_GLOABLE_LOGININFO,mRegister);
                                     mJPushUtils.setJPushTag(mRegister.getChildMerchantId());//设置极光推送的标签
-                                    httpGetMerchantDishes(mRegister.getChildMerchantId(),mRegister.getMerchantId());
+                                    httpGetMerchantDishes2(mRegister.getChildMerchantId(),mRegister.getMerchantId());
                                 }
                             } else {
                                 dismissLoginDialog();
@@ -263,6 +263,56 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
         executeRequest(httpLogin);
+    }
+
+    /**
+     * 登录请求
+     */
+    public void httpAttendantLogin2() {
+        userName = edit_username.getText().toString();
+        passwd = edit_password.getText().toString();
+        HttpController.getInstance().getAttendantLogin(userName,passwd,new Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject data) {
+                Log.d(TAG, "login resp data: " + data.toString());
+                try {
+                    if (data.getString("msg").equals("ok")) {
+                        mHttpDialogLogin.setNoticeText("正在加载数据...");
+                        if(remember_password.isChecked()){
+                            SharedPreferences.Editor editor = login.edit();
+                            editor.putString(Constants.Preferences_Login_UserInfo, userName);
+                            editor.putString(Constants.Preferences_Login_PassWord, passwd);
+                            editor.apply();
+                        }
+                        if (mLoginUserPrefData == null) {
+                            mLoginUserPrefData = new LoginUserPrefData(getApplicationContext());
+                        }
+                        Gson gson = new Gson();
+                        MerchantRegister mRegister = null;
+                        if (!data.getString("data").equals("")) {
+                            String info = data.getJSONObject("data").getString("info");
+                            mRegister = gson.fromJson(info, MerchantRegister.class);
+                            mLoginUserPrefData.saveMerchantRegister(mRegister);                                    baseApp.assignData(baseApp.KEY_GLOABLE_LOGININFO,mRegister);
+                            mJPushUtils.setJPushTag(mRegister.getChildMerchantId());//设置极光推送的标签
+                            httpGetMerchantDishes2(mRegister.getChildMerchantId(),mRegister.getMerchantId());
+                        }
+                    } else {
+                        dismissLoginDialog();
+                        showShortTip("登录失败," + data.getString("msg") + "!");
+                    }
+                } catch (JSONException e) {
+                    dismissLoginDialog();
+                    e.printStackTrace();
+                }
+            }
+        },new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dismissLoginDialog();
+                Log.e(TAG, "VolleyError:" + error.getMessage(), error);
+                showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+            }
+        });
     }
 
     /**
@@ -347,6 +397,35 @@ public class LoginActivity extends BaseActivity {
         executeRequest(httpAutoUpdate);
     }
 
+    /**
+     * 应用自动更新检测
+     */
+    private void httpAutoUpdate2() {
+        HttpController.getInstance().getAppUpdate(new Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject data) {
+                Log.d(TAG, "http auto update data: " + data.toString());
+                try {
+                    if (data.getString("msg").equals("ok")) {
+                        Gson gson = new Gson();
+                        AppUpdate appUpdate = gson.fromJson(data.getJSONObject("data").getString("info"), AppUpdate.class);
+                        appAutoUpdate(appUpdate);
+                    } else {
+                        Logger.d(TAG, "获取apk自动更新信息失败");
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        },new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+            }
+        });
+    }
+
     private void appAutoUpdate(AppUpdate appUpdate) {
         int curVersionCode = Tools.getVersionCode(mActivity);
         int newVersionCode = appUpdate.getVersionCode();
@@ -423,5 +502,59 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
         executeRequest(httpGetMerchantDishes);
+    }
+
+    private void httpGetMerchantDishes2(String childMerchantId,String MerchantId) {
+        HttpController.getInstance().getMerchantDishes(childMerchantId,MerchantId,new Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject data) {
+                try {
+                    if (data.getString("msg").equals("ok")) {
+                        Gson gson = new Gson();
+                        JSONObject datainfo=data.getJSONObject("data");
+                        mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
+                        }.getType());
+                        Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
+                        mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
+                        }.getType());
+                        Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
+
+                        if(datainfo.has("attrs")){
+                            QueryAppMerchantPublicAttr attr=new QueryAppMerchantPublicAttr();
+                            ArrayList<PublicDishesItem> attrInfos=gson.fromJson(datainfo.getString("attrs"), new TypeToken<ArrayList<PublicDishesItem>>() {
+                            }.getType());
+                            attr.setInfo(attrInfos);
+                            baseApp.assignData(baseApp.KEY_GLOABLE_PUBLICATTR,attr);
+                        }
+
+                        EventBackground event = new EventBackground();
+                        DishesListEntity DishesListEntity = new DishesListEntity();
+                        DishesListEntity.setmDishTypeDataList(mDishTypeDataList);
+                        DishesListEntity.setmAllDishesDataList(mAllDishesDataList);
+                        event.setData(DishesListEntity);
+                        event.setName(LoginActivity.class.getName());
+                        event.setType(EventBackground.TYPE_FIRST);
+                        event.setDescribe("菜单数据传入后台线程存入数据库");
+                        EventBus.getDefault().post(event);
+
+                    } else {
+                        dismissLoginDialog();
+                        showShortTip("菜品更新失败,请确认菜单! " + data.getString("msg"));
+                        Log.d(TAG, "获取菜品数据有误!");
+                    }
+                } catch (JSONException e) {
+                    dismissLoginDialog();
+                    showShortTip("菜品更新失败,请确认菜单! ");
+                    e.printStackTrace();
+                }
+            }
+        },new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                dismissLoginDialog();
+                showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+            }
+        });
     }
 }
