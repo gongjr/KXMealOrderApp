@@ -49,7 +49,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="#C5C5C5"/>
-    <com.baoyz.swipemenulistview.SwipeMenuListView
+    <com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/localorder_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -79,7 +79,7 @@
         
     </HorizontalScrollView>
 
-    <com.handmark.pulltorefresh.library.PullToRefreshGridView
+    <com.asiainfo.mealorder.widget.handmark.pulltorefresh.PullToRefreshGridView
         xmlns:ptr="http://schemas.android.com/apk/res-auto"
         android:id="@+id/grid_desks"
         android:layout_width="match_parent"

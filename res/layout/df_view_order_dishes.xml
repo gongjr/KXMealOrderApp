@@ -73,7 +73,7 @@
             android:src="@drawable/close" />
     </RelativeLayout>
 
-    <com.baoyz.swipemenulistview.SwipeMenuListView
+    <com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/lv_order_dishes"
         android:layout_width="match_parent"
         android:layout_height="380dip"

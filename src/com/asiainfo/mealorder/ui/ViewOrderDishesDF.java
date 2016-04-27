@@ -45,10 +45,10 @@ import com.asiainfo.mealorder.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
 import com.asiainfo.mealorder.utils.Arith;
 import com.asiainfo.mealorder.utils.StringUtils;
-import com.baoyz.swipemenulistview.SwipeMenu;
-import com.baoyz.swipemenulistview.SwipeMenuCreator;
-import com.baoyz.swipemenulistview.SwipeMenuItem;
-import com.baoyz.swipemenulistview.SwipeMenuListView;
+import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenu;
+import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuItem;
+import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
