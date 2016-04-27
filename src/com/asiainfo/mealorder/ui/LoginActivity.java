@@ -1,16 +1,25 @@
 package com.asiainfo.mealorder.ui;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -49,6 +58,10 @@ import com.asiainfo.mealorder.utils.Tools;
 import com.asiainfo.mealorder.utils.UpdateChecker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import com.lkl.cloudpos.aidl.AidlDeviceService;
+import com.lkl.cloudpos.aidl.printer.AidlPrinter;
+import com.lkl.cloudpos.aidl.printer.AidlPrinterListener;
+import com.lkl.cloudpos.aidl.printer.PrintItemObj;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -190,6 +203,50 @@ public class LoginActivity extends BaseActivity {
         mJPushUtils.initJPush();
     }
 
+    private AidlDeviceService mService;
+    private AidlPrinter aidlPrinter;
+    AidlPrinterListener.Stub printListener =new AidlPrinterListener.Stub() {
+        @Override
+        public void onError(int errorCode) throws RemoteException {
+            KLog.i("打印出错:"+errorCode);
+        }
+
+        @Override
+        public void onPrintFinish() throws RemoteException {
+            KLog.i("打印成功");
+        }
+    };
+
+
+    private ServiceConnection mConnection = new ServiceConnection() {
+        public void onServiceConnected(ComponentName className, IBinder service) {
+            Log.i("'","connect service");
+            mService = AidlDeviceService.Stub.asInterface(service);
+            try {
+                KLog.i(mService);
+                IBinder print=mService.getPrinter();
+                KLog.i(print);
+                aidlPrinter=AidlPrinter.Stub.asInterface(print);
+                KLog.i("rinterState:"+aidlPrinter.getPrinterState());
+                aidlPrinter.setPrinterGray(Gravity.CENTER);
+
+                Toast.makeText(mActivity, "connect service success",
+                        Toast.LENGTH_SHORT).show();
+            } catch (RemoteException e) {
+               e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+
+        public void onServiceDisconnected(ComponentName className) {
+            Log.i("","disconnect service");
+            Toast.makeText(mActivity, "disconnect service",
+                    Toast.LENGTH_SHORT).show();
+            mService = null;
+        }
+    };
+
     public void initListener() {
         btn_login.setOnClickListener(new OnClickListener() {
             @Override
@@ -199,9 +256,33 @@ public class LoginActivity extends BaseActivity {
                     httpAttendantLogin();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
-                    LakalaController.init(mActivity);
-                    LakalaController.getInstance().startLakalaWithCardForResult(mActivity,
-                            LakalaInfo.LakalaInfo_Type_Card_Trade, "0.01", "18512543197", "订单结算测试");
+                    if(aidlPrinter!=null){
+                        try {
+                            List<PrintItemObj> data=new ArrayList<>();
+                            PrintItemObj printItemObj1=new PrintItemObj("打印测试1");
+                            PrintItemObj printItemObj2=new PrintItemObj("打印测试2");
+                            KLog.i("rinterState:"+aidlPrinter.getPrinterState());
+                            data.add(printItemObj1);
+                            data.add(printItemObj2);
+                            aidlPrinter.printText(data,printListener);
+                        } catch (RemoteException e) {
+                            e.printStackTrace();
+                        }catch (Exception e){
+                            e.printStackTrace();
+                        }
+                     return;
+                    }
+                    try {
+                        Intent intent = new Intent();
+                        intent.setAction("lkl_cloudpos_mid_service");
+                        Intent mintent=new Intent(createExplicitFromImplicitIntent(mActivity,intent));
+                        bindService(mintent, mConnection, Context.BIND_AUTO_CREATE);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }
+//                    LakalaController.init(mActivity);
+//                    LakalaController.getInstance().startLakalaWithCardForResult(mActivity,
+//                            LakalaInfo.LakalaInfo_Type_Card_Trade, "0.01", "18512543197", "订单结算测试");
 //                    LakalaController.getInstance().startLakalaWithCodeForResult(mActivity,
 //                            LakalaInfo.LakalaInfo_Type_Code_Trade,"0.01","18512543197","订单结算测试");
                 }
@@ -418,6 +499,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        unbindService(mConnection);
         super.onDestroy();
     }
 
@@ -480,5 +562,41 @@ public class LoginActivity extends BaseActivity {
                     }
                 });
         executeRequest(httpGetMerchantDishes);
+    }
+    /***
+     * Android L (lollipop, API 21) introduced a new problem when trying to invoke implicit intent,
+     * "java.lang.IllegalArgumentException: Service Intent must be explicit"
+     *
+     * If you are using an implicit intent, and know only 1 target would answer this intent,
+     * This method will help you turn the implicit intent into the explicit form.
+     *
+     * Inspired from SO answer: http://stackoverflow.com/a/26318757/1446466
+     * @param context
+     * @param implicitIntent - The original implicit intent
+     * @return Explicit Intent created from the implicit original intent
+     */
+    public static Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
+        // Retrieve all services that can match the given intent
+        PackageManager pm = context.getPackageManager();
+        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
+
+        // Make sure only one match was found
+        if (resolveInfo == null || resolveInfo.size() != 1) {
+            return null;
+        }
+
+        // Get component info and create ComponentName
+        ResolveInfo serviceInfo = resolveInfo.get(0);
+        String packageName = serviceInfo.serviceInfo.packageName;
+        String className = serviceInfo.serviceInfo.name;
+        ComponentName component = new ComponentName(packageName, className);
+
+        // Create a new intent. Use the old one for extras and such reuse
+        Intent explicitIntent = new Intent(implicitIntent);
+
+        // Set the component to be explicit
+        explicitIntent.setComponent(component);
+
+        return explicitIntent;
     }
 }

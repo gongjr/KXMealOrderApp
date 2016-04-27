@@ -7,13 +7,11 @@ import android.os.RemoteException;
 
 import com.asiainfo.mealorder.utils.KLog;
 import com.lkl.cloudpos.aidl.AidlDeviceService;
-import com.lkl.cloudpos.aidl.printer.AidlPrinter;
 
 /**
  * Created by gjr on 2016/4/14.
  */
 public class LakalaService extends Service{
-    private AidlPrinter aidlPrinter;
 
     /**
      * 全局开关,使用的时候需要先判断下,设备是否支持拉卡拉设备
@@ -57,7 +55,7 @@ public class LakalaService extends Service{
         super.onRebind(intent);
     }
 
-    private final AidlDeviceService.Stub mBinder = new AidlDeviceService.Stub() {
+    private  AidlDeviceService.Stub mBinder = new AidlDeviceService.Stub() {
         @Override
         public IBinder getSystemService() throws RemoteException {
             return null;

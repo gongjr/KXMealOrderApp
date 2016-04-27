@@ -63,6 +63,24 @@
     //允许程序访问额外的定位提供者指令
     <uses-permission android:name="android.permission.ACCESS_LOCATION_EXTRA_COMMANDS" />
 
+    <!-- 1、设置打印机权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_PRINTER" />
+    <!-- 2、访问接触式 IC 卡读卡设备权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_ICCARD" />
+    <!-- 3、访问非接触 IC 卡读卡设备权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_RFCARD" />
+    <!-- 4、访问磁条卡读卡器设备权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_MAGCARD" />
+    <!-- 5、获取磁道明文接口权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_MAGCARD_GETTRACKDATA" />
+    <!-- 6、获取磁道密文数据接口权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_MAGCARD_GETENCRYPTTRACKDATA" />
+    <!-- 7、访问 PSAM卡设备权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_PSAMCARD" />
+    <!-- 8、访问串口设备权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_SERIALPORT" />
+    <!-- 9、访问系统设备权限 -->
+    <uses-permission android:name="android.permission.CLOUDPOS_MID_SYSTEMDEV" />
 
     <application
         android:name="com.asiainfo.mealorder.AppApplication"
