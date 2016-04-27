@@ -22,6 +22,7 @@ import com.asiainfo.mealorder.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
+import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.ResultMapRequest;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
@@ -212,17 +213,97 @@ public class LocalOrderActivity extends BaseActivity {
             int type = localOrder.get(position).getOrderConfirmType();
             if (type == Constants.ORDER_CONFIRM_TYPE_NEW_ORDER) {
                 orderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));//更新最后变更时间
-                VolleysubmitOrderInfo(position, orderSubmit);
+                VolleysubmitOrderInfo2(position, orderSubmit);
             } else if (type == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
-                VolleyupdateOrderInfo(position, orderSubmit);
+                VolleyupdateOrderInfo2(position, orderSubmit);
             }
             showMakeOrderDF();
         }
     };
 
-    private void VolleysubmitOrderInfo(final int position, final OrderSubmit orderSubmit) {
+    private void VolleysubmitOrderInfo1(final int position, final OrderSubmit orderSubmit) {
         String param = "/appController/submitOrderInfo.do?";
         Log.i(TAG, "submitOrderInfo_url:" + HttpController.HOST + param);
+        ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
+                Request.Method.POST, HttpController.HOST + param, SubmitOrderId.class,
+                new Response.Listener<SubmitOrderId>() {
+                    @Override
+                    public void onResponse(SubmitOrderId response) {
+                        if (response.getState() == 1) {
+                            disMakeOrderDF();
+                            showShortTip("订单上传成功");
+                            deleteOrder(position, orderSubmit);
+                        } else if (response.getState() == 0) {
+                            disMakeOrderDF();
+                            showShortTip("订单上传失败: " + response.getError());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        disMakeOrderDF();
+                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                                mActivity);
+                        showShortTip("订单上传失败: " + errors.getErrorMsg());
+                    }
+                }
+        ) {
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> paramList = new HashMap<String, String>();
+                String order = gson.toJson(localOrder.get(position));
+                paramList.put("orderSubmitData", order);
+                Log.i("VolleyLogTag", "paramList:" + paramList.toString());
+                return paramList;
+            }
+
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type",
+                        "application/x-www-form-urlencoded; charset=utf-8");
+                return headers;
+            }
+        };
+        executeRequest(ResultMapRequest, 0);
+    }
+
+    private void VolleysubmitOrderInfo2(final int position, final OrderSubmit orderSubmit) {
+        Map<String, String> paramList = new HashMap<String, String>();
+        String order = gson.toJson(localOrder.get(position));
+        paramList.put("orderSubmitData", order);
+        HttpController.getInstance().postSubmitOrderInfo(paramList,
+                new Response.Listener<SubmitOrderId>() {
+                    @Override
+                    public void onResponse(SubmitOrderId response) {
+                        if (response.getState() == 1) {
+                            disMakeOrderDF();
+                            showShortTip("订单上传成功");
+                            deleteOrder(position, orderSubmit);
+                        } else if (response.getState() == 0) {
+                            disMakeOrderDF();
+                            showShortTip("订单上传失败: " + response.getError());
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        disMakeOrderDF();
+                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                                mActivity);
+                        showShortTip("订单上传失败: " + errors.getErrorMsg());
+                    }
+                });
+    }
+
+    /**
+     * 修改订单，加菜
+     */
+    public void VolleyupdateOrderInfo1(final int position, final OrderSubmit orderSubmit) {
+        String param = "/appController/updateOrderInfo.do?";
+        Log.i(TAG, "updateOrderInfo_url:" + HttpController.HOST + param);
         ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
                 Request.Method.POST, HttpController.HOST + param, SubmitOrderId.class,
                 new Response.Listener<SubmitOrderId>() {
@@ -271,14 +352,14 @@ public class LocalOrderActivity extends BaseActivity {
     /**
      * 修改订单，加菜
      */
-    public void VolleyupdateOrderInfo(final int position, final OrderSubmit orderSubmit) {
-        String param = "/appController/updateOrderInfo.do?";
-        Log.i(TAG, "updateOrderInfo_url:" + HttpController.HOST + param);
-        ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                Request.Method.POST, HttpController.HOST + param, SubmitOrderId.class,
-                new Response.Listener<SubmitOrderId>() {
+    public void VolleyupdateOrderInfo2(final int position, final OrderSubmit orderSubmit) {
+        Map<String, String> paramList = new HashMap<String, String>();
+        String order = gson.toJson(localOrder.get(position));
+        paramList.put("orderSubmitData", order);
+        HttpController.getInstance().postUpdateOrderInfo(paramList,
+                new Response.Listener<UpdateOrderInfoResultData>() {
                     @Override
-                    public void onResponse(SubmitOrderId response) {
+                    public void onResponse(UpdateOrderInfoResultData response) {
                         if (response.getState() == 1) {
                             disMakeOrderDF();
                             showShortTip("订单上传成功");
@@ -298,25 +379,7 @@ public class LocalOrderActivity extends BaseActivity {
                         showShortTip("订单上传失败: " + errors.getErrorMsg());
                     }
                 }
-        ) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> paramList = new HashMap<String, String>();
-                String order = gson.toJson(localOrder.get(position));
-                paramList.put("orderSubmitData", order);
-                Log.i("VolleyLogTag", "paramList:" + paramList.toString());
-                return paramList;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type",
-                        "application/x-www-form-urlencoded; charset=utf-8");
-                return headers;
-            }
-        };
-        executeRequest(ResultMapRequest, 0);
+        );
     }
 
 
