@@ -12,7 +12,9 @@ import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.listener.LocalOrderUploadListener;
+import com.asiainfo.mealorder.utils.StringUtils;
 
+import java.util.Date;
 import java.util.List;
 
 
@@ -70,7 +72,10 @@ public class LocalOrderAdapter extends BaseAdapter {
         } else if (type == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
             viewHolder.state.setText("加菜");
         }
-        viewHolder.time.setText("今天 " + orderSubmit.getCreateTime());
+
+        String createTime = orderSubmit.getCreateTime();
+        Date date = StringUtils.str2Date(createTime, StringUtils.DATE_TIME_FORMAT);
+        viewHolder.time.setText("今天 " + StringUtils.date2Str(date, StringUtils.TIME_FORMAT_1));
         viewHolder.deskName.setText(orderSubmit.getDeskName());
         viewHolder.imageButton.setOnClickListener(new View.OnClickListener() {
             @Override
