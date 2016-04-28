@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.config.Constants;
+import com.asiainfo.mealorder.entity.http.HurryOrderResult;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
 import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.entity.volley.appPrintDeskOrderInfoResultData;
@@ -54,6 +55,7 @@ public class HttpController {
 
     /**
      * 执行网络请求，加入执行队列
+     * 15秒超时,连接异常默认不自动重新连接
      * @param request
      */
     protected void executeRequest(Request<?> request) {
@@ -246,6 +248,29 @@ public class HttpController {
         String param = "/appController/appPrintDeskOrderInfo.do?childMerchantId=" + childMerchanted + "&orderId=" + orderId;
         ResultMapRequest<appPrintDeskOrderInfoResultData> ResultMapRequest = new ResultMapRequest<appPrintDeskOrderInfoResultData>(
                 HOST + param,appPrintDeskOrderInfoResultData.class,listener,errorListener)
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type",
+                        "application/x-www-form-urlencoded; charset=utf-8");
+                return headers;
+            }
+        };
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 催菜打印
+     * @param postParams post参数
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void postPrintRemindOrder(Map<String, String> postParams,Response.Listener<HurryOrderResult> listener,
+                                      Response.ErrorListener errorListener){
+        String param = "/printRemindOrder.do";
+        ResultMapRequest<HurryOrderResult> ResultMapRequest = new ResultMapRequest<HurryOrderResult>(
+                Request.Method.POST, HOST + param, postParams,HurryOrderResult.class,listener,errorListener)
         {
             @Override
             public Map<String, String> getHeaders() {

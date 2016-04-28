@@ -322,7 +322,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                             }
                             break;
                         case 1:
-                            VolleyHurryOrder(position);
+                            VolleyHurryOrder2(position);
                             break;
                     }
                 }
@@ -1177,7 +1177,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
         }
     }
 
-    private void VolleyHurryOrder(final int position) {
+    private void VolleyHurryOrder1(final int position) {
         String param = "/printRemindOrder.do";
         Log.d(TAG, "hurryOrderInfo:" + HttpController.HOST + param);
         ResultMapRequest<HurryOrderResult> ResultMapRequest = new ResultMapRequest<HurryOrderResult>(Request.Method.POST,
@@ -1264,6 +1264,86 @@ public class ViewOrderDishesActivity extends BaseActivity {
             }
         };
         executeRequest(ResultMapRequest);
+    }
+
+    private void VolleyHurryOrder2(final int position) {
+        HurryOrder hurryOrder = new HurryOrder();
+        hurryOrder.setOrderId(mDeskOrder.getOrderId());
+        hurryOrder.setChildMerchantId(mDeskOrder.getChildMerchantId());
+        hurryOrder.setCreateTime(mDeskOrder.getStrCreateTime());
+        hurryOrder.setTradeStaffId(mDeskOrder.getTradeStaffId());
+        if(mDeskOrder.getRemark() == null) {
+            hurryOrder.setRemark("");
+        } else {
+            hurryOrder.setRemark(mDeskOrder.getRemark());
+        }
+        HurryOrderDesk hurryOrderDesk = new HurryOrderDesk();
+        hurryOrderDesk.setDeskName(deskName);
+        hurryOrder.setMerchantDesk(hurryOrderDesk);
+
+        DeskOrderGoodsItem deskOrderGoodsItemm = null;
+        List<DeskOrderGoodsItem> compDishesList = null;
+        HurryOrderGoodsItem hurryOrderGoodsItem = null;
+        List<HurryOrderGoodsItem> hurryOrderGoodsItemList = new ArrayList<HurryOrderGoodsItem>();
+        if (position < mOrderDishesDataList.size()) {
+            deskOrderGoodsItemm = (DeskOrderGoodsItem) mOrderDishesDataList.get(position);
+            hurryOrderGoodsItem = getHurryOrderGoodsItem(deskOrderGoodsItemm, false);
+        } else if (position >= mOrderDishesDataList.size() && mDishesCompDeskOrderList != null) {
+            DishesCompDeskOrderEntity mDishesCompSelectionEntity = mDishesCompDeskOrderList.get(position - mOrderDishesDataList.size());
+            deskOrderGoodsItemm = mDishesCompSelectionEntity.getmCompMainDishes();
+            hurryOrderGoodsItem = getHurryOrderGoodsItem(deskOrderGoodsItemm, true);
+            compDishesList = mDishesCompSelectionEntity.getCompItemDishes();
+        }
+        hurryOrderGoodsItemList.add(hurryOrderGoodsItem);
+        if (compDishesList != null && compDishesList.size() > 0) {
+            int size = compDishesList.size();
+            for (int i = 0; i < size; i++) {
+                DeskOrderGoodsItem orderGoodsItem = compDishesList.get(i);
+                hurryOrderGoodsItemList.add(getHurryOrderGoodsItem(orderGoodsItem, false));
+            }
+        }
+        hurryOrder.setOrderGoods(hurryOrderGoodsItemList);
+        Map<String, String> map = new HashMap<String, String>();
+        Gson gson = new Gson();
+        String inparam = gson.toJson(hurryOrder);
+        map.put("order", inparam);
+        HttpController.getInstance().postPrintRemindOrder(map,
+                new Listener<HurryOrderResult>() {
+                    @Override
+                    public void onResponse(HurryOrderResult hurryOrderResult) {
+                        String salesName = "";
+                        DeskOrderGoodsItem orderGoodsItem = null;
+                        if (position < mOrderDishesDataList.size()) {
+                            orderGoodsItem = (DeskOrderGoodsItem) mOrderDishesDataList.get(position);
+                            salesName = orderGoodsItem.getSalesName();
+                        } else if (position >= mOrderDishesDataList.size() && mDishesCompDeskOrderList != null) {
+                            DishesCompDeskOrderEntity mDishesCompSelectionEntity = mDishesCompDeskOrderList.get(position - mOrderDishesDataList.size());
+                            orderGoodsItem = mDishesCompSelectionEntity.getmCompMainDishes();
+                            salesName = orderGoodsItem.getSalesName();
+                        }
+                        showShortTip(salesName + ":" + hurryOrderResult.getMessage());
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                                mActivity);
+                        switch (errors.getErrorType()) {
+                            case 1:
+                                Log.e("VolleyLogTag",
+                                        "VolleyError:" + errors.getErrorMsg(), error);
+                                showShortTip(errors.getErrorMsg());
+                                break;
+                            default:
+                                Log.e("VolleyLogTag",
+                                        "VolleyError:" + errors.getErrorMsg(), error);
+                                showShortTip(errors.getErrorMsg());
+                                break;
+                        }
+                    }
+                }
+        );
     }
 
     private HurryOrderGoodsItem getHurryOrderGoodsItem(DeskOrderGoodsItem deskOrderGoodsItem, boolean isComps) {
