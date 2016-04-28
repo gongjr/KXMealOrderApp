@@ -198,6 +198,18 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 		mDeskList = new ArrayList<MerchantDesk>();
 		mChooseDeskAdapter = new ChooseDeskAdapter(ChooseDeskActivity.this, mDeskList, -1, onDeskItemClickListener);
 		grid_deskItem.setAdapter(mChooseDeskAdapter);
+        mEmptyLayout.setEmptyButtonClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initLocDeskData2();
+            }
+        });
+        mEmptyLayout.setErrorButtonClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                initLocDeskData2();
+            }
+        });
         initLocDeskData2();
 	}
 	
@@ -226,7 +238,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
      * 获取桌子区域和桌子数据
      */
     private void initLocDeskData1(){
-        onShowLoading();
+        onShowLoading("正在加载桌子数据~~~");
         String url = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
         Log.d(TAG, "initLocDeskData: " + HttpController.HOST+url);
         JsonObjectRequest httpGetLocDeskData = new JsonObjectRequest(
@@ -243,8 +255,8 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                                         new TypeToken<List<MerchantDeskLocation>>(){}.getType());
                                 initDeskLocData();
                             }else{
-                                onShowEmpty();
-                                showShortTip("桌子数据有误!");
+                                onShowEmpty("桌子数据异常!");
+                                showShortTip("桌子数据异常!");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -256,7 +268,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         mPullRefreshGridView.onRefreshComplete();
-                        onShowError();
+                        onShowError(VolleyErrorHelper.getMessage(error, mActivity));
                         Log.e(TAG, "VolleyError:" + error.getMessage(), error);
                         showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
                     }
@@ -268,7 +280,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
      * 获取桌子区域和桌子数据
      */
     private void initLocDeskData2(){
-        onShowLoading();
+        onShowLoading("正在加载桌子数据~~~");
         HttpController.getInstance().getDeskLocation(childMerchantId,new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
@@ -281,8 +293,8 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                                         new TypeToken<List<MerchantDeskLocation>>(){}.getType());
                                 initDeskLocData();
                             }else{
-                                onShowEmpty();
-                                showShortTip("桌子数据有误!");
+                                onShowEmpty("桌子数据异常");
+                                showShortTip("桌子数据异常!");
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -294,7 +306,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         mPullRefreshGridView.onRefreshComplete();
-                        onShowError();
+                        onShowError(VolleyErrorHelper.getMessage(error, mActivity));
                         Log.e(TAG, "VolleyError:" + error.getMessage(), error);
                         showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
                     }
@@ -499,7 +511,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 					Log.d(TAG, "mChooseDeskAdapter: " + mChooseDeskAdapter);
 					mChooseDeskAdapter.onRefresh(mDeskList);
 					if(mDeskList==null || mDeskList.size()==0){
-						onShowEmpty();
+						onShowEmpty("没有数据哦");
 					}
 				}
 			}
@@ -807,18 +819,24 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
         lp.alpha = bgAlpha; //0.0-1.0
         getWindow().setAttributes(lp);
     }
-    public void onShowEmpty() {
+    public void onShowEmpty(String info) {
         mChooseDeskAdapter.clear();
+        if(info!=null&&info.length()>0)
+        mEmptyLayout.setEmptyMessage(info);
         mEmptyLayout.showEmpty();
     }
 
-    public void onShowLoading() {
+    public void onShowLoading(String info) {
         mChooseDeskAdapter.clear();
+        if(info!=null&&info.length()>0)
+        mEmptyLayout.setLoadingMessage(info);
         mEmptyLayout.showLoading();
     }
 
-    public void onShowError() {
+    public void onShowError(String error) {
         mChooseDeskAdapter.clear();
+        if(error!=null&&error.length()>0)
+        mEmptyLayout.setErrorMessage(error);
         mEmptyLayout.showError();
     }
 
