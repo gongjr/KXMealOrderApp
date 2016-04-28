@@ -43,7 +43,7 @@ import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.entity.helper.UpdateOrderParam;
 import com.asiainfo.mealorder.entity.http.HurryOrderResult;
 import com.asiainfo.mealorder.entity.http.ResultMapRequest;
-import com.asiainfo.mealorder.entity.http.UpdateOrderInfoResultData;
+import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.entity.volley.appPrintDeskOrderInfoResultData;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
@@ -316,7 +316,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                     switch (index) {
                         case 0:
                             if (mOrderDishesDataList.size() + mDishesCompDeskOrderList.size() > 1) {
-                                VolleyupdateOrderInfo(position);
+                                VolleyupdateOrderInfo2(position);
                             } else {
                                 Toast.makeText(mActivity, "无法删除，请取消订单!", Toast.LENGTH_SHORT).show();
                             }
@@ -429,7 +429,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 buildmUpdateOrderParamModel(); //构造通知通知后厨的参数对象
-                httpDeskOrderNotifyKitchen(); //通知后厨
+                httpDeskOrderNotifyKitchen2(); //通知后厨
             }
         });
         printOrder.setOnClickListener(new OnClickListener() {
@@ -439,7 +439,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 showDelay(new DialogDelayListener() {
                     @Override
                     public void onexecute() {
-                        VolleyNotityPersistOrder();
+                        VolleyPrintDeskOrderInfo();
                     }
                 }, 200);
             }
@@ -514,7 +514,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
     /**
      * 通知后厨
      */
-    public void httpDeskOrderNotifyKitchen() {
+    public void httpDeskOrderNotifyKitchen1() {
         btn_notifyKitchen.setEnabled(false);
         Gson gson = new Gson();
         String orderSubmitData = gson.toJson(mUpdateOrderParam);
@@ -565,6 +565,35 @@ public class ViewOrderDishesActivity extends BaseActivity {
         executeRequest(httpDeskOrderNotifyKitchen);
     }
 
+    /**
+     * 通知后厨
+     */
+    public void httpDeskOrderNotifyKitchen2() {
+        btn_notifyKitchen.setEnabled(false);
+        Map<String, String> paramList = new HashMap<String, String>();
+        Gson gson = new Gson();
+        String inparam = gson.toJson(mUpdateOrderParam);
+        paramList.put("orderSubmitData", inparam);
+        HttpController.getInstance().postUpdateOrderInfo(paramList,
+                new Listener<UpdateOrderInfoResultData>() {
+                    @Override
+                    public void onResponse(UpdateOrderInfoResultData data) {
+                            if (data.getState()==1) {
+                                onDeskOrderNotifyKitchenOK();
+                            } else {
+                                String errorInfo = data.getError();
+                                onDeskOrderNotifyKitchenFailed(errorInfo);
+                            }
+                    }
+                },
+                new ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError arg0) {
+                        onDeskOrderNotifyKitchenFailed("网络异常！");
+                    }
+                });
+    }
+
     private void onDeskOrderNotifyKitchenOK() {
         showShortTip("通知后厨成功!");
         btn_notifyKitchen.setEnabled(false);
@@ -604,7 +633,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
     /**
      * 修改订单，加菜,或删除
      */
-    public void VolleyupdateOrderInfo(final int position) {
+    public void VolleyupdateOrderInfo1(final int position) {
         String param = "/appController/updateOrderInfo.do?";
         System.out.println("submitOrderInfo:" + HttpController.HOST + param);
         ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
@@ -776,9 +805,163 @@ public class ViewOrderDishesActivity extends BaseActivity {
     }
 
     /**
+     * 修改订单，加菜,或删除
+     */
+    public void VolleyupdateOrderInfo2(final int position) {
+        OrderSubmit mOrderdelete = new OrderSubmit();
+        mOrderdelete.setOrderid(mDeskOrder.getOrderId());
+        mOrderdelete.setOrderType(mDeskOrder.getOrderType());
+        mOrderdelete.setOrderTypeName(mDeskOrder.getOrderTypeName());
+        mOrderdelete.setCreateTime(mDeskOrder.getStrCreateTime());
+        mOrderdelete.setOrderState(mDeskOrder.getOrderState());
+        mOrderdelete.setRemark(mDeskOrder.getRemark());
+        mOrderdelete.setOriginalPrice(mDeskOrder.getOriginalPrice());
+        mOrderdelete.setPayType(mDeskOrder.getPayType());
+        mOrderdelete.setIsNeedInvo(mDeskOrder.getIsNeedInvo());
+        mOrderdelete.setInvoPrice(mDeskOrder.getInvoPrice());
+        mOrderdelete.setInvoId(mDeskOrder.getInvoId());
+        mOrderdelete.setInvoTitle(mDeskOrder.getInvoTitle());
+        mOrderdelete.setMerchantId(Long.valueOf(mDeskOrder.getMerchantId()));
+        mOrderdelete.setLinkPhone(mDeskOrder.getLinkPhone());
+        mOrderdelete.setLinkName(mDeskOrder.getLinkName());
+        mOrderdelete.setDeskId(mDeskOrder.getDeskId());
+        mOrderdelete.setInMode(mDeskOrder.getInMode());
+        mOrderdelete.setChildMerchantId(Long.valueOf(mDeskOrder.getChildMerchantId()));
+        mOrderdelete.setGiftMoney(mDeskOrder.getGiftMoney());
+        mOrderdelete.setPaidPrice(mDeskOrder.getPaidPrice());
+        mOrderdelete.setPersonNum(Integer.valueOf(mDeskOrder.getPersonNum()));
+
+        List<OrderGoodsItem> orderGoods = new ArrayList<OrderGoodsItem>();
+        OrderGoodsItem orderGoodsItem = null;
+        DeskOrderGoodsItem deskOrderGoodsItemm = null;
+        List<DeskOrderGoodsItem> compDishesList = null;
+        if (position < mOrderDishesDataList.size()) {
+            deskOrderGoodsItemm = (DeskOrderGoodsItem) mOrderDishesDataList.get(position);
+        } else if (position >= mOrderDishesDataList.size() && mDishesCompDeskOrderList != null) {
+            DishesCompDeskOrderEntity mDishesCompSelectionEntity =
+                    (DishesCompDeskOrderEntity) mDishesCompDeskOrderList.get(position - mOrderDishesDataList.size());
+            deskOrderGoodsItemm = mDishesCompSelectionEntity.getmCompMainDishes();
+            compDishesList = mDishesCompSelectionEntity.getCompItemDishes();
+        }
+        Log.i("oo", "deskOrderGoodsItemm:" + deskOrderGoodsItemm.getSalesName());
+        orderGoodsItem = deskOrderGoodsItemToOrderGoodsItem(deskOrderGoodsItemm);
+        orderGoods.add(orderGoodsItem);
+        if (compDishesList != null && compDishesList.size() > 0) {
+            for (DeskOrderGoodsItem childDeskOrderGoodsItem : compDishesList) {
+                OrderGoodsItem childOrderGoodsItem = new OrderGoodsItem();
+                childOrderGoodsItem = deskOrderGoodsItemToOrderGoodsItem(childDeskOrderGoodsItem);
+                orderGoods.add(childOrderGoodsItem);
+            }
+        }
+        Double oldprice = StringUtils.str2Double(mOrderdelete.getOriginalPrice());
+        Double ordergoodsprice = StringUtils.str2Double(orderGoodsItem.getSalesPrice());
+        Double newprice = Arith.sub(oldprice, ordergoodsprice);
+        mOrderdelete.setOrderGoods(orderGoods);
+        mOrderdelete.setTradeStsffId(mLoginUserPrefData.getStaffId());
+        mOrderdelete.setOriginalPrice(Arith.d2str(newprice));
+        mOrderdelete.setAllGoodsNum(Integer.valueOf(mDeskOrder.getAllGoodsNum()) - orderGoodsItem.getSalesNum());
+
+        Map<String, String> paramList = new HashMap<String, String>();
+        Gson gson = new Gson();
+        String inparam = gson.toJson(mOrderdelete);
+        paramList.put("orderSubmitData", inparam);
+        HttpController.getInstance().postUpdateOrderInfo(paramList,
+                new Listener<UpdateOrderInfoResultData>() {
+            @Override
+            public void onResponse(
+                    UpdateOrderInfoResultData response) {
+                if (response.getState() == 1) try {
+                    DeskOrderGoodsItem deskOrderGoodsItemm = null;
+                    List<DeskOrderGoodsItem> compDishesList = null;
+                    if (position < mOrderDishesDataList.size()) {
+                        deskOrderGoodsItemm = (DeskOrderGoodsItem) mOrderDishesDataList.get(position);
+                    } else if (position >= mOrderDishesDataList.size() && mDishesCompDeskOrderList != null) {
+                        DishesCompDeskOrderEntity mDishesCompSelectionEntity =
+                                (DishesCompDeskOrderEntity) mDishesCompDeskOrderList.get(position - mOrderDishesDataList.size());
+                        deskOrderGoodsItemm = mDishesCompSelectionEntity.getmCompMainDishes();
+                        compDishesList = mDishesCompSelectionEntity.getCompItemDishes();
+                    }
+                    Double oldprice = StringUtils.str2Double(mDeskOrder.getOriginalPrice());
+                    Double ordergoodsprice = StringUtils.str2Double(deskOrderGoodsItemm.getSalesPrice());
+                    Double newprice = Arith.sub(oldprice, ordergoodsprice);
+                    mDeskOrder.setOriginalPrice(Arith.d2str(newprice));//删菜成功后更新本地桌子订单价格
+                    int i = 0;
+                    if (compDishesList != null && compDishesList.size() > 0) {
+                        int numSum = 0;
+                        numSum += Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
+                        for (DeskOrderGoodsItem childDeskOrderGoodsItem : compDishesList) {
+                            numSum += Integer.valueOf(childDeskOrderGoodsItem.getSalesNum());
+                        }
+                        i = Integer.valueOf(mDeskOrder.getAllGoodsNum()) - numSum;
+                    } else {
+                        i = Integer.valueOf(mDeskOrder.getAllGoodsNum()) - Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
+                    }
+                    mDeskOrder.setAllGoodsNum(i + "");//删菜成功后更新本地桌子订单菜品数量
+                    if (position < mOrderDishesDataList.size()) {
+                        mOrderDishesDataList.remove(position);
+                    } else if (position >= mOrderDishesDataList.size() && mDishesCompDeskOrderList != null) {
+                        mDishesCompDeskOrderList.remove(position - mOrderDishesDataList.size());
+                    }
+                    //删菜后将数据还原回去缓存
+                    List<DeskOrderGoodsItem> orderGoods = new ArrayList<DeskOrderGoodsItem>();
+                    if (mOrderDishesDataList.size() > 0) {
+                        for (int m = 0; m < mOrderDishesDataList.size(); m++) {
+                            DeskOrderGoodsItem mdeskOrderGoodsItem = (DeskOrderGoodsItem) mOrderDishesDataList.get(m);
+                            orderGoods.add(mdeskOrderGoodsItem);
+                        }
+                    }
+                    if (mDishesCompDeskOrderList.size() > 0) {
+                        for (DishesCompDeskOrderEntity mdishesCompDeskOrderEntity : mDishesCompDeskOrderList) {
+                            orderGoods.add(mdishesCompDeskOrderEntity.getmCompMainDishes());
+                            for (DeskOrderGoodsItem mmDeskOrderGoodsItem : mdishesCompDeskOrderEntity.getCompItemDishes()) {
+                                orderGoods.add(mmDeskOrderGoodsItem);
+                            }
+                        }
+                    }
+                    mDeskOrder.setOrderGoods(orderGoods);
+                    mViewOrderDishesAdapter.notifyDataSetChanged();
+                    Toast.makeText(mActivity, "  删除<" + deskOrderGoodsItemm.getSalesName() + ">成功!", Toast.LENGTH_SHORT).show();
+                    tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
+                    tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价
+
+                    EventMain<DeskOrder> event = new EventMain<DeskOrder>();
+                    event.setType(EventMain.TYPE_SECOND);
+                    event.setData(mDeskOrder);
+                    event.setDescribe("删除成功后通知更新本地缓存的桌子订单信息");
+                    event.setName(MakeOrderActivity.class.getName());
+                    EventBus.getDefault().post(event);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+                else if (response.getState() == 0) {
+                    showShortTip(response.getError());
+                }
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                        mActivity);
+                switch (errors.getErrorType()) {
+                    case 1:
+                        Log.e("VolleyLogTag",
+                                "VolleyError:" + errors.getErrorMsg(), error);
+                        showShortTip(errors.getErrorMsg());
+                        break;
+                    default:
+                        Log.e("VolleyLogTag",
+                                "VolleyError:" + errors.getErrorMsg(), error);
+                        showShortTip(errors.getErrorMsg());
+                        break;
+                }
+            }
+        });
+    }
+
+    /**
      * 通知服务器打印保留订单的客单
      */
-    public void VolleyNotityPersistOrder() {
+    public void VolleyNotityPersistOrder1() {
         String param = "/appController/appPrintDeskOrderInfo.do?childMerchantId=" + merchantRegister.getChildMerchantId() + "&orderId=" + orderId;
         KLog.i("URL:" + HttpController.HOST + param);
         ResultMapRequest<appPrintDeskOrderInfoResultData> ResultMapRequest = new ResultMapRequest<appPrintDeskOrderInfoResultData>(
@@ -811,6 +994,32 @@ public class ViewOrderDishesActivity extends BaseActivity {
             }
         };
         executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 通知服务器打印保留订单的客单
+     */
+    public void VolleyPrintDeskOrderInfo() {
+        HttpController.getInstance().getPrintDeskOrderInfo(merchantRegister.getChildMerchantId(),orderId,
+        new Response.Listener<appPrintDeskOrderInfoResultData>() {
+            @Override
+            public void onResponse(
+                    appPrintDeskOrderInfoResultData response) {
+                if (response.getState() == 1) {
+                    showShortTip("打印客单成功!");
+                    dismissMakeOrderDF();
+                } else if (response.getState() == 0) {
+                    dismissMakeOrderDF();
+                    showShortTip("打印客单失败,请联系收银员!");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, "VolleyError:" + error.getMessage(), error);
+                onMakeOrderFailed(VolleyErrorHelper.getMessage(error, mActivity) + "->请点击确定重新打印!", NotityPersistOrderListener);
+            }
+        });
     }
 
     /**
@@ -860,7 +1069,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
             showDelay(new DialogDelayListener() {
                 @Override
                 public void onexecute() {
-                    VolleyNotityPersistOrder();
+                    VolleyPrintDeskOrderInfo();
                 }
             }, 200);
         }

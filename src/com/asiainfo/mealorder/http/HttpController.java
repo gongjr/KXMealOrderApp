@@ -7,6 +7,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
 import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
+import com.asiainfo.mealorder.entity.volley.appPrintDeskOrderInfoResultData;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 /**
  * 统一管理公共接口地址,参数传入,接口回调响应交互
+ * post和get仅代表本次调用的http方法
  * 2015年6月17日
  */
 public class HttpController {
@@ -174,7 +176,7 @@ public class HttpController {
     }
 
     /**
-     * 获取桌子区域和桌子数据
+     * 获取桌子未完成订单
      * @param childMerchantId 子商户
      * @param listener 响应监听器
      * @param errorListener 异常监听器
@@ -220,6 +222,30 @@ public class HttpController {
         String param = "/appController/updateOrderInfo.do?";
         ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
                 Request.Method.POST, HOST + param, postParams,UpdateOrderInfoResultData.class,listener,errorListener)
+        {
+            @Override
+            public Map<String, String> getHeaders() {
+                HashMap<String, String> headers = new HashMap<String, String>();
+                headers.put("Content-Type",
+                        "application/x-www-form-urlencoded; charset=utf-8");
+                return headers;
+            }
+        };
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 修改订单接口
+     * @param childMerchanted 子商户号
+     * @param orderId 订单id
+     * @param listener 响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getPrintDeskOrderInfo(String childMerchanted,String orderId,Response.Listener<appPrintDeskOrderInfoResultData> listener,
+                                    Response.ErrorListener errorListener){
+        String param = "/appController/appPrintDeskOrderInfo.do?childMerchantId=" + childMerchanted + "&orderId=" + orderId;
+        ResultMapRequest<appPrintDeskOrderInfoResultData> ResultMapRequest = new ResultMapRequest<appPrintDeskOrderInfoResultData>(
+                HOST + param,appPrintDeskOrderInfoResultData.class,listener,errorListener)
         {
             @Override
             public Map<String, String> getHeaders() {
