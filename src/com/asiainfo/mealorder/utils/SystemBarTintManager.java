@@ -16,8 +16,6 @@
 
 package com.asiainfo.mealorder.utils;
 
-import java.lang.reflect.Method;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -37,7 +35,11 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.widget.FrameLayout.LayoutParams;
 
+import java.lang.reflect.Method;
+
 /**
+ * 沉浸式通知栏的一个开源库SystemBarTint
+ * https://github.com/jgilfelt/SystemBarTint
  * Class to manage status and navigation bar tint effects when using KitKat 
  * translucent system UI modes.
  *
