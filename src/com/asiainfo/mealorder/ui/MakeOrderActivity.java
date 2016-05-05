@@ -575,7 +575,15 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		prepareNewOrderSummaryInfo(false);
         String orderContent = gson.toJson(mOrderSubmit);
         String orderDishesComp = gson.toJson(orderCompGoodsList);
-        startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp);
+		Intent intent = new Intent(this, CheckOrderActivity.class);
+		Bundle args = new Bundle();
+		args.putString("ORDER_CONTENT_STR", orderContent);
+		args.putString("ORDER_CONTENT_COMP_STR", orderDishesComp);
+		args.putString("type", "basket");
+		intent.putExtras(args);
+		startActivity(intent);
+		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+//        startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp);
 //        showViewOrderDishesDF(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp,"df_view_order_new_dishes");
 	}
 	

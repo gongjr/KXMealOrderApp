@@ -410,12 +410,11 @@ public class LocalOrderActivity extends BaseActivity {
     }
 
     public void startViewOrderActivity(int dialogType, String orderContent, String orderDishesComp, String deskName) {
-        Intent intent = new Intent(this, ViewOrderDishesActivity.class);
+        Intent intent = new Intent(this, CheckOrderActivity.class);
         Bundle args = new Bundle();
-        args.putInt("VIEW_ORDER_DIALOG_TYPE", dialogType);
         args.putString("ORDER_CONTENT_STR", orderContent);
         args.putString("ORDER_CONTENT_COMP_STR", orderDishesComp);
-        args.putString("deskName", deskName);
+        args.putString("type", "local");
         intent.putExtras(args);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
