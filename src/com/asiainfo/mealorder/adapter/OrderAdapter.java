@@ -75,11 +75,11 @@ public class OrderAdapter extends BaseAdapter {
         if (position < mNormalDishList.size()) {
             deskOrderGoodsItem = mNormalDishList.get(position);
         } else if (position >= mNormalDishList.size() && mCompDishList.size() != 0) {
-            deskOrderGoodsItem = mCompDishList.get(position-mNormalDishList.size()).getmCompMainDishes();
-            deskOrderGoodsItemList = mCompDishList.get(position-mNormalDishList.size()).getCompItemDishes();
+            deskOrderGoodsItem = mCompDishList.get(position - mNormalDishList.size()).getmCompMainDishes();
+            deskOrderGoodsItemList = mCompDishList.get(position - mNormalDishList.size()).getCompItemDishes();
         }
 
-        DecimalFormat df   = new DecimalFormat("######0.0");
+        DecimalFormat df = new DecimalFormat("######0.0");
         Double salePrice = Double.parseDouble(deskOrderGoodsItem.getSalesPrice());
 
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
@@ -91,7 +91,7 @@ public class OrderAdapter extends BaseAdapter {
         if (deskOrderGoodsItemList != null) {
             int size = deskOrderGoodsItemList.size();
             String comRemark = "";
-            for (int i=0; i<size; i++) {
+            for (int i = 0; i < size; i++) {
                 if (i == 0) {
                     comRemark += "配置: " + deskOrderGoodsItemList.get(i).getSalesName() + " ";
                 } else {
@@ -117,36 +117,37 @@ public class OrderAdapter extends BaseAdapter {
 
     /**
      * 从属性实体的值中解析属性
+     *
      * @param remarkList
      * @return
      */
-    private String fromItemEntityList2Remark(List<String> remarkList){
+    private String fromItemEntityList2Remark(List<String> remarkList) {
         String r = "";
-        if(remarkList!=null && remarkList.size()>0){
+        if (remarkList != null && remarkList.size() > 0) {
             Gson gson = new Gson();
-            for(int m=0; m<remarkList.size(); m++){
+            for (int m = 0; m < remarkList.size(); m++) {
                 String reItem = remarkList.get(m);
                 Log.d(TAG, "reItem: " + reItem);
-                try{
+                try {
                     PropertySelectEntity entityItem = gson.fromJson(reItem, PropertySelectEntity.class);
                     List<DishesPropertyItem> dpiList = entityItem.getmSelectedItemsList();
-                    if(dpiList!=null && dpiList.size()>0){
-                        if(m!=0){
-                            r= r+",";
+                    if (dpiList != null && dpiList.size() > 0) {
+                        if (m != 0) {
+                            r = r + ",";
                         }
-                        for(int n=0; n<dpiList.size(); n++){
+                        for (int n = 0; n < dpiList.size(); n++) {
                             DishesPropertyItem dpItem = dpiList.get(n);
-                            if(n==0){
+                            if (n == 0) {
                                 r = r + dpItem.getItemName();
-                            }else{
+                            } else {
                                 r = r + "," + dpItem.getItemName();
                             }
                         }
                     }
-                }catch(Exception ex){
-                    if(m==0){
+                } catch (Exception ex) {
+                    if (m == 0) {
                         r = r + reItem;
-                    }else{
+                    } else {
                         r = r + "," + reItem;
                     }
                 }

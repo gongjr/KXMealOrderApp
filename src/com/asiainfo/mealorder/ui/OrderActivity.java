@@ -734,7 +734,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 });
     }
 
-    private Double getNewPrice(String  oldPrice, String perPrice) {
+    private Double getNewPrice(String oldPrice, String perPrice) {
         Double oldprice = StringUtils.str2Double(oldPrice);
         Double ordergoodsprice = StringUtils.str2Double(perPrice);
         Double newprice = Arith.sub(oldprice, ordergoodsprice);
