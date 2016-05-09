@@ -266,14 +266,19 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 showShortTip("批量删菜下版本更新");
                 break;
             case R.id.order_addbtn:
-                Intent intent = new Intent(this, MakeOrderActivity.class);
-                Bundle bundle = new Bundle();
-                bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
-                bundle.putSerializable("SELECTED_MERCHANT_DESK", mDesk);
-                bundle.putInt("ORDER_PERSON_NUM", StringUtils.str2Int(mDeskOrder.getPersonNum()));
-                bundle.putString("CURRENT_SELECTED_ORDER", gson.toJson(mDeskOrder));
-                intent.putExtra("BUNDLE", bundle);
-                startActivity(intent);
+                if (mDeskOrder.getOrderState().equals("0")) {
+                    Intent intent = new Intent(this, MakeOrderActivity.class);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
+                    bundle.putSerializable("SELECTED_MERCHANT_DESK", mDesk);
+                    bundle.putInt("ORDER_PERSON_NUM", StringUtils.str2Int(mDeskOrder.getPersonNum()));
+                    bundle.putString("CURRENT_SELECTED_ORDER", gson.toJson(mDeskOrder));
+                    intent.putExtra("BUNDLE", bundle);
+                    startActivity(intent);
+                } else {
+                    showShortTip("菜品没有通知后厨无法加菜");
+                }
+
                 break;
             case R.id.order_paybtn:
                 break;
