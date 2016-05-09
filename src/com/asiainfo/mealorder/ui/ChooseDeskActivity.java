@@ -597,7 +597,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 				isHandled = true;
 				Gson gson = new Gson();
 				String deskOrderJsonStr = gson.toJson(deskOrder);
-				Intent intent = new Intent(ChooseDeskActivity.this, MakeOrderActivity.class);
+				Intent intent = new Intent(ChooseDeskActivity.this, OrderActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
 				bundle.putSerializable("SELECTED_MERCHANT_DESK", mCurDesk);
@@ -616,7 +616,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 						//加菜
 						Gson gson = new Gson();
 						String deskOrderJsonStr = gson.toJson(deskOrder);
-						Intent intent = new Intent(ChooseDeskActivity.this, MakeOrderActivity.class);
+						Intent intent = new Intent(ChooseDeskActivity.this, OrderActivity.class);
 						Bundle bundle = new Bundle();
 						bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
 						bundle.putSerializable("SELECTED_MERCHANT_DESK", mCurDesk);
@@ -629,7 +629,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 						//通知后厨
 						Gson gson = new Gson();
 						String deskOrderJsonStr = gson.toJson(deskOrder);
-						Intent intent = new Intent(ChooseDeskActivity.this, MakeOrderActivity.class);
+						Intent intent = new Intent(ChooseDeskActivity.this, OrderActivity.class);
 						Bundle bundle = new Bundle();
 						bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
 						bundle.putSerializable("SELECTED_MERCHANT_DESK", mCurDesk);

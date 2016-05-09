@@ -2,11 +2,70 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:padding="10dp">
 
     <RadioButton
+        android:id="@+id/order_radiobtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"
+        android:visibility="gone"/>
+
+    <LinearLayout
+        android:id="@+id/order_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_toRightOf="@+id/order_radiobtn"
+        android:orientation="horizontal">
+
+        <TextView
+            android:id="@+id/order_item_dish_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="3"
+            android:text="美味全家福拼盘"
+            android:textSize="@dimen/text_size_xsmall" />
+
+        <TextView
+            android:id="@+id/order_item_dish_count"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="1份" />
+
+        <TextView
+            android:id="@+id/order_item_dish_price"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="20.0" />
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/order_item_per_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/order_item_layout"
+        android:layout_below="@+id/order_item_layout"
+        android:text="20元/份"
+        android:textColor="#9B9B9B"
+        android:textSize="@dimen/text_size_xxsmall" />
+
+    <TextView
+        android:id="@+id/order_item_dish_remark"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/order_item_layout"
+        android:layout_below="@+id/order_item_per_price"
+        android:layout_marginTop="10dp"
+        android:text="口味: 七分熟"
+        android:textColor="#D0021B"
+        android:visibility="gone"
+        android:textSize="@dimen/text_size_xxsmall" />
 
 </RelativeLayout>

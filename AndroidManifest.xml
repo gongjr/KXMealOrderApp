@@ -133,6 +133,12 @@
             >
         </activity>
         <activity
+            android:name="com.asiainfo.mealorder.ui.OrderActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.asiainfo.mealorder.ui.MakeOrderActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"

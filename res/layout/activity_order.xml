@@ -3,7 +3,7 @@
     style="@style/activity_root_style">
 
     <RelativeLayout
-        android:id="@+id/conf_title_layout"
+        android:id="@+id/order_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="5dp"
@@ -12,12 +12,14 @@
         android:paddingTop="10dp">
 
         <Button
+            android:id="@+id/order_backbtn"
             android:layout_width="40dip"
             android:layout_height="40dip"
             android:layout_centerVertical="true"
             android:background="@anim/arrow_to_left_btn_bg" />
 
         <TextView
+            android:id="@+id/order_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
@@ -27,6 +29,7 @@
             android:textSize="@dimen/text_size_large" />
 
         <Button
+            android:id="@+id/order_morebtn"
             android:layout_width="44dp"
             android:layout_height="44dp"
             android:layout_alignParentRight="true"
@@ -36,17 +39,17 @@
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/conf_underline01"
+        android:id="@+id/order_underline01"
         android:layout_width="match_parent"
-        android:layout_height="2dp"
-        android:layout_below="@+id/conf_title_layout"
-        android:background="#CBCBCB" />
+        android:layout_height="1dp"
+        android:layout_below="@+id/order_title_layout"
+        android:background="#9E9E9E" />
 
     <LinearLayout
-        android:id="@+id/conf_dish_title_layout"
+        android:id="@+id/order_dish_title_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/conf_underline01"
+        android:layout_below="@+id/order_underline01"
         android:padding="10dp">
 
         <TextView
@@ -55,7 +58,6 @@
             android:layout_weight="3"
             android:paddingLeft="25dp"
             android:text="菜品"
-            android:textColor="#212121"
             android:textSize="@dimen/text_size_xxsmall" />
 
         <TextView
@@ -64,7 +66,6 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="数量"
-            android:textColor="#212121"
             android:textSize="@dimen/text_size_xxsmall" />
 
         <TextView
@@ -73,88 +74,118 @@
             android:layout_weight="1"
             android:gravity="center"
             android:text="价格"
-            android:textColor="#212121"
             android:textSize="@dimen/text_size_xxsmall" />
 
     </LinearLayout>
 
     <ImageView
-        android:id="@+id/conf_underline02"
+        android:id="@+id/order_underline02"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/conf_dish_title_layout"
-        android:background="#BDBDBD" />
+        android:layout_below="@+id/order_dish_title_layout"
+        android:background="#979797" />
 
-    <ListView
-        android:id="@+id/conf_list"
+    <com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView
+        android:id="@+id/order_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/conf_statistics_layout"
-        android:layout_below="@+id/conf_underline02"></ListView>
+        android:layout_above="@+id/order_statistics_layout"
+        android:layout_below="@+id/order_underline02"
+        android:overScrollMode="never"
+        android:scrollbars="none"></com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView>
 
 
     <RelativeLayout
-        android:id="@+id/conf_statistics_layout"
+        android:id="@+id/order_statistics_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/conf_underline03"
+        android:layout_above="@+id/order_underline03"
         android:paddingBottom="10dp"
         android:paddingLeft="15dp"
         android:paddingRight="15dp"
         android:paddingTop="10dp">
 
         <TextView
-            android:id="@+id/conf_off_price"
+            android:id="@+id/order_off_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginRight="5dp"
             android:text="优惠: 15元"
-            android:textColor="#212121"
             android:textSize="@dimen/text_size_xxsmall" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignTop="@+id/conf_total"
-            android:layout_below="@+id/conf_off_price"
+            android:layout_alignTop="@+id/order_off_price"
+            android:layout_toLeftOf="@+id/order_off_price"
+            android:layout_marginRight="10dp"
             android:text="整单备注:"
-            android:textColor="#212121"
             android:textSize="@dimen/text_size_xxsmall" />
 
         <TextView
-            android:id="@+id/conf_total"
+            android:id="@+id/order_total"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
-            android:layout_below="@+id/conf_off_price"
+            android:layout_below="@+id/order_off_price"
             android:layout_marginTop="5dp"
             android:text="合计: 10个/300元"
-            android:textColor="#212121"
             android:textSize="@dimen/text_size_xsmall" />
 
 
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/conf_underline03"
+        android:id="@+id/order_underline03"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_above="@+id/conf_bottom_layout"
-        android:background="#BDBDBD" />
+        android:layout_above="@+id/order_bottom_layout"
+        android:background="#979797" />
 
     <RadioGroup
-        android:id="@+id/conf_bottom_layout"
+        android:id="@+id/order_bottom_layout"
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:layout_alignParentBottom="true"
         android:orientation="horizontal">
 
         <RadioButton
+            android:id="@+id/order_hurrybtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:background="#E8E8E8"
+            android:button="@null"
+            android:gravity="center"
+            android:text="催菜" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#979797" />
+
+        <RadioButton
+            android:id="@+id/order_deletebtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#E8E8E8"
+            android:button="@null"
+            android:gravity="center"
+            android:text="删菜" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#979797" />
+
+        <RadioButton
+            android:id="@+id/order_addbtn"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#FFBD51"
             android:button="@null"
             android:gravity="center"
             android:text="加菜" />
@@ -162,45 +193,19 @@
         <ImageView
             android:layout_width="1dp"
             android:layout_height="match_parent"
-            android:background="#BDBDBD" />
+            android:background="#979797" />
 
         <RadioButton
+            android:id="@+id/order_paybtn"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#E8E8E8"
+            android:background="#B94258"
             android:button="@null"
             android:gravity="center"
-            android:text="加菜" />
-
-        <ImageView
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="#BDBDBD" />
-
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#E8E8E8"
-            android:button="@null"
-            android:gravity="center"
-            android:text="加菜" />
-
-        <ImageView
-            android:layout_width="1dp"
-            android:layout_height="match_parent"
-            android:background="#BDBDBD" />
-
-        <RadioButton
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:background="#E8E8E8"
-            android:button="@null"
-            android:gravity="center"
-            android:text="加菜" />
+            android:text="结算" />
 
     </RadioGroup>
+
 
 </RelativeLayout>
