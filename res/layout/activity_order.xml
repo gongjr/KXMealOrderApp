@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/activity_root_style">
+
+    <RelativeLayout
+        android:id="@+id/conf_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:paddingTop="10dp">
+
+        <Button
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_centerVertical="true"
+            android:background="@anim/arrow_to_left_btn_bg" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="确认订单"
+            android:textColor="#b94152"
+            android:textSize="@dimen/text_size_large" />
+
+        <Button
+            android:layout_width="44dp"
+            android:layout_height="44dp"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:background="@drawable/bg_more" />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/conf_underline01"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:layout_below="@+id/conf_title_layout"
+        android:background="#CBCBCB" />
+
+    <LinearLayout
+        android:id="@+id/conf_dish_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/conf_underline01"
+        android:padding="10dp">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:paddingLeft="25dp"
+            android:text="菜品"
+            android:textColor="#212121"
+            android:textSize="@dimen/text_size_xxsmall" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="数量"
+            android:textColor="#212121"
+            android:textSize="@dimen/text_size_xxsmall" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="价格"
+            android:textColor="#212121"
+            android:textSize="@dimen/text_size_xxsmall" />
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/conf_underline02"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/conf_dish_title_layout"
+        android:background="#BDBDBD" />
+
+    <ListView
+        android:id="@+id/conf_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/conf_statistics_layout"
+        android:layout_below="@+id/conf_underline02"></ListView>
+
+
+    <RelativeLayout
+        android:id="@+id/conf_statistics_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/conf_underline03"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp">
+
+        <TextView
+            android:id="@+id/conf_off_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="5dp"
+            android:text="优惠: 15元"
+            android:textColor="#212121"
+            android:textSize="@dimen/text_size_xxsmall" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@+id/conf_total"
+            android:layout_below="@+id/conf_off_price"
+            android:text="整单备注:"
+            android:textColor="#212121"
+            android:textSize="@dimen/text_size_xxsmall" />
+
+        <TextView
+            android:id="@+id/conf_total"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/conf_off_price"
+            android:layout_marginTop="5dp"
+            android:text="合计: 10个/300元"
+            android:textColor="#212121"
+            android:textSize="@dimen/text_size_xsmall" />
+
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/conf_underline03"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/conf_bottom_layout"
+        android:background="#BDBDBD" />
+
+    <RadioGroup
+        android:id="@+id/conf_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#E8E8E8"
+            android:button="@null"
+            android:gravity="center"
+            android:text="加菜" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#BDBDBD" />
+
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#E8E8E8"
+            android:button="@null"
+            android:gravity="center"
+            android:text="加菜" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#BDBDBD" />
+
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#E8E8E8"
+            android:button="@null"
+            android:gravity="center"
+            android:text="加菜" />
+
+        <ImageView
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:background="#BDBDBD" />
+
+        <RadioButton
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:background="#E8E8E8"
+            android:button="@null"
+            android:gravity="center"
+            android:text="加菜" />
+
+    </RadioGroup>
+
+</RelativeLayout>
