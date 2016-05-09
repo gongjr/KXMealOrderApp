@@ -275,6 +275,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                     bundle.putString("CURRENT_SELECTED_ORDER", gson.toJson(mDeskOrder));
                     intent.putExtra("BUNDLE", bundle);
                     startActivity(intent);
+                    finish();
                 } else {
                     showShortTip("菜品没有通知后厨无法加菜");
                 }
