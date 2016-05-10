@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.adapter.OrderAdapter;
+import com.asiainfo.mealorder.biz.order.OrderState;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
@@ -73,7 +74,6 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     private DeskOrder mDeskOrder;
     private String childMerchantId;
     private List<DeskOrderGoodsItem> orderGoodsItemList;
-    private UpdateOrderParam mUpdateOrderParam;
 
     private List<DeskOrderGoodsItem> mNormalDisheList = new ArrayList<DeskOrderGoodsItem>(); //普通菜列表
     private List<DishesCompDeskOrderEntity> mCompDishList = new ArrayList<DishesCompDeskOrderEntity>(); // 套餐列表
@@ -93,6 +93,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     private TextView title;
     @InjectView(R.id.order_off_price)
     TextView offPrice;
+    @InjectView(R.id.order_remark)
+    TextView orderRemark;
     @InjectView(R.id.order_total)
     TextView total;
     @InjectView(R.id.order_hurrybtn)
@@ -178,7 +180,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         mSwipeMenuList.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                if (mDeskOrder.getOrderState().equals("B")) {
+                if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_HOLD.getValue())) {
                     switch (index) {
                         case 0:
                             Toast.makeText(mActivity, "菜品没有通知后厨无法退菜!", Toast.LENGTH_SHORT).show();
@@ -253,6 +255,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             Double needPay = StringUtils.str2Double(mDeskOrder.getNeedPay());
             offPrice.setText("优惠: " + df.format(originalPrice - needPay) + "元");
         }
+        orderRemark.setText("整单备注:"+mDeskOrder.getRemark());
     }
 
     @Override
@@ -262,13 +265,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 finish();
                 break;
             case R.id.order_hurrybtn:
-                showShortTip("批量催菜下版本更新");
+                showShortTip("批量催菜暂不支持!");
                 break;
             case R.id.order_deletebtn:
-                showShortTip("批量删菜下版本更新");
+                showShortTip("批量删菜暂不支持!");
                 break;
             case R.id.order_addbtn:
-                if (mDeskOrder.getOrderState().equals("0")) {
+                if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_NORMAL.getValue())) {
                     Intent intent = new Intent(this, MakeOrderActivity.class);
                     Bundle bundle = new Bundle();
                     bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
@@ -278,8 +281,10 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                     intent.putExtra("BUNDLE", bundle);
                     startActivity(intent);
                     finish();
-                } else if (mDeskOrder.getOrderState().equals("B")){
+                } else if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_HOLD.getValue())){
                     showShortTip("菜品没有通知后厨无法加菜");
+                } else{
+                    showShortTip("订单无法加菜操作");
                 }
 
                 break;
@@ -314,16 +319,28 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case 0:
-                        VolleyPrintDeskOrderInfo();
+                        showLoadingDF("正在打印...");
+                        showDelay(new DialogDelayListener() {
+                            @Override
+                            public void onexecute() {
+                                VolleyPrintDeskOrderInfo();
+                            }
+                        }, 200);
                         break;
                     case 1:
+                        showShortTip("暂不支持");
                         break;
                     case 2:
-                        if (mDeskOrder.getOrderState().equals("B")) {
-                            buildmUpdateOrderParamModel();
-                            httpDeskOrderNotifyKitchen2();
+                        if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_HOLD.getValue())) {
+                            showLoadingDF("正在通知后厨...");
+                            showDelay(new DialogDelayListener() {
+                                @Override
+                                public void onexecute() {
+                                    httpDeskOrderNotifyKitchen2(buildmUpdateOrderParamModel());
+                                }
+                            }, 200);
                         } else {
-                            showShortTip("非保留订单通知后厨无效");
+                            showShortTip("非保留订单通知后厨无效!");
                         }
                         break;
                 }
@@ -411,7 +428,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                             }
 
                             mDeskOrder.setOriginalPrice(Arith.d2str(getNewPrice(mDeskOrder.getOriginalPrice(), deskOrderGoodsItemm.getSalesPrice())));//删菜成功后更新本地桌子订单价格
-                            int favorablePrice = Integer.valueOf(deskOrderGoodsItemm.getSalesPrice()) - Integer.valueOf(deskOrderGoodsItemm.getInterferePrice()) - Integer.valueOf(deskOrderGoodsItemm.getDiscountPrice());
+                            int favorablePrice = Integer.valueOf(deskOrderGoodsItemm.getSalesPrice()) - Integer.valueOf(deskOrderGoodsItemm.getInterferePrice()) - Integer.valueOf(deskOrderGoodsItemm.getDiscountPrice())-Integer.valueOf(deskOrderGoodsItemm.getMarketingPrice());
                             mDeskOrder.setNeedPay(Arith.d2str(getNewPrice(mDeskOrder.getNeedPay(), String.valueOf(favorablePrice))));
 
                             int i = 0;
@@ -580,17 +597,17 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                             appPrintDeskOrderInfoResultData response) {
                         if (response.getState() == 1) {
                             showShortTip("打印客单成功!");
-                            dismissMakeOrderDF();
+                            dismissLoadingDF();
                         } else if (response.getState() == 0) {
-                            dismissMakeOrderDF();
-                            showShortTip("打印客单失败,请联系收银员!");
+                            dismissLoadingDF();
+                            showShortTip("打印客单失败!");
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.e(TAG, "VolleyError:" + error.getMessage(), error);
-                        onMakeOrderFailed(VolleyErrorHelper.getMessage(error, mActivity) + "->请点击确定重新打印!", NotityPersistOrderListener);
+                        onLoadingFailed(VolleyErrorHelper.getMessage(error, mActivity) + "->请点击确定重新打印!", NotityPersistOrderListener);
                     }
                 });
     }
@@ -639,7 +656,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         return hurryOrderGoodsItem;
     }
 
-    private void dismissMakeOrderDF() {
+    private void dismissLoadingDF() {
         try {
             if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
                 mMakeOrderDF.dismiss();
@@ -653,7 +670,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     /**
      * 提交失败处理
      */
-    private void onMakeOrderFailed(String msg, DialogDelayListener mListener) {
+    private void onLoadingFailed(String msg, DialogDelayListener mListener) {
         Log.d(TAG, "msg:" + msg);
         try {
             if (mMakeOrderDF != null) {
@@ -668,7 +685,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     DialogDelayListener NotityPersistOrderListener = new DialogDelayListener() {
         @Override
         public void onexecute() {
-            showPrintDF();
+            showLoadingDF("正在打印...");
             showDelay(new DialogDelayListener() {
                 @Override
                 public void onexecute() {
@@ -679,12 +696,12 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     };
 
     /**
-     * 打印
+     * 提示框
      */
-    private void showPrintDF() {
+    private void showLoadingDF(String info) {
         try {
             mMakeOrderDF = new MakeOrderFinishDF();
-            mMakeOrderDF.setNoticeText("正在打印...");
+            mMakeOrderDF.setNoticeText(info);
             mMakeOrderDF.show(getSupportFragmentManager(), "printOrder");
         } catch (Exception e) {
             e.printStackTrace();
@@ -695,11 +712,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     /**
      * 将订单数据装换为通知后厨的参数对象
      */
-    private void buildmUpdateOrderParamModel() {
-        if (mUpdateOrderParam == null) {
-            mUpdateOrderParam = new UpdateOrderParam();
-        }
-
+    private UpdateOrderParam buildmUpdateOrderParamModel() {
+        UpdateOrderParam mUpdateOrderParam = new UpdateOrderParam();
         List<String> mOrderGoodsList = new ArrayList<String>();
         mUpdateOrderParam.setAllGoodsNum(StringUtils.str2Int(mDeskOrder.getAllGoodsNum()));
         mUpdateOrderParam.setChildMerchantId(mDeskOrder.getChildMerchantId());
@@ -713,26 +727,26 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         mUpdateOrderParam.setTradeStsffId(mLoginUserPrefData.getStaffId());
         mUpdateOrderParam.setRemark(mDeskOrder.getRemark());
         mUpdateOrderParam.setInMode(mDeskOrder.getInMode());
-
+        return mUpdateOrderParam;
     }
 
     /**
      * 通知后厨
      */
-    public void httpDeskOrderNotifyKitchen2() {
+    public void httpDeskOrderNotifyKitchen2(UpdateOrderParam mUpdateOrderParam) {
         Map<String, String> paramList = new HashMap<String, String>();
-        Gson gson = new Gson();
         String inparam = gson.toJson(mUpdateOrderParam);
         paramList.put("orderSubmitData", inparam);
         HttpController.getInstance().postUpdateOrderInfo(paramList,
                 new Response.Listener<UpdateOrderInfoResultData>() {
                     @Override
                     public void onResponse(UpdateOrderInfoResultData data) {
+                        dismissLoadingDF();
                         if (data.getState() == 1) {
                             showShortTip("通知后厨成功");
+                            onDeskOrderNotifyKitchenOK();
                         } else {
                             String errorInfo = data.getError();
-//                            onDeskOrderNotifyKitchenFailed(errorInfo);
                             showShortTip("通知后厨失败: " + errorInfo);
                         }
                     }
@@ -740,7 +754,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError arg0) {
-                        showShortTip("网络异常！");
+                        dismissLoadingDF();
+                        showShortTip(VolleyErrorHelper.getMessage(arg0, mActivity));
                     }
                 });
     }
@@ -752,5 +767,13 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         return newprice;
     }
 
-
+    /**
+     * 通知后厨成功后需要,自己修改本地订单内容,以便后续操作可以继续执行
+     */
+    private void onDeskOrderNotifyKitchenOK() {
+        mDeskOrder.setOrderState(OrderState.ORDERSTATE_NORMAL.getValue());
+        for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
+            lDeskOrderGoodsItem.setSalesState("1");
+        }
+    }
 }

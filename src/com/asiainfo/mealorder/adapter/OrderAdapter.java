@@ -1,7 +1,6 @@
 package com.asiainfo.mealorder.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,11 +9,8 @@ import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
-import com.asiainfo.mealorder.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.entity.helper.DishesCompDeskOrderEntity;
-import com.asiainfo.mealorder.entity.helper.PropertySelectEntity;
 import com.asiainfo.mealorder.utils.StringUtils;
-import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -86,22 +82,9 @@ public class OrderAdapter extends BaseAdapter {
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
         holder.dishCount.setText(deskOrderGoodsItem.getSalesNum());
         holder.dishPrice.setText(df.format(salePrice));
-        holder.dishPerPrice.setText(deskOrderGoodsItem.getSalesPrice() + "元");
-
+        holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/份");
         isDishHasRemark(holder, deskOrderGoodsItem);
-        if (deskOrderGoodsItemList != null && deskOrderGoodsItemList.size() != 0) {
-            int size = deskOrderGoodsItemList.size();
-            String comRemark = "";
-            for (int i = 0; i < size; i++) {
-                if (i == 0) {
-                    comRemark += "配置: " + deskOrderGoodsItemList.get(i).getSalesName() + " ";
-                } else {
-                    comRemark += deskOrderGoodsItemList.get(i).getSalesName() + " ";
-                }
-            }
-            holder.dishRemark.setText(comRemark);
-            holder.dishRemark.setVisibility(View.VISIBLE);
-        }
+        isCompDishHasRemark(holder,deskOrderGoodsItemList);
 
         return convertView;
     }
@@ -111,49 +94,35 @@ public class OrderAdapter extends BaseAdapter {
         if (deskOrderGoodsItem.getRemark() != null && !deskOrderGoodsItem.getRemark().equals("")) {
             holder.dishRemark.setText(deskOrderGoodsItem.getRemark());
             holder.dishRemark.setVisibility(View.VISIBLE);
-        } else {
-            holder.dishRemark.setVisibility(View.GONE);
         }
     }
 
     /**
-     * 从属性实体的值中解析属性
-     *
-     * @param remarkList
+     * 判断套餐菜的子菜配置
+     */
+    private void isCompDishHasRemark(OrderAdapterViewHolder holder, List<DeskOrderGoodsItem> deskOrderGoodsItemList) {
+        if (deskOrderGoodsItemList != null && deskOrderGoodsItemList.size() != 0) {
+            String comRemark =getCompDishesRemarkbyChildDishesList(deskOrderGoodsItemList);
+            holder.dishRemark.setText(comRemark);
+            holder.dishRemark.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /**
+     * 服务器订单数据,套餐备注需要组合显示,子菜不显示,删除是全量删除
+     * @param childDishesCompList
      * @return
      */
-    private String fromItemEntityList2Remark(List<String> remarkList) {
-        String r = "";
-        if (remarkList != null && remarkList.size() > 0) {
-            Gson gson = new Gson();
-            for (int m = 0; m < remarkList.size(); m++) {
-                String reItem = remarkList.get(m);
-                Log.d(TAG, "reItem: " + reItem);
-                try {
-                    PropertySelectEntity entityItem = gson.fromJson(reItem, PropertySelectEntity.class);
-                    List<DishesPropertyItem> dpiList = entityItem.getmSelectedItemsList();
-                    if (dpiList != null && dpiList.size() > 0) {
-                        if (m != 0) {
-                            r = r + ",";
-                        }
-                        for (int n = 0; n < dpiList.size(); n++) {
-                            DishesPropertyItem dpItem = dpiList.get(n);
-                            if (n == 0) {
-                                r = r + dpItem.getItemName();
-                            } else {
-                                r = r + "," + dpItem.getItemName();
-                            }
-                        }
-                    }
-                } catch (Exception ex) {
-                    if (m == 0) {
-                        r = r + reItem;
-                    } else {
-                        r = r + "," + reItem;
-                    }
-                }
-            }
+    private String getCompDishesRemarkbyChildDishesList(List<DeskOrderGoodsItem> childDishesCompList){
+        String compDishesName ="" ;
+        if(childDishesCompList!=null&&childDishesCompList.size()>0)compDishesName+="配置：";
+        else return compDishesName;
+        for (int i=0;i<childDishesCompList.size();i++){
+            DeskOrderGoodsItem mDeskOrderGoodsItem = (DeskOrderGoodsItem)childDishesCompList.get(i);
+            if(mDeskOrderGoodsItem.getRemark().equals(""))
+                compDishesName+=" "+mDeskOrderGoodsItem.getSalesName();
+            else compDishesName+=" "+mDeskOrderGoodsItem.getSalesName()+"("+mDeskOrderGoodsItem.getRemark()+")";
         }
-        return r;
+        return compDishesName;
     }
 }

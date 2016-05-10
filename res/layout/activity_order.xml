@@ -115,6 +115,7 @@
             android:textSize="@dimen/text_size_xxsmall" />
 
         <TextView
+            android:id="@+id/order_remark"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/order_off_price"
