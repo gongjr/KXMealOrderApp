@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="fill_parent"
+              android:layout_height="wrap_content"
+              android:orientation="horizontal"
+              android:visibility="gone"
+              android:weightSum="4">
+
+    <android.inputmethodservice.KeyboardView
+        android:id="@+id/num_keyboardview"
+        android:layout_width="0dip"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_weight="3"
+        android:background="@color/numkey_bg"
+        android:focusable="true"
+        android:focusableInTouchMode="true"
+        android:keyBackground="@anim/btn_num_keyboard_key"
+        android:keyPreviewHeight="@dimen/key_height"
+        android:keyPreviewLayout="@layout/numkey_preview"
+        android:keyTextColor="@color/black"
+        android:keyTextSize="@dimen/text_size_xxlarge"
+        android:labelTextSize="@dimen/text_size_xlarge"/>
+
+    <LinearLayout
+        android:layout_width="0dip"
+        android:layout_height="240dip"
+        android:layout_weight="1"
+        android:orientation="vertical"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/num_keyboard_delete"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:background="@anim/selector_btn_numkey_delete"/>
+
+        <Button
+            android:id="@+id/num_keyboard_search"
+            android:layout_width="match_parent"
+            android:layout_height="0dip"
+            android:layout_weight="1"
+            android:background="@anim/selector_btn_numkey_search"
+            android:text="确认"
+            android:textColor="@color/white"
+            android:textSize="@dimen/text_size_xlarge"/>
+
+    </LinearLayout>
+</LinearLayout>
+

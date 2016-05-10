@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/numkey_bg">
+
+    <Button
+        android:id="@+id/user_backbtn"
+        android:layout_width="40dip"
+        android:layout_height="40dip"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:background="@anim/arrow_to_left_btn_bg"
+        android:layout_marginLeft="10dip"
+        android:layout_marginTop="15dip"/>
+
+    <TextView
+        android:id="@+id/user_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginTop="20dip"
+        android:layout_centerHorizontal="true"
+        android:gravity="center"
+        android:text="会员"
+        android:textColor="#b94152"
+        android:textSize="@dimen/text_size_xlarge" />
+
+    <View
+        android:id="@+id/title_line"
+        android:layout_width="match_parent"
+        android:layout_height="1dip"
+        android:background="@color/numkey_stroke_s"
+        android:layout_below="@+id/user_title"
+        android:layout_marginTop="15dip"/>
+
+
+    <EditText
+        android:id="@+id/user_num"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:inputType="numberDecimal"
+        android:layout_below="@+id/title_line"
+        android:layout_marginTop="20dip"
+        android:layout_marginLeft="18dip"
+        android:layout_marginRight="18dip"
+        android:hint="输入会员卡号"
+        android:gravity="center"
+        android:textColorHint="@color/numkey_user_edit_hint_"
+        android:textSize="@dimen/text_size_xlarge"
+        android:background="@anim/bg_edittext_user"/>
+
+    <include
+        android:id="@+id/num_keyboard"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/num_keyboard_view"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

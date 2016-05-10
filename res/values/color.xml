@@ -10,4 +10,6 @@
     <drawable name="cl_confirm_order_time_n">#7d7d7d</drawable>
     <drawable name="cl_view_order_notify_n">#B94258</drawable>
     <drawable name="cl_view_order_notify_s">#ccB94258</drawable>
+    <drawable name="num_keyboard_search_bg">#6baffd</drawable>
+    <drawable name="num_keyboard_press">#bbbbbb</drawable>
 </resources> 

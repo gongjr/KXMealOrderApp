@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="white">#FFFFFF</color>
-    
+    <color name="black">#000000</color>
     <color name="txt_cl_login">#7a7168</color>
     
     <color name="translucent_background">#00000000</color>
@@ -29,5 +29,18 @@
     <color name="peru">#CD853F</color><!--秘鲁色 -->
     <color name="cl_bg_desk_loc_color_item_n">#707070</color>
     <color name="cl_bg_desk_loc_color_item_s">#FF0000</color>
+
+    <!--numkey -->
+
+
+    <color name="numkey_search_bg">#6baffd</color>
+
+    <color name="numkey_bg">#f8f8f8</color>
+
+    <color name="numkey_bg_s">#fff8f8f8</color>
+
+    <color name="numkey_stroke_s">#979797</color>
+
+    <color name="numkey_user_edit_hint_">#9b9b9b</color>
 
 </resources>
