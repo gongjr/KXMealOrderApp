@@ -83,9 +83,9 @@ public class OrderAdapter extends BaseAdapter {
         Double salePrice = Double.parseDouble(deskOrderGoodsItem.getSalesPrice());
 
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
-        holder.dishCount.setText(deskOrderGoodsItem.getSalesNum() + "份");
+        holder.dishCount.setText(deskOrderGoodsItem.getSalesNum());
         holder.dishPrice.setText(df.format(salePrice));
-        holder.dishPerPrice.setText(deskOrderGoodsItem.getSalesPrice() + "元/份");
+        holder.dishPerPrice.setText(deskOrderGoodsItem.getSalesPrice() + "元");
 
         isDishHasRemark(holder, deskOrderGoodsItem);
         if (deskOrderGoodsItemList != null) {
@@ -108,7 +108,7 @@ public class OrderAdapter extends BaseAdapter {
     //判断普通菜是否有备注信息
     private void isDishHasRemark(OrderAdapterViewHolder holder, DeskOrderGoodsItem deskOrderGoodsItem) {
         if (deskOrderGoodsItem.getRemark() != null && !deskOrderGoodsItem.getRemark().equals("")) {
-            holder.dishRemark.setText("口味: " + deskOrderGoodsItem.getRemark());
+            holder.dishRemark.setText(deskOrderGoodsItem.getRemark());
             holder.dishRemark.setVisibility(View.VISIBLE);
         } else {
             holder.dishRemark.setVisibility(View.GONE);

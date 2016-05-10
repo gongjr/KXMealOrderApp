@@ -69,10 +69,6 @@ import roboguice.inject.InjectView;
 public class OrderActivity extends BaseActivity implements View.OnClickListener {
 
     private static final String TAG = "OrderActivity";
-    private static final int ID_PRINT = 1;
-    private static final int ID_COPY = 2;
-    private static final int ID_NOTICE = 3;
-    private OrderSubmit mOrderSubmit;
     private MerchantDesk mDesk;
     private DeskOrder mDeskOrder;
     private String childMerchantId;
@@ -87,6 +83,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     private MerchantRegister merchantRegister;
     private AppApplication BaseApp;
     private MakeOrderFinishDF mMakeOrderDF;
+    private View view;
 
     @InjectView(R.id.order_list)
     private SwipeMenuListView mSwipeMenuList;
@@ -114,6 +111,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         super.onCreate(bundle);
         setContentView(R.layout.activity_order);
         EventBus.getDefault().register(this);
+        view = LayoutInflater.from(this).inflate(R.layout.order_more_layout, null);
         setMenuCreater();
         initData();
         initListener();
@@ -180,7 +178,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
         mSwipeMenuList.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
-                if (!mDeskOrder.getOrderState().equals("0")) {
+                if (mDeskOrder.getOrderState().equals("B")) {
                     switch (index) {
                         case 0:
                             Toast.makeText(mActivity, "菜品没有通知后厨无法退菜!", Toast.LENGTH_SHORT).show();
@@ -244,13 +242,17 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     * */
     private void fillViews() {
         title.setText(mDesk.getDeskName() + "订单" + " [" + mDeskOrder.getPersonNum() + "人]");
+        DecimalFormat df = new DecimalFormat("######0.00");
         Double originalPrice = Double.parseDouble(mDeskOrder.getOriginalPrice());
-        Double needPay = Double.parseDouble(mDeskOrder.getNeedPay());
-        DecimalFormat df = new DecimalFormat("######0.0");
-        offPrice.setText("优惠: " + df.format(originalPrice - needPay) + "元");
-        String html = "<font color='#000000'> 合计: " + (mNormalDisheList.size() + mCompDishList.size()) + "个/</font>"
+        String html = "<font color='#000000'> 合计: " + (mNormalDisheList.size() + mCompDishList.size()) + "道/</font>"
                 + "<font color='#D0021B'>" + df.format(originalPrice) + "</font>" + "<font color='#000000'>元</font>";
         total.setText(Html.fromHtml(html));
+        if (mDeskOrder.getNeedPay() == null || mDeskOrder.getNeedPay().equals("")) {
+            offPrice.setText("优惠: " + df.format(0.00) + "元");
+        } else {
+            Double needPay = Double.parseDouble(mDeskOrder.getNeedPay());
+            offPrice.setText("优惠: " + df.format(originalPrice - needPay) + "元");
+        }
     }
 
     @Override
@@ -276,7 +278,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                     intent.putExtra("BUNDLE", bundle);
                     startActivity(intent);
                     finish();
-                } else {
+                } else if (mDeskOrder.getOrderState().equals("B")){
                     showShortTip("菜品没有通知后厨无法加菜");
                 }
 
@@ -293,18 +295,20 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     * 显示右上角的菜单栏
     * */
     private void showPopupWindow() {
-        View view = LayoutInflater.from(this).inflate(R.layout.order_more_layout, null);
+        if (popupWindow == null) {
+            popupWindow = new PopupWindow(this);
+            popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(100, 238, 238, 238)));
+            popupWindow.setOutsideTouchable(true);
+            popupWindow.setWidth(200);
+            popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+            popupWindow.setFocusable(true);
+            popupWindow.setContentView(view);
+        }
+        popupWindow.showAsDropDown(moreBtn, -100, 0);
         ListView listView = (ListView) view.findViewById(R.id.order_more_list);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.order_more_item, new String[]{"打印", "拷贝", "通知后厨"});
         listView.setAdapter(adapter);
-        popupWindow = new PopupWindow(this);
-        popupWindow.setBackgroundDrawable(new ColorDrawable(Color.argb(100, 238, 238, 238)));
-        popupWindow.setOutsideTouchable(true);
-        popupWindow.setWidth(200);
-        popupWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-        popupWindow.setFocusable(true);
-        popupWindow.setContentView(view);
-        popupWindow.showAsDropDown(moreBtn, -100, 0);
+
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
@@ -315,7 +319,7 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                     case 1:
                         break;
                     case 2:
-                        if (!mDeskOrder.getOrderState().equals("0")) {
+                        if (mDeskOrder.getOrderState().equals("B")) {
                             buildmUpdateOrderParamModel();
                             httpDeskOrderNotifyKitchen2();
                         } else {
@@ -407,7 +411,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
                             }
 
                             mDeskOrder.setOriginalPrice(Arith.d2str(getNewPrice(mDeskOrder.getOriginalPrice(), deskOrderGoodsItemm.getSalesPrice())));//删菜成功后更新本地桌子订单价格
-                            mDeskOrder.setNeedPay(Arith.d2str(getNewPrice(mDeskOrder.getNeedPay(), deskOrderGoodsItemm.getSalesPrice())));
+                            int favorablePrice = Integer.valueOf(deskOrderGoodsItemm.getSalesPrice()) - Integer.valueOf(deskOrderGoodsItemm.getInterferePrice()) - Integer.valueOf(deskOrderGoodsItemm.getDiscountPrice());
+                            mDeskOrder.setNeedPay(Arith.d2str(getNewPrice(mDeskOrder.getNeedPay(), String.valueOf(favorablePrice))));
 
                             int i = 0;
                             if (compDishesList != null && compDishesList.size() > 0) {
