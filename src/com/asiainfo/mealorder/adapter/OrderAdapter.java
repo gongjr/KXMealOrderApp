@@ -13,6 +13,7 @@ import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.entity.helper.DishesCompDeskOrderEntity;
 import com.asiainfo.mealorder.entity.helper.PropertySelectEntity;
+import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.Gson;
 
 import java.text.DecimalFormat;
@@ -80,7 +81,7 @@ public class OrderAdapter extends BaseAdapter {
         }
 
         DecimalFormat df = new DecimalFormat("######0.0");
-        Double salePrice = Double.parseDouble(deskOrderGoodsItem.getSalesPrice());
+        Double salePrice = StringUtils.str2Double(deskOrderGoodsItem.getSalesPrice());
 
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
         holder.dishCount.setText(deskOrderGoodsItem.getSalesNum());
@@ -88,7 +89,7 @@ public class OrderAdapter extends BaseAdapter {
         holder.dishPerPrice.setText(deskOrderGoodsItem.getSalesPrice() + "元");
 
         isDishHasRemark(holder, deskOrderGoodsItem);
-        if (deskOrderGoodsItemList != null) {
+        if (deskOrderGoodsItemList != null && deskOrderGoodsItemList.size() != 0) {
             int size = deskOrderGoodsItemList.size();
             String comRemark = "";
             for (int i = 0; i < size; i++) {

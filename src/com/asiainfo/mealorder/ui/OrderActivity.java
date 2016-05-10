@@ -243,14 +243,14 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
     private void fillViews() {
         title.setText(mDesk.getDeskName() + "订单" + " [" + mDeskOrder.getPersonNum() + "人]");
         DecimalFormat df = new DecimalFormat("######0.00");
-        Double originalPrice = Double.parseDouble(mDeskOrder.getOriginalPrice());
+        Double originalPrice = StringUtils.str2Double(mDeskOrder.getOriginalPrice());
         String html = "<font color='#000000'> 合计: " + (mNormalDisheList.size() + mCompDishList.size()) + "道/</font>"
                 + "<font color='#D0021B'>" + df.format(originalPrice) + "</font>" + "<font color='#000000'>元</font>";
         total.setText(Html.fromHtml(html));
         if (mDeskOrder.getNeedPay() == null || mDeskOrder.getNeedPay().equals("")) {
             offPrice.setText("优惠: " + df.format(0.00) + "元");
         } else {
-            Double needPay = Double.parseDouble(mDeskOrder.getNeedPay());
+            Double needPay = StringUtils.str2Double(mDeskOrder.getNeedPay());
             offPrice.setText("优惠: " + df.format(originalPrice - needPay) + "元");
         }
     }
