@@ -1,0 +1,242 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/activity_root_style"
+    android:background="#F8F8F8">
+
+    <com.asiainfo.mealorder.ui.TitleView
+        android:id="@+id/member_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></com.asiainfo.mealorder.ui.TitleView>
+
+    <ImageView
+        android:id="@+id/member_underline01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/member_title"
+        android:background="#9E9E9E" />
+
+    <TextView
+        android:id="@+id/member_pay_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/member_underline01"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:text="需支付:  ¥300.0"
+        android:textSize="@dimen/text_size_xsmall" />
+
+    <RelativeLayout
+        android:id="@+id/member_msg_layout"
+        android:layout_below="@+id/member_pay_price"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/white"
+        android:layout_marginTop="10dp">
+
+        <TextView
+            android:id="@+id/member_phone_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:textSize="@dimen/text_size_xxsmall"
+            android:text="会 员 手 机"
+            android:gravity="center"
+            />
+
+        <TextView
+            android:id="@+id/member_phone"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:text="1234456777"
+            android:textSize="@dimen/text_size_xxsmall"
+            android:gravity="center"
+            android:layout_alignTop="@+id/member_phone_tag"/>
+
+        <ImageView
+            android:id="@+id/member_underline02"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/member_phone_tag"
+            android:layout_height="1dp"
+            android:background="#D5D5D5"/>
+
+        <TextView
+            android:id="@+id/member_name_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:textSize="@dimen/text_size_xxsmall"
+            android:text="姓 名"
+            android:gravity="center"
+            android:layout_below="@+id/member_underline02"
+            />
+
+        <TextView
+            android:id="@+id/member_name"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:text="小张"
+            android:textSize="@dimen/text_size_xxsmall"
+            android:gravity="center"
+            android:layout_alignTop="@+id/member_name_tag"/>
+
+        <ImageView
+            android:id="@+id/member_underline03"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/member_name_tag"
+            android:layout_height="1dp"
+            android:background="#D5D5D5"/>
+
+        <TextView
+            android:id="@+id/member_card_level_tag"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_marginLeft="15dp"
+            android:textSize="@dimen/text_size_xxsmall"
+            android:text="卡 级 别"
+            android:gravity="center"
+            android:layout_below="@+id/member_underline03"
+            />
+
+        <TextView
+            android:id="@+id/member_card_level"
+            android:layout_width="wrap_content"
+            android:layout_height="45dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="15dp"
+            android:text="普卡"
+            android:textSize="@dimen/text_size_xxsmall"
+            android:gravity="center"
+            android:layout_alignTop="@+id/member_card_level_tag"/>
+
+        <ImageView
+            android:id="@+id/member_underline04"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/member_card_level_tag"
+            android:layout_height="1dp"
+            android:background="#D5D5D5"/>
+
+        <RelativeLayout
+            android:id="@+id/member_balance_layout"
+            android:layout_below="@+id/member_underline04"
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                android:id="@+id/membre_balance_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="余 额"
+                android:textSize="@dimen/text_size_xxsmall"/>
+
+            <TextView
+                android:id="@+id/membre_balance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="¥588.0"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:layout_toRightOf="@+id/membre_balance_tag"/>
+
+            <TextView
+                android:id="@+id/member_balance_yen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="元"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:textSize="@dimen/text_size_xxsmall"/>
+
+            <EditText
+                android:id="@+id/membre_balance_edit"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:background="@android:drawable/editbox_background_normal"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/member_balance_yen"
+                android:layout_marginRight="5dp"
+                android:padding="10dp"
+                android:text="300"
+                />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:id="@+id/member_underline05"
+            android:layout_width="match_parent"
+            android:layout_below="@+id/member_balance_layout"
+            android:layout_height="1dp"
+            android:background="#D5D5D5"/>
+
+        <RelativeLayout
+            android:id="@+id/member_score_layout"
+            android:layout_below="@+id/member_underline05"
+            android:layout_width="match_parent"
+            android:layout_height="45dp">
+
+            <TextView
+                android:id="@+id/membre_score_tag"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="积 分"
+                android:textSize="@dimen/text_size_xxsmall"/>
+
+            <TextView
+                android:id="@+id/membre_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="¥588.0"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:layout_toRightOf="@+id/membre_score_tag"/>
+
+            <TextView
+                android:id="@+id/member_score_yen"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:text="元"
+                android:layout_alignParentRight="true"
+                android:layout_marginRight="15dp"
+                android:textSize="@dimen/text_size_xxsmall"/>
+
+            <EditText
+                android:id="@+id/membre_score_edit"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:background="@android:drawable/editbox_background_normal"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/member_score_yen"
+                android:layout_marginRight="5dp"
+                android:padding="10dp"
+                android:text="300"
+                />
+
+        </RelativeLayout>
+
+    </RelativeLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/member_msg_layout"
+        android:text="优惠券  2张"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textSize="@dimen/text_size_xsmall"/>
+
+
+</RelativeLayout>

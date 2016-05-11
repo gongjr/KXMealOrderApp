@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/activity_root_style"
+    android:background="#F8F8F8">
+
+    <com.asiainfo.mealorder.ui.TitleView
+        android:id="@+id/code_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></com.asiainfo.mealorder.ui.TitleView>
+
+    <ImageView
+        android:id="@+id/code_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/code_title"
+        android:background="#9E9E9E" />
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/code_underline"
+        android:layout_margin="15dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="请输入会员卡号"
+        android:padding="15dp"
+        android:textColorHint="#9B9B9B"
+        android:textSize="@dimen/text_size_small" />
+
+</RelativeLayout>
