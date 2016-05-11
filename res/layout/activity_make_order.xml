@@ -36,7 +36,8 @@
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/btn_search"
             android:layout_marginRight="10dip"
-            android:background="@anim/view_order_btn_bg" />
+            android:background="@anim/view_order_btn_bg"
+            android:visibility="gone"/>
 
         <Button
             android:id="@+id/btn_search"

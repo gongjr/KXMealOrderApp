@@ -107,50 +107,47 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	 * 微信下单，点击通知，进入到下单页面
 	 */
 	private KXPushModel mPushModel;
-	private Boolean isStartFromOnCrete = true;
-	
+
 	@Override
 	protected void onCreate(Bundle bundle) {
 		super.onCreate(bundle);
         setContentView(R.layout.activity_make_order);
         EventBus.getDefault().register(this);
-        if(isStartFromOnCrete){
-        	Bundle mBundle = getIntent().getBundleExtra("BUNDLE");
-            childMerchantId = mBundle.getString("CHILD_MERCHANT_ID");
-            mCurDesk =  (MerchantDesk)mBundle.getSerializable("SELECTED_MERCHANT_DESK");
-            orderPersonNum = mBundle.getInt("ORDER_PERSON_NUM", 0);
-            //加菜数据
-            String mDeskOrderJsonStr = mBundle.getString("CURRENT_SELECTED_ORDER");
-            if(mDeskOrderJsonStr!=null&mDeskOrder==null){
-            	Log.i("tag", "mDeskOrder init:"+mDeskOrder);
-            	mDeskOrder = gson.fromJson(mDeskOrderJsonStr, DeskOrder.class);
-            	ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES;
+        Bundle mBundle = getIntent().getBundleExtra("BUNDLE");
+        childMerchantId = mBundle.getString("CHILD_MERCHANT_ID");
+        mCurDesk =  (MerchantDesk)mBundle.getSerializable("SELECTED_MERCHANT_DESK");
+        orderPersonNum = mBundle.getInt("ORDER_PERSON_NUM", 0);
+        //加菜数据
+        String mDeskOrderJsonStr = mBundle.getString("CURRENT_SELECTED_ORDER");
+        if(mDeskOrderJsonStr!=null&mDeskOrder==null){
+            Log.i("tag", "mDeskOrder init:"+mDeskOrder);
+            mDeskOrder = gson.fromJson(mDeskOrderJsonStr, DeskOrder.class);
+            ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES;
+        }
+        //微信点餐推送的数据
+        if(mBundle.getSerializable("KX_PUSH_MODEL")!=null){
+            mPushModel = (KXPushModel)mBundle.getSerializable("KX_PUSH_MODEL");
+            String mPushedOrderJsonStr = mBundle.getString("CURRENT_PUSHED_ORDER");
+            Log.d(TAG, "mPushedOrderJsonStr: " + mPushedOrderJsonStr);
+            if(mPushedOrderJsonStr!=null){
+                mPushedOrder = gson.fromJson(mPushedOrderJsonStr, DeskOrder.class);
+                ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER;
             }
-            //微信点餐推送的数据
-            if(mBundle.getSerializable("KX_PUSH_MODEL")!=null){
-            	mPushModel = (KXPushModel)mBundle.getSerializable("KX_PUSH_MODEL");
-            	String mPushedOrderJsonStr = mBundle.getString("CURRENT_PUSHED_ORDER");
-            	Log.d(TAG, "mPushedOrderJsonStr: " + mPushedOrderJsonStr);
-                if(mPushedOrderJsonStr!=null){
-                	mPushedOrder = gson.fromJson(mPushedOrderJsonStr, DeskOrder.class);
-                	ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER;
-                }
-            	Log.d(TAG, "微信推送的数据");
-            }else{
-            	Log.d(TAG, "没有收到微信推送的数据");
-            }
-            //从选桌页面进入查看hold订单页面
-            Boolean notifyKitchen = mBundle.getBoolean("DESK_ORDER_NOTIFY_KITCHEN", false);
-            if(notifyKitchen){
-            	Log.d(TAG, "直接进入查看hold订单");
-            	showViewHoldOrderDF();
-            }
-            initData();
-            initListener();
-            if(ORDER_CONFIRM_TYPE==Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER){
-            	//showViewOrderPushedDishesDF(true, mPushedOrder);
-            	showViewOrderPushedDishesDF();
-            }
+            Log.d(TAG, "微信推送的数据");
+        }else{
+            Log.d(TAG, "没有收到微信推送的数据");
+        }
+        //从选桌页面进入查看hold订单页面
+        Boolean notifyKitchen = mBundle.getBoolean("DESK_ORDER_NOTIFY_KITCHEN", false);
+        if(notifyKitchen){
+            Log.d(TAG, "直接进入查看hold订单");
+            showViewHoldOrderDF();
+        }
+        initData();
+        initListener();
+        if(ORDER_CONFIRM_TYPE==Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER){
+            //showViewOrderPushedDishesDF(true, mPushedOrder);
+            showViewOrderPushedDishesDF();
         }
 	}
 
@@ -180,41 +177,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
     protected void onResume() {
     	super.onResume();
     	Log.d(TAG, "onResume");
-    	
-    	if(!isStartFromOnCrete){
-    		Bundle mBundle = getIntent().getBundleExtra("BUNDLE");
-            childMerchantId = mBundle.getString("CHILD_MERCHANT_ID");
-            mCurDesk =  (MerchantDesk)mBundle.getSerializable("SELECTED_MERCHANT_DESK");
-            orderPersonNum = mBundle.getInt("ORDER_PERSON_NUM", 0);
-            //加菜数据
-            String mDeskOrderJsonStr = mBundle.getString("CURRENT_SELECTED_ORDER");            
-            	if(mDeskOrderJsonStr!=null&mDeskOrder==null){
-                	Log.i("tag", "mDeskOrder init:"+mDeskOrder);
-            	mDeskOrder = gson.fromJson(mDeskOrderJsonStr, DeskOrder.class);
-            	ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES;
-            }
-            //微信点餐推送的数据
-            if(mBundle.getSerializable("KX_PUSH_MODEL")!=null){
-            	mPushModel = (KXPushModel)mBundle.getSerializable("KX_PUSH_MODEL");
-            	String mPushedOrderJsonStr = mBundle.getString("CURRENT_PUSHED_ORDER");
-            	Log.d(TAG, "mPushedOrderJsonStr: " + mPushedOrderJsonStr);
-                if(mPushedOrderJsonStr!=null){
-                	mPushedOrder = gson.fromJson(mPushedOrderJsonStr, DeskOrder.class);
-                	ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER;
-                }
-            	Log.d(TAG, "微信推送的数据");
-             }else{
-            	Log.d(TAG, "没有收到微信推送的数据");
-             }
-            
-             tv_headTitle.setText(Html.fromHtml(String.format(mRes.getString(R.string.make_order_info), 
-            		mCurDesk.getDeskName(), orderPersonNum+"")));
-             
-             if(ORDER_CONFIRM_TYPE==Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER){
-             	//showViewOrderPushedDishesDF(true, mPushedOrder);
-             	showViewOrderPushedDishesDF();
-             }
-    	}
     };
 
 	public void initData(){
@@ -227,11 +189,11 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		mLoginUserPrefData = new LoginUserPrefData(MakeOrderActivity.this);
 		orderGoodsList = new ArrayList<OrderGoodsItem>();
 		orderCompGoodsList = new ArrayList<DishesCompSelectionEntity>();
-		if(mDeskOrder==null || StringUtils.str2Int(mDeskOrder.getAllGoodsNum())==0){
+		/*if(mDeskOrder==null || StringUtils.str2Int(mDeskOrder.getAllGoodsNum())==0){
 			btn_viewOrder.setVisibility(View.INVISIBLE);
 		}else{
 			btn_viewOrder.setVisibility(View.VISIBLE);
-		}
+		}*/
 		
 		tv_headTitle.setText(Html.fromHtml(String.format(mRes.getString(R.string.make_order_info), mCurDesk.getDeskName(), orderPersonNum+"")));
 		mOrderSubmit = new OrderSubmit(); //创建点菜订单对象
@@ -565,7 +527,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	private void showViewOrderCurrentDishesDF(){
 		String orderContent =  gson.toJson(mDeskOrder);
         startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_DESK_ORDER, orderContent, "");
-//        showViewOrderDishesDF(Constants.VIEW_ORDER_DIALOG_TYPE_DESK_ORDER, orderContent, "","df_view_order_current_dishes");
 	}
 	
 	/**
@@ -583,8 +544,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		intent.putExtras(args);
 		startActivity(intent);
 		overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-//        startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp);
-//        showViewOrderDishesDF(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp,"df_view_order_new_dishes");
 	}
 	
 	/**
@@ -594,7 +553,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		Log.d(TAG, "view hold order dishes");
 		String orderContent =  gson.toJson(mDeskOrder);
         startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_NOTIFY_KITCHEN, orderContent, "");
-//        showViewOrderDishesDF(Constants.VIEW_ORDER_DIALOG_TYPE_NOTIFY_KITCHEN, orderContent, "","df_view_order_current_dishes");
 	}
 	
 	/**
@@ -604,7 +562,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		Log.d(TAG, "view pushed dishes");
 		String orderContent =  gson.toJson(mPushedOrder);
         startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_WEIXIN_PUSH, orderContent, "");
-//        showViewOrderDishesDF(Constants.VIEW_ORDER_DIALOG_TYPE_WEIXIN_PUSH, orderContent, "","df_view_order_current_dishes");
 	}
 	
 	/**
@@ -617,7 +574,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	    String orderContent = gson.toJson(mOrderSubmit);
 	    String orderDishesComp = gson.toJson(orderCompGoodsList);
         startViewOrderActivity(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp);
-//        showViewOrderDishesDF(Constants.VIEW_ORDER_DIALOG_TYPE_NEW_ORDER, orderContent, orderDishesComp,"df_view_order_new_dishes");
 	}
 	
 	/**
@@ -944,16 +900,15 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 			}
 		};
 	};
-	
+
 	@Override
 	protected void onPause() {
+        Log.i("onPause","onPause");
 		super.onPause();
-		isStartFromOnCrete = false;
 	};
 	
 	@Override
 	protected void onDestroy() {
-		isStartFromOnCrete = true;
         EventBus.getDefault().unregister(this);
 		super.onDestroy();
 	}
@@ -977,12 +932,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
         intent.putExtras(args);
         startActivity(intent);
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
-    }
-
-    public void showViewOrderDishesDF(int dialogType, String orderContent, String orderDishesComp,String name){
-        ViewOrderDishesDF mViewOrderDishesDF = ViewOrderDishesDF
-                .newInstance(dialogType, orderContent, orderDishesComp);
-        mViewOrderDishesDF.show(getSupportFragmentManager(), name);
     }
 
 }
