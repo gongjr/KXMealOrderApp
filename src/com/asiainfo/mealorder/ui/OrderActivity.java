@@ -289,6 +289,8 @@ public class OrderActivity extends BaseActivity implements View.OnClickListener 
 
                 break;
             case R.id.order_paybtn:
+                Intent intent = new Intent(this, AccountActivity.class);
+                startActivity(intent);
                 break;
             case R.id.order_morebtn:
                 showPopupWindow();
