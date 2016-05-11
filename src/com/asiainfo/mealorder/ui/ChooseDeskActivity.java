@@ -162,7 +162,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                 if (actionId == ID_refresh) {
                     source.dismiss();
                     MerchantRegister merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
-                    httpGetMerchantDishes2(childMerchantId,merchantRegister.getMerchantId());
+                    httpGetMerchantDishes2(childMerchantId, merchantRegister.getMerchantId());
                 } else if (actionId == ID_exit) {
                     source.dismiss();
                     finish();
@@ -281,18 +281,19 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
      */
     private void initLocDeskData2(){
         onShowLoading("正在加载桌子数据~~~");
-        HttpController.getInstance().getDeskLocation(childMerchantId,new Listener<JSONObject>() {
+        HttpController.getInstance().getDeskLocation(childMerchantId, new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
                         Log.d(TAG, "data: " + data);
                         try {
-                            if(data.getString("msg").equals("ok")){
+                            if (data.getString("msg").equals("ok")) {
                                 String info = data.getJSONObject("data").getString("info");
                                 Gson gson = new Gson();
                                 mMerchantDeskLocList = gson.fromJson(info,
-                                        new TypeToken<List<MerchantDeskLocation>>(){}.getType());
+                                        new TypeToken<List<MerchantDeskLocation>>() {
+                                        }.getType());
                                 initDeskLocData();
-                            }else{
+                            } else {
                                 onShowEmpty("桌子数据异常");
                                 showShortTip("桌子数据异常!");
                             }
@@ -318,7 +319,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 	 */
 	private void httpGetLocDeskData1(){
 		String url = "/appController/queryDeskLocation.do?childMerchantId="+childMerchantId;
-		Log.d(TAG, "httpGetLocDeskData: " + HttpController.HOST+url);
+		Log.d(TAG, "httpGetLocDeskData: " + HttpController.HOST + url);
 		JsonObjectRequest httpGetLocDeskData = new JsonObjectRequest(
 				HttpController.HOST+url, null,
 				new Listener<JSONObject>() {
@@ -597,7 +598,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 				isHandled = true;
 				Gson gson = new Gson();
 				String deskOrderJsonStr = gson.toJson(deskOrder);
-				Intent intent = new Intent(ChooseDeskActivity.this, OrderActivity.class);
+				Intent intent = new Intent(ChooseDeskActivity.this, DeskOrderActivity.class);
 				Bundle bundle = new Bundle();
 				bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
 				bundle.putSerializable("SELECTED_MERCHANT_DESK", mCurDesk);
@@ -616,7 +617,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 						//加菜
 						Gson gson = new Gson();
 						String deskOrderJsonStr = gson.toJson(deskOrder);
-						Intent intent = new Intent(ChooseDeskActivity.this, OrderActivity.class);
+						Intent intent = new Intent(ChooseDeskActivity.this, DeskOrderActivity.class);
 						Bundle bundle = new Bundle();
 						bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
 						bundle.putSerializable("SELECTED_MERCHANT_DESK", mCurDesk);
@@ -629,7 +630,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 						//通知后厨
 						Gson gson = new Gson();
 						String deskOrderJsonStr = gson.toJson(deskOrder);
-						Intent intent = new Intent(ChooseDeskActivity.this, OrderActivity.class);
+						Intent intent = new Intent(ChooseDeskActivity.this, DeskOrderActivity.class);
 						Bundle bundle = new Bundle();
 						bundle.putString("CHILD_MERCHANT_ID", childMerchantId);
 						bundle.putSerializable("SELECTED_MERCHANT_DESK", mCurDesk);
@@ -647,12 +648,12 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 
 	public void initListener(){
 		btn_exit.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 quickAction.show(v);
                 backgroundAlpha(0.5f);
-			}
-		});
+            }
+        });
         setmEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
             @Override
             public void onLeftBtnFinish() {
@@ -663,7 +664,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
             public void onRightBtnFinish() {
                 finish();
             }
-        },"","退出登录吗？");
+        }, "", "退出登录吗？");
 	}
 	
 	/**
@@ -752,32 +753,34 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
      */
     private void httpGetDeskOrderByDeskId2(){
         showCommonDialog("正在获取订单...");
-        HttpController.getInstance().getUnfinishedOrderByDeskId(childMerchantId,mCurDesk.getDeskId(),new Listener<JSONObject>() {
+        HttpController.getInstance().getUnfinishedOrderByDeskId(childMerchantId, mCurDesk.getDeskId(), new Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject data) {
-                        Log.d(TAG, "httpGetDeskOrderByDeskId: "+data.toString());
+                        Log.d(TAG, "httpGetDeskOrderByDeskId: " + data.toString());
                         dismissCommonDialog();
                         try {
-                            if(data.getString("msg").equals("ok")){
+                            if (data.getString("msg").equals("ok")) {
                                 String info = data.getJSONObject("data").getString("info");
                                 Gson gson = new Gson();
-                                mDeskOrderList = gson.fromJson(info, new TypeToken<List<DeskOrder>>(){}.getType());
+                                mDeskOrderList = gson.fromJson(info, new TypeToken<List<DeskOrder>>() {
+                                }.getType());
                                 Log.d(TAG, "mDeskOrderList.size(): " + mDeskOrderList.size());
-                                if(mDeskOrderList==null || mDeskOrderList.size()==0){
+                                if (mDeskOrderList == null || mDeskOrderList.size() == 0) {
                                     openNewDeskInputPersonNumDialog();
-                                }else{
-                                    List<DeskOrder> abandonedOrder =new ArrayList<DeskOrder>();
-                                    for (DeskOrder mDeskOrder:mDeskOrderList){
-                                        if(mDeskOrder.getOrderState().equals("11")){
+                                } else {
+                                    List<DeskOrder> abandonedOrder = new ArrayList<DeskOrder>();
+                                    for (DeskOrder mDeskOrder : mDeskOrderList) {
+                                        if (mDeskOrder.getOrderState().equals("11")) {
                                             abandonedOrder.add(mDeskOrder);
                                         }
                                     }
-                                    if(abandonedOrder.size()>0&&mDeskOrderList.size()>=abandonedOrder.size())
+                                    if (abandonedOrder.size() > 0 && mDeskOrderList.size() >= abandonedOrder.size())
                                         mDeskOrderList.removeAll(abandonedOrder);
-                                    if(mDeskOrderList.size()==0)openNewDeskInputPersonNumDialog();
+                                    if (mDeskOrderList.size() == 0)
+                                        openNewDeskInputPersonNumDialog();
                                     else openDeskOrderSelectDialog();
                                 }
-                            }else{
+                            } else {
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -914,58 +917,58 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
 
     private void httpGetMerchantDishes2(String childMerchantId,String MerchantId) {
         showCommonDialog("正在更新菜单...");
-        HttpController.getInstance().getMerchantDishes(childMerchantId,MerchantId,new Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject data) {
-                        try {
-                            if (data.getString("msg").equals("ok")) {
-                                Gson gson = new Gson();
-                                JSONObject datainfo=data.getJSONObject("data");
-                                mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
-                                }.getType());
-                                Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
-                                mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
-                                }.getType());
-                                Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
+        HttpController.getInstance().getMerchantDishes(childMerchantId, MerchantId, new Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject data) {
+                try {
+                    if (data.getString("msg").equals("ok")) {
+                        Gson gson = new Gson();
+                        JSONObject datainfo = data.getJSONObject("data");
+                        mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
+                        }.getType());
+                        Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
+                        mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
+                        }.getType());
+                        Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
 
-                                if(datainfo.has("attrs")){
-                                    QueryAppMerchantPublicAttr attr=new QueryAppMerchantPublicAttr();
-                                    ArrayList<PublicDishesItem> attrInfos=gson.fromJson(datainfo.getString("attrs"), new TypeToken<ArrayList<PublicDishesItem>>() {
-                                    }.getType());
-                                    attr.setInfo(attrInfos);
-                                    baseApp.assignData(baseApp.KEY_GLOABLE_PUBLICATTR,attr);
+                        if (datainfo.has("attrs")) {
+                            QueryAppMerchantPublicAttr attr = new QueryAppMerchantPublicAttr();
+                            ArrayList<PublicDishesItem> attrInfos = gson.fromJson(datainfo.getString("attrs"), new TypeToken<ArrayList<PublicDishesItem>>() {
+                            }.getType());
+                            attr.setInfo(attrInfos);
+                            baseApp.assignData(baseApp.KEY_GLOABLE_PUBLICATTR, attr);
 //                                    baseApp.setPublicAttr(attr);
-                                }
-//                                else   baseApp.setPublicAttr(null);
-                                EventBackground event = new EventBackground();
-                                DishesListEntity DishesListEntity = new DishesListEntity();
-                                DishesListEntity.setmDishTypeDataList(mDishTypeDataList);
-                                DishesListEntity.setmAllDishesDataList(mAllDishesDataList);
-                                event.setData(DishesListEntity);
-                                event.setName(ChooseDeskActivity.class.getName());
-                                event.setType(EventBackground.TYPE_FIRST);
-                                event.setDescribe("菜单数据传入后台线程存入数据库");
-                                EventBus.getDefault().post(event);
-                                dismissCommonDialog();
-                            } else {
-                                dismissCommonDialog();
-                                showShortTip("菜品更新失败! " + data.getString("msg"));
-                                Log.d(TAG, "菜品更新失败,请确认菜单!");
-                            }
-                        } catch (JSONException e) {
-                            dismissCommonDialog();
-                            showShortTip("菜品更新失败,请确认菜单! ");
-                            e.printStackTrace();
                         }
-                    }
-                },new ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
+//                                else   baseApp.setPublicAttr(null);
+                        EventBackground event = new EventBackground();
+                        DishesListEntity DishesListEntity = new DishesListEntity();
+                        DishesListEntity.setmDishTypeDataList(mDishTypeDataList);
+                        DishesListEntity.setmAllDishesDataList(mAllDishesDataList);
+                        event.setData(DishesListEntity);
+                        event.setName(ChooseDeskActivity.class.getName());
+                        event.setType(EventBackground.TYPE_FIRST);
+                        event.setDescribe("菜单数据传入后台线程存入数据库");
+                        EventBus.getDefault().post(event);
                         dismissCommonDialog();
-                        Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
-                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    } else {
+                        dismissCommonDialog();
+                        showShortTip("菜品更新失败! " + data.getString("msg"));
+                        Log.d(TAG, "菜品更新失败,请确认菜单!");
                     }
-                });
+                } catch (JSONException e) {
+                    dismissCommonDialog();
+                    showShortTip("菜品更新失败,请确认菜单! ");
+                    e.printStackTrace();
+                }
+            }
+        }, new ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dismissCommonDialog();
+                Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+            }
+        });
     }
 
     @Override

@@ -1,4 +1,4 @@
-package com.asiainfo.mealorder.ui;
+package com.asiainfo.mealorder.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;

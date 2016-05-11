@@ -3,10 +3,10 @@
     style="@style/activity_root_style"
     android:background="#F8F8F8">
 
-    <com.asiainfo.mealorder.ui.TitleView
+    <com.asiainfo.mealorder.widget.TitleView
         android:id="@+id/account_title"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></com.asiainfo.mealorder.ui.TitleView>
+        android:layout_height="wrap_content"></com.asiainfo.mealorder.widget.TitleView>
 
     <ImageView
         android:id="@+id/account_underline01"

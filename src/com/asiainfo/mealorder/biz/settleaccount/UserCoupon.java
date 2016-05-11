@@ -1,4 +1,4 @@
-package com.asiainfo.mealorder.biz.settle;
+package com.asiainfo.mealorder.biz.settleaccount;
 
 import java.sql.Time;
 import java.util.ArrayList;

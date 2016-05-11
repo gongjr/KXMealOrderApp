@@ -1,6 +1,5 @@
 package com.asiainfo.mealorder.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
@@ -8,14 +7,16 @@ import android.widget.TextView;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
+import com.asiainfo.mealorder.widget.TitleView;
 
 import roboguice.inject.InjectView;
 
 /**
+ * singleTask加载模式
  * @author skynight(skynight@dingtalk.com)
  * @creatTime 16/5/10 下午4:43
  */
-public class AccountActivity extends BaseActivity implements View.OnClickListener {
+public class SettleAccountActivity extends BaseActivity implements View.OnClickListener {
 
     @InjectView(R.id.account_title)
     private TitleView titleView;
@@ -53,9 +54,8 @@ public class AccountActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.account_member_card:
-                Intent intent = new Intent(this, MemberCodeActivity.class);
-                startActivity(intent);
+                 getOperation().forward(SearchUserActivity.class);
                 break;
-        }
+       }
     }
 }

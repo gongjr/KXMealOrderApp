@@ -1,4 +1,4 @@
-package com.asiainfo.mealorder.biz.settle;
+package com.asiainfo.mealorder.biz.settleaccount;
 
 import com.android.volley.Response;
 import com.asiainfo.mealorder.entity.DeskOrder;

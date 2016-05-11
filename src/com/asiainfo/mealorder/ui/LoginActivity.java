@@ -193,7 +193,6 @@ public class LoginActivity extends BaseActivity {
                     httpAttendantLogin2();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
-                    getOperation().forward(SearchUserActivity.class);
 //                    LakalaController.init(mActivity);
 //                    LakalaController.getInstance().testPrint(mActivity);
                 }
