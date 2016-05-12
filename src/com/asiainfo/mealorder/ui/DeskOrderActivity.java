@@ -289,8 +289,14 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
 
                 break;
             case R.id.order_paybtn:
-                Intent intent = new Intent(this, SettleAccountActivity.class);
-                startActivity(intent);
+                if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_NORMAL.getValue())) {
+                    Intent intent = new Intent(this, SettleAccountActivity.class);
+                    startActivity(intent);
+                } else if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_HOLD.getValue())) {
+                    showShortTip("菜品没有通知后厨无法加菜");
+                } else{
+                    showShortTip("订单无法加菜操作");
+                }
                 break;
             case R.id.order_morebtn:
                 showPopupWindow();
