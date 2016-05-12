@@ -22,7 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.adapter.OrderAdapter;
+import com.asiainfo.mealorder.adapter.DeskOrderAdapter;
 import com.asiainfo.mealorder.biz.order.OrderState;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.entity.DeskOrder;
@@ -78,7 +78,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
     private List<DeskOrderGoodsItem> mNormalDisheList = new ArrayList<DeskOrderGoodsItem>(); //普通菜列表
     private List<DishesCompDeskOrderEntity> mCompDishList = new ArrayList<DishesCompDeskOrderEntity>(); // 套餐列表
     private PopupWindow popupWindow;
-    private OrderAdapter orderAdapter = null;
+    private DeskOrderAdapter deskOrderAdapter = null;
     private LoginUserPrefData mLoginUserPrefData;
     private MerchantRegister merchantRegister;
     private AppApplication BaseApp;
@@ -111,7 +111,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle bundle) {
         super.onCreate(bundle);
-        setContentView(R.layout.activity_order);
+        setContentView(R.layout.activity_desk_order);
         EventBus.getDefault().register(this);
         view = LayoutInflater.from(this).inflate(R.layout.order_more_layout, null);
         setMenuCreater();
@@ -166,8 +166,8 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
         getDataFromDeskOrder();
         fillViews();
         //设置菜品列表数据
-        orderAdapter = new OrderAdapter(this, mNormalDisheList, mCompDishList);
-        mSwipeMenuList.setAdapter(orderAdapter);
+        deskOrderAdapter = new DeskOrderAdapter(this, mNormalDisheList, mCompDishList);
+        mSwipeMenuList.setAdapter(deskOrderAdapter);
     }
 
     private void initListener() {
@@ -467,7 +467,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                                 }
                             }
                             mDeskOrder.setOrderGoods(orderGoods);
-                            orderAdapter.notifyDataSetChanged();
+                            deskOrderAdapter.notifyDataSetChanged();
                             Toast.makeText(mActivity, "  删除<" + deskOrderGoodsItemm.getSalesName() + ">成功!", Toast.LENGTH_SHORT).show();
 //                            tv_dishCount.setText("共" + getNumInfobyDeskOrder() + "个"); //数量
 //                            tv_dishPrice.setText("合计￥:" + mDeskOrder.getOriginalPrice()); //原价

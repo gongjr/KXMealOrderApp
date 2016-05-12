@@ -19,14 +19,14 @@ import java.util.List;
  * @author skynight(skynight@dingtalk.com)
  * @creatTime 16/5/6 下午5:52
  */
-public class OrderAdapter extends BaseAdapter {
+public class DeskOrderAdapter extends BaseAdapter {
 
     private static final String TAG = "OrderAdapter";
     private Context context;
     private List<DeskOrderGoodsItem> mNormalDishList;
     private List<DishesCompDeskOrderEntity> mCompDishList;
 
-    public OrderAdapter(Context context, List<DeskOrderGoodsItem> mNormalDishList, List<DishesCompDeskOrderEntity> mCompDishList) {
+    public DeskOrderAdapter(Context context, List<DeskOrderGoodsItem> mNormalDishList, List<DishesCompDeskOrderEntity> mCompDishList) {
         this.context = context;
         this.mNormalDishList = mNormalDishList;
         this.mCompDishList = mCompDishList;
@@ -56,7 +56,7 @@ public class OrderAdapter extends BaseAdapter {
         OrderAdapterViewHolder holder = null;
         if (convertView == null) {
             holder = new OrderAdapterViewHolder();
-            convertView = LayoutInflater.from(context).inflate(R.layout.lvitem_order_item, null);
+            convertView = LayoutInflater.from(context).inflate(R.layout.lvitem_desk_order_item, null);
             holder.dishName = (TextView) convertView.findViewById(R.id.order_item_dish_name);
             holder.dishCount = (TextView) convertView.findViewById(R.id.order_item_dish_count);
             holder.dishPrice = (TextView) convertView.findViewById(R.id.order_item_dish_price);
