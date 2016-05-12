@@ -155,7 +155,7 @@
                 android:textSize="@dimen/text_size_xxsmall"/>
 
             <EditText
-                android:id="@+id/membre_balance_edit"
+                android:id="@+id/member_balance_edit"
                 android:layout_width="80dp"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/text_size_xxsmall"
@@ -165,6 +165,7 @@
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
                 android:text="300"
+                android:focusable="false"
                 />
 
         </RelativeLayout>
@@ -222,6 +223,7 @@
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
                 android:text="300"
+                android:focusable="false"
                 />
 
         </RelativeLayout>
