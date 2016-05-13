@@ -289,10 +289,16 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
 
                 break;
             case R.id.order_paybtn:
-                Intent intent = new Intent(this, SettleAccountActivity.class);
-                String deskOrder=gson.toJson(mDeskOrder);
-                intent.putExtra("deskOrder",deskOrder);
-                startActivity(intent);
+                if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_NORMAL.getValue())) {
+                    Intent intent = new Intent(this, SettleAccountActivity.class);
+                    String deskOrder=gson.toJson(mDeskOrder);
+                    intent.putExtra("deskOrder",deskOrder);
+                    startActivity(intent);
+                } else if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_HOLD.getValue())){
+                    showShortTip("菜品没有通知后厨无法结算");
+                } else{
+                    showShortTip("订单无法进行结算操作");
+                }
                 break;
             case R.id.order_morebtn:
                 showPopupWindow();

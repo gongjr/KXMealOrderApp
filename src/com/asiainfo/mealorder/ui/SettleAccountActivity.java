@@ -98,7 +98,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 refreshPrice();
                 break;
             case R.id.account_code:
-                getOperation().forward(SearchUserActivity.class);
+                mPreSubmitPay.addOrderPay(payTypeList.get(PayMent.WeixinPayMent),mPreSubmitPay.getPrePrice().getShouldPay());
+                refreshPrice();
                 break;
        }
     }

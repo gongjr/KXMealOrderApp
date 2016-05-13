@@ -63,7 +63,7 @@ public class PreSubmitPay {
 
         String orderMarketingList=gson.toJson(mOrderMarketingList);
 
-        String orderPayList=gson.toJson(mOrderPayList);
+        String orderPayList=gson.toJson(getOrderPayListWithOddChange());
 
         //订单信息
         postParams.put("orderData",orderData);
@@ -267,6 +267,33 @@ public class PreSubmitPay {
         lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
         mOrderPayList.add(lOrderPay);
         mPrePrice.addCurPayPrice(price);
+    }
+
+    /**
+     * 最后结算提交的时候,判断是否找零,
+     * 有的话,需要向服务器提交找零支付信息
+     * 避免修改本地当前支付内容,在支付失败等其他情况下复用异常
+     */
+    public List<OrderPay> getOrderPayListWithOddChange(){
+        Double pLDouble= StringUtils.str2Double(getPrePrice().getOddChange());
+        if (pLDouble>0){
+            List<OrderPay> lOrderPays=new ArrayList<>();
+            for (OrderPay lOrderPay:mOrderPayList){
+                lOrderPays.add(lOrderPay);
+            }
+            OrderPay lOrderPay=new OrderPay();
+            lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
+            lOrderPay.setPayPrice(pLDouble.longValue());
+            //支付类型信息
+            lOrderPay.setPayType(PayMent.OddChangePayMent.getValue());
+            lOrderPay.setPayTypeName(PayMent.OddChangePayMent.getTitle());
+            //操作工号
+            lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
+            lOrderPays.add(lOrderPay);
+            return lOrderPays;
+        }else{
+            return mOrderPayList;
+        }
     }
 
 }
