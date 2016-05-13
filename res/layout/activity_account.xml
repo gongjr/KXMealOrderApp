@@ -73,7 +73,7 @@
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="15dp"
-                android:text="已收金额"
+                android:text="已付金额"
                 android:textSize="@dimen/text_size_xxsmall" />
 
             <ImageView
@@ -91,6 +91,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/account_price_all"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
@@ -269,6 +270,7 @@
             android:background="#979797" />
 
         <TextView
+            android:id="@+id/account_bank_card"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"
@@ -282,6 +284,7 @@
             android:background="#979797" />
 
         <TextView
+            android:id="@+id/account_code"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="1"

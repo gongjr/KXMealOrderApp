@@ -179,4 +179,19 @@ public class Arith {
         }
     }
 
+    /**
+     * 倘若小数点后为0，则省略
+     * @param priceSum
+     * @return
+     */
+    public static String d2str2(Double priceSum){
+        int sum=convertsToInt(priceSum);
+        if(compareTo(sub(priceSum,Double.valueOf(sum+"")),0.0)==0){
+            return sum+"";
+        }else{
+            priceSum=round(priceSum,2);
+            return priceSum+"";
+        }
+    }
+
 }

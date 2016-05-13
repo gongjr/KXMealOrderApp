@@ -3,10 +3,12 @@ package com.asiainfo.mealorder.biz.settleaccount;
 import com.android.volley.Response;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
+import com.asiainfo.mealorder.entity.MerchantRegister;
 import com.asiainfo.mealorder.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.entity.OrderSubmit;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
 import com.asiainfo.mealorder.http.HttpController;
+import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -21,24 +23,33 @@ import java.util.Map;
  * mail : gjr9596@gmail.com
  */
 public class PreSubmitPay {
-
+    /**
+     * 当前支付订单信息
+     */
+    private DeskOrder mDeskOrder;
+    /**
+     * 当前预付价格
+     */
+    private PrePrice mPrePrice;
     private List<OrderPay> mOrderPayList=new ArrayList<>();
     private List<OrderMarketing> mOrderMarketingList=new ArrayList<>();
     private List<UserCoupon> mUserCouponList =new ArrayList<>();
     private List<RedPackageReceive> mRedPackageReceiveList=new ArrayList<>();
     private List<UserScore> mUserScoreList = new ArrayList<>();
     private Balance mBalance=new Balance();
-    private OrderSubmit mOrderSubmit;
     private Gson gson=new Gson();
+    private MerchantRegister merchantRegister;
 
-    public void PreSubmitPay(DeskOrder lDeskOrder){
-        this.mOrderSubmit=deskOrderToOrderSubmit(lDeskOrder);
+    public PreSubmitPay(DeskOrder lDeskOrder,MerchantRegister merchantRegister){
+        this.mDeskOrder=lDeskOrder;
+        this.merchantRegister=merchantRegister;
+        this.mPrePrice=new PrePrice(mDeskOrder.getOriginalPrice(),mDeskOrder.getNeedPay());
     }
 
     public void submit(Response.Listener<SubmitOrderId> listener,
                        Response.ErrorListener errorListener){
         Map<String, String> postParams=new HashMap<>();
-        String orderData=gson.toJson(mOrderSubmit);
+        String orderData=gson.toJson(deskOrderToOrderSubmit(mDeskOrder));
 
         addBalance(2000080, 0, 0);
         String balance=gson.toJson(mBalance);
@@ -81,6 +92,10 @@ public class PreSubmitPay {
 //        postParams.put("needPay","19");
         HttpController.getInstance().postSubmitOrderInfo(postParams,listener,errorListener);
 
+    }
+
+    public PrePrice getPrePrice(){
+        return mPrePrice;
     }
 
     public void setOrderPayList(List<OrderPay> pOrderPayList) {
@@ -145,16 +160,6 @@ public class PreSubmitPay {
             mBalance.setMoney(money);
         }
         return mBalance;
-    }
-
-    /**
-     * 增加对应支付方式的支付信息
-     * @param pOrderPay 支付信息
-     * @return
-     */
-    public  int addOrderPay(OrderPay pOrderPay) {
-        if (pOrderPay!=null)mOrderPayList.add(pOrderPay);
-        return mOrderPayList.size();
     }
 
     /**
@@ -234,4 +239,34 @@ public class PreSubmitPay {
         //需要补充确认字段"interferePrice": 0,"discountPrice": 0,"memberPrice": 12,"marketingPrice": 0,
         return orderGoodsItem;
     }
+
+    /**
+     * 根据支付方式,增加支付金额
+     * @param paytype
+     * @param price
+     */
+    public void addOrderPay(PayType paytype,String price){
+        Double pLDouble= StringUtils.str2Double(price);
+        //如果是会员,需要处理积分关系,需要判断会员是否支付积分和支付方式是否支持积分
+        if (mBalance.getUserId()!=null&&!mBalance.getUserId().equals("0")&&paytype.getIsScore().equals("1")){
+            UserScore lUserScore=new UserScore();
+            if (mUserScoreList.size()>0)lUserScore=mUserScoreList.get(0);
+            lUserScore.setUserId(lUserScore.getScoreNum()+pLDouble.longValue());
+            mUserScoreList.set(0,lUserScore);
+        }
+        OrderPay lOrderPay=new OrderPay();
+        lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
+        lOrderPay.setPayPrice(pLDouble.longValue());
+        //支付类型信息
+        lOrderPay.setPayType(paytype.getPayType());
+        lOrderPay.setPayTypeName(paytype.getPayTypeName());
+        lOrderPay.setChangeType(paytype.getChangeType());
+        lOrderPay.setIsScore(paytype.getIsScore());
+        lOrderPay.setPayMode(paytype.getPayMode());
+        //操作工号
+        lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
+        mOrderPayList.add(lOrderPay);
+        mPrePrice.addCurPayPrice(price);
+    }
+
 }

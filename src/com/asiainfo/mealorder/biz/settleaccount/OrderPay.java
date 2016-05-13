@@ -26,6 +26,12 @@ public class OrderPay {
 
 	private Long reverseId;
 
+    private String changeType;
+
+    private String isScore;
+
+    private String payMode;
+
 	public Long getOrderId() {
 		return orderId;
 	}
@@ -117,5 +123,28 @@ public class OrderPay {
 	public void setReverseId(Long reverseId) {
 		this.reverseId = reverseId;
 	}
-	
+
+    public String getChangeType() {
+        return changeType;
+    }
+
+    public void setChangeType(String pChangeType) {
+        changeType = pChangeType;
+    }
+
+    public String getIsScore() {
+        return isScore;
+    }
+
+    public void setIsScore(String pIsScore) {
+        isScore = pIsScore;
+    }
+
+    public String getPayMode() {
+        return payMode;
+    }
+
+    public void setPayMode(String pPayMode) {
+        payMode = pPayMode;
+    }
 }
