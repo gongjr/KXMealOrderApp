@@ -7,6 +7,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.entity.http.HurryOrderResult;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
+import com.asiainfo.mealorder.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.entity.volley.appPrintDeskOrderInfoResultData;
 
@@ -79,11 +80,11 @@ public class HttpController {
      * @param listener 响应监听器
      * @param errorListener 异常监听器
      */
-    public void postSubmitPay(final Map<String, String> postParams,Response.Listener<SubmitOrderId> listener,
+    public void postSubmitPay(final Map<String, String> postParams,Response.Listener<SubmitPayResult> listener,
                           Response.ErrorListener errorListener){
         String param="/cashier/submitPay.do";
-        ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                Request.Method.POST, HOST + param, postParams,SubmitOrderId.class,listener,errorListener);
+        ResultMapRequest<SubmitPayResult> ResultMapRequest = new ResultMapRequest<SubmitPayResult>(
+                Request.Method.POST, HOST + param, postParams,SubmitPayResult.class,listener,errorListener);
         executeRequest(ResultMapRequest);
     }
 

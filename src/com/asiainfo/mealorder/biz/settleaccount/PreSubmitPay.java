@@ -6,7 +6,7 @@ import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.entity.MerchantRegister;
 import com.asiainfo.mealorder.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.entity.OrderSubmit;
-import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
+import com.asiainfo.mealorder.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.Gson;
@@ -46,23 +46,15 @@ public class PreSubmitPay {
         this.mPrePrice=new PrePrice(mDeskOrder.getOriginalPrice(),mDeskOrder.getNeedPay());
     }
 
-    public void submit(Response.Listener<SubmitOrderId> listener,
+    public void submit(Response.Listener<SubmitPayResult> listener,
                        Response.ErrorListener errorListener){
         Map<String, String> postParams=new HashMap<>();
         String orderData=gson.toJson(deskOrderToOrderSubmit(mDeskOrder));
-
-        addBalance(2000080, 0, 0);
         String balance=gson.toJson(mBalance);
-
-        getUserScoreList(0, 0);
         String userScoreList=gson.toJson(mUserScoreList);
-
         String hbList=gson.toJson(mRedPackageReceiveList);
-
         String couponList=gson.toJson(mUserCouponList);
-
         String orderMarketingList=gson.toJson(mOrderMarketingList);
-
         String orderPayList=gson.toJson(getOrderPayListWithOddChange());
 
         //订单信息
@@ -83,14 +75,14 @@ public class PreSubmitPay {
         //用户名,一般不传
         postParams.put("userName","");
         //为计算完营销活动后应付金额
-        postParams.put("shouldPay","19");
+        postParams.put("shouldPay",getPrePrice().getShouldPay());
         //支付宝微信不打折金额,
-        postParams.put("undiscountableAmount","0");
+//        postParams.put("undiscountableAmount","0");
         //支付宝微信打折金额
-        postParams.put("discountableAmount","0");
+//        postParams.put("discountableAmount","0");
         //慎传,或不传
 //        postParams.put("needPay","19");
-        HttpController.getInstance().postSubmitOrderInfo(postParams,listener,errorListener);
+        HttpController.getInstance().postSubmitPay(postParams, listener, errorListener);
 
     }
 
@@ -98,38 +90,9 @@ public class PreSubmitPay {
         return mPrePrice;
     }
 
-    public void setOrderPayList(List<OrderPay> pOrderPayList) {
-        mOrderPayList = pOrderPayList;
+    public List<OrderPay> getOrderPayList(){
+        return mOrderPayList;
     }
-
-    public void setOrderMarketingList(List<OrderMarketing> pOrderMarketingList) {
-        mOrderMarketingList = pOrderMarketingList;
-    }
-
-    public void setUserCouponList(List<UserCoupon> pUserCouponList) {
-        mUserCouponList = pUserCouponList;
-    }
-
-    public void setRedPackageReceiveList(List<RedPackageReceive> pRedPackageReceiveList) {
-        mRedPackageReceiveList = pRedPackageReceiveList;
-    }
-
-    public List<UserScore> getUserScoreList() {
-        return mUserScoreList;
-    }
-
-    public void setUserScoreList(List<UserScore> pUserScoreList) {
-        mUserScoreList = pUserScoreList;
-    }
-
-    public Balance getBalance() {
-        return mBalance;
-    }
-
-    public void setBalance(Balance pBalance) {
-        mBalance = pBalance;
-    }
-
 
     /**
      * 增加会员积分信息,无会员userid置0无视
@@ -199,8 +162,8 @@ public class PreSubmitPay {
         lOrderSubmit.setGiftMoney(mDeskOrder.getGiftMoney());
         lOrderSubmit.setPaidPrice(mDeskOrder.getPaidPrice());
         lOrderSubmit.setPersonNum(Integer.valueOf(mDeskOrder.getPersonNum()));
+        lOrderSubmit.setTradeStaffId(mDeskOrder.getTradeStaffId());
         ArrayList<OrderGoodsItem> list=new ArrayList<>();
-//        "tradeStaffId": "18651868360",需要补充字段
         for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
             list.add(deskOrderGoodsItemToOrderGoodsItem(lDeskOrderGoodsItem));
         }
@@ -236,7 +199,8 @@ public class PreSubmitPay {
         orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
         orderGoodsItem.setIsCompDish(deskOrderGoodsItemm.getIsCompDish());
         orderGoodsItem.setCompId(deskOrderGoodsItemm.getCompId());
-        //需要补充确认字段"interferePrice": 0,"discountPrice": 0,"memberPrice": 12,"marketingPrice": 0,
+        orderGoodsItem.setDiscountPrice(deskOrderGoodsItemm.getDiscountPrice());
+        orderGoodsItem.setMarketingPrice(deskOrderGoodsItemm.getMarketingPrice());
         return orderGoodsItem;
     }
 
@@ -256,7 +220,7 @@ public class PreSubmitPay {
         }
         OrderPay lOrderPay=new OrderPay();
         lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
-        lOrderPay.setPayPrice(pLDouble.longValue());
+        lOrderPay.setPayPrice(pLDouble);
         //支付类型信息
         lOrderPay.setPayType(paytype.getPayType());
         lOrderPay.setPayTypeName(paytype.getPayTypeName());
@@ -283,7 +247,7 @@ public class PreSubmitPay {
             }
             OrderPay lOrderPay=new OrderPay();
             lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
-            lOrderPay.setPayPrice(pLDouble.longValue());
+            lOrderPay.setPayPrice(pLDouble);
             //支付类型信息
             lOrderPay.setPayType(PayMent.OddChangePayMent.getValue());
             lOrderPay.setPayTypeName(PayMent.OddChangePayMent.getTitle());

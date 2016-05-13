@@ -12,7 +12,7 @@ public class OrderPay {
 	
 	private Date payTime;
 	
-	private Long payPrice;
+	private Double payPrice;
 	
 	private String state;
 	
@@ -64,11 +64,11 @@ public class OrderPay {
 		this.payTime = payTime;
 	}
 
-	public Long getPayPrice() {
+	public Double getPayPrice() {
 		return payPrice;
 	}
 
-	public void setPayPrice(Long payPrice) {
+	public void setPayPrice(Double payPrice) {
 		this.payPrice = payPrice;
 	}
 

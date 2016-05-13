@@ -33,9 +33,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingLeft="@dimen/Dip_20"
                 android:text="消费总额"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -46,9 +46,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingLeft="@dimen/Dip_20"
                 android:text="优惠"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -59,22 +59,22 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingLeft="@dimen/Dip_20"
                 android:text="应收金额"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="1dp"
-                android:background="#D5D5D5" />
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#D5D5D5" />
 
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingLeft="@dimen/Dip_20"
                 android:text="已付金额"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -85,9 +85,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingLeft="@dimen/Dip_20"
                 android:text="找零"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
 
         <LinearLayout
@@ -102,9 +102,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="right|center_vertical"
-                android:paddingRight="15dp"
+                android:paddingRight="@dimen/Dip_20"
                 android:text="¥300.0"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -116,9 +116,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="right|center_vertical"
-                android:paddingRight="15dp"
+                android:paddingRight="@dimen/Dip_20"
                 android:text="¥15.0"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -130,10 +130,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="right|center_vertical"
-                android:paddingRight="15dp"
+                android:paddingRight="@dimen/Dip_20"
                 android:text="¥285.0"
                 android:textColor="#D0021B"
-                android:textSize="@dimen/text_size_xsmall" />
+                android:textSize="@dimen/text_size_large" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -145,9 +145,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="right|center_vertical"
-                android:paddingRight="15dp"
+                android:paddingRight="@dimen/Dip_20"
                 android:text="¥315.0"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
 
             <ImageView
                 android:layout_width="match_parent"
@@ -159,9 +159,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="45dp"
                 android:gravity="right|center_vertical"
-                android:paddingRight="15dp"
+                android:paddingRight="@dimen/Dip_20"
                 android:text="¥30.0"
-                android:textSize="@dimen/text_size_xxsmall" />
+                android:textSize="@dimen/text_size_small" />
         </LinearLayout>
     </LinearLayout>
 
@@ -171,75 +171,28 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/account_msg_layout"
-        android:layout_marginLeft="15dp"
+        android:paddingLeft="@dimen/Dip_20"
         android:layout_marginTop="20dp"
         android:text="支付方式"
-        android:textSize="@dimen/text_size_xxsmall" />
-
-    <LinearLayout
-        android:id="@+id/account_cash_layout"
-        android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_below="@+id/account_pay_method_tag"
-        android:layout_marginTop="10dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:text="现金"
-            android:textSize="@dimen/text_size_xxsmall" />
-
-        <TextView
-            android:id="@+id/account_cash_pay"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="center_vertical|right"
-            android:paddingRight="15dp"
-            android:text="¥300.0"
-            android:textSize="@dimen/text_size_xsmall" />
-    </LinearLayout>
+        android:textSize="@dimen/text_size_small" />
 
     <ImageView
-        android:id="@+id/account_underline02"
+        android:id="@+id/account_pay_method_tag_line"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_below="@+id/account_cash_layout"
-        android:background="#D5D5D5" />
+        android:background="#D5D5D5"
+        android:layout_below="@+id/account_pay_method_tag"
+        android:layout_marginTop="10dip"
+        android:layout_alignParentLeft="true"/>
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/account_payorderlist"
         android:layout_width="match_parent"
-        android:layout_height="45dp"
-        android:layout_below="@+id/account_underline02"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/account_pay_method_tag_line"
+        android:divider="@null">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawableBottom="#DDDDDD"
-            android:gravity="center_vertical"
-            android:paddingLeft="15dp"
-            android:text="会员卡"
-            android:textSize="@dimen/text_size_xxsmall" />
-
-        <TextView
-            android:id="@+id/account_member_card_pay"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:drawableBottom="#DDDDDD"
-            android:gravity="center_vertical|right"
-            android:paddingRight="15dp"
-            android:text="¥15.0"
-            android:textSize="@dimen/text_size_xxsmall" />
-    </LinearLayout>
+        </ListView>
 
     <ImageView
         android:id="@+id/account_underline03"
@@ -262,7 +215,8 @@
             android:layout_weight="1"
             android:background="#E8E8E8"
             android:gravity="center"
-            android:text="会员卡" />
+            android:text="会员卡"
+            android:textSize="@dimen/text_size_middle"/>
 
         <ImageView
             android:layout_width="1dp"
@@ -276,7 +230,8 @@
             android:layout_weight="1"
             android:background="#E8E8E8"
             android:gravity="center"
-            android:text="银联卡" />
+            android:text="银联卡"
+            android:textSize="@dimen/text_size_middle"/>
 
         <ImageView
             android:layout_width="1dp"
@@ -290,6 +245,7 @@
             android:layout_weight="1"
             android:background="#E8E8E8"
             android:gravity="center"
-            android:text="扫码支付" />
+            android:text="扫码支付"
+            android:textSize="@dimen/text_size_middle"/>
     </LinearLayout>
 </RelativeLayout>

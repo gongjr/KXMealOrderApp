@@ -35,7 +35,9 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	private String action; //对菜的操作类型，从订单中增删改, 1加菜， 2修改， 0删除
     private String memberPrice; //会员价
 	private String isZdzk; //整单折扣
-	
+    private String discountPrice; //折扣掉的价格
+    private String marketingPrice; //营销掉的价格
+
 	public String getTradeStaffId() {
 		return tradeStaffId;
 	}
@@ -197,5 +199,21 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
     }
     public long getId(){
         return getBaseObjId();
+    }
+
+    public String getDiscountPrice() {
+        return discountPrice;
+    }
+
+    public void setDiscountPrice(String pDiscountPrice) {
+        discountPrice = pDiscountPrice;
+    }
+
+    public String getMarketingPrice() {
+        return marketingPrice;
+    }
+
+    public void setMarketingPrice(String pMarketingPrice) {
+        marketingPrice = pMarketingPrice;
     }
 }
