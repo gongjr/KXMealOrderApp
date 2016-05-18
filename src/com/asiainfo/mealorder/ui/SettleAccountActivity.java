@@ -17,14 +17,21 @@ import com.asiainfo.mealorder.biz.settleaccount.PreSubmitPay;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.MerchantRegister;
 import com.asiainfo.mealorder.entity.volley.SubmitPayResult;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
+import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.widget.TitleView;
+import com.google.gson.reflect.TypeToken;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import roboguice.inject.InjectView;
@@ -60,14 +67,17 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private Map<PayMent,PayType> payTypeList=new HashMap<>();
     private PreSubmitPay mPreSubmitPay;
     private MerchantRegister merchantRegister;
+    private MakeOrderFinishDF mMakeOrderDF;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_account);
-        setTitle();
         initData();
-        initPayMent();
+        showLoadingDF("正在查询支付方式");
+        getPayMethod();
+        setTitle();
+//        initPayMent();
         initListener();
     }
 
@@ -79,6 +89,41 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         mPayOrderListAdapter=new PayOrderListAdapter(mActivity,mPreSubmitPay.getOrderPayList());
         curPayOrderListView.setAdapter(mPayOrderListAdapter);
         refreshPrice();
+    }
+
+    private void getPayMethod() {
+        HttpController.getInstance().getPayMethod(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject data) {
+                        Log.d(TAG, "getPayMethod:" + data.toString());
+                        try {
+                            if (data.getString("msg").equals("ok")) {
+                                dismissLoadingDF();
+                                String methodString = data.getJSONObject("data").getString("info");
+                                List<PayType> payMethodList = gson.fromJson(methodString, new TypeToken<List<PayType>>() {
+                                }.getType());
+                                Log.d(TAG, "The pay method list is: " + gson.toJson(payMethodList));
+                                int size = payMethodList.size();
+                                for (int i = 0; i < size; i++) {
+                                    PayType payType = payMethodList.get(i);
+                                    setPayMent(payType);
+                                }
+                            } else {
+                                updateNotice("查询失败!");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dismissCommonDialog();
+                        Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
+                        showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                    }
+                });
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
@@ -195,10 +240,10 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             titleView.isRightBtnVisible(true);
         }
         orderPrice.setText("¥"+mPreSubmitPay.getPrePrice().getOrderPrice());
-        favourablePrice.setText("¥"+mPreSubmitPay.getPrePrice().getFavourablePrice());
-        shouldPay.setText("¥"+mPreSubmitPay.getPrePrice().getShouldPay());
-        currentPay.setText("¥"+mPreSubmitPay.getPrePrice().getCurrentPay());
-        oddChange.setText("¥"+mPreSubmitPay.getPrePrice().getOddChange());
+        favourablePrice.setText("¥" + mPreSubmitPay.getPrePrice().getFavourablePrice());
+        shouldPay.setText("¥" + mPreSubmitPay.getPrePrice().getShouldPay());
+        currentPay.setText("¥" + mPreSubmitPay.getPrePrice().getCurrentPay());
+        oddChange.setText("¥" + mPreSubmitPay.getPrePrice().getOddChange());
     }
 
     public void refreshPayOrderListView(){
@@ -214,6 +259,72 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         intent.putExtra("STAFF_NAME", merchantRegister.getStaffName());
         intent.putExtra("CHILD_MERCHANT_ID", merchantRegister.getChildMerchantId());
         startActivity(intent);
+    }
+
+    /**
+     * 提示框
+     */
+    private void showLoadingDF(String info) {
+        try {
+            mMakeOrderDF = new MakeOrderFinishDF();
+            mMakeOrderDF.setNoticeText(info);
+            mMakeOrderDF.show(getSupportFragmentManager(), "payMethod");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void updateNotice(String info) {
+        if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
+            mMakeOrderDF.updateNoticeText(info, 0);
+        }
+    }
+
+    private void dismissLoadingDF() {
+        try {
+            if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
+                mMakeOrderDF.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    /*
+    *
+    * 根据paytype,将数据填充到payTypeList里面
+    * */
+    private void setPayMent(PayType payType) {
+        String type = payType.getPayType();
+        if (type.equals(PayMent.CashPayMent.getValue())) {
+            payTypeList.put(PayMent.CashPayMent, payType); // 现金
+        } else if (type.equals(PayMent.BankPayMent.getValue())) {
+            payTypeList.put(PayMent.BankPayMent, payType); // 银行卡
+        } else if (type.equals(PayMent.HangAccountPayMent.getValue())) {
+            payTypeList.put(PayMent.HangAccountPayMent, payType); // 挂账
+        } else if (type.equals(PayMent.UserPayMent.getValue())) {
+            payTypeList.put(PayMent.UserPayMent, payType); // 会员卡
+        } else if (type.equals(PayMent.WeixinPayMent.getValue())) {
+            payTypeList.put(PayMent.WeixinPayMent, payType); //微信
+        } else if (type.equals(PayMent.ZhifubaoPayMent.getValue())) {
+            payTypeList.put(PayMent.ZhifubaoPayMent, payType); //支付宝
+        } else if (type.equals(PayMent.DianpingPayMent.getValue())) {
+            payTypeList.put(PayMent.DianpingPayMent, payType); //点评闪惠
+        } else if (type.equals(PayMent.AutoMolingPayMent.getValue())) {
+            payTypeList.put(PayMent.AutoMolingPayMent, payType); //自动抹零
+        } else if (type.equals(PayMent.ScoreDikbPayMent.getValue())) {
+            payTypeList.put(PayMent.ScoreDikbPayMent, payType); //积分抵扣
+        } else if (type.equals(PayMent.OddChangePayMent.getValue())) {
+            payTypeList.put(PayMent.OddChangePayMent, payType); //找零
+        } else if (type.equals(PayMent.MarketCardPayMent.getValue())) {
+            payTypeList.put(PayMent.MarketCardPayMent, payType); //商场卡
+        } else if (type.equals(PayMent.ComityPayMent.getValue())) {
+            payTypeList.put(PayMent.ComityPayMent, payType); //礼让金额
+        } else {
+            showShortTip("支付方式不匹配,请查询");
+        }
     }
 
 }
