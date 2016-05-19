@@ -1,6 +1,5 @@
 package com.asiainfo.mealorder.ui;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,16 +13,19 @@ import com.asiainfo.mealorder.adapter.PayOrderListAdapter;
 import com.asiainfo.mealorder.biz.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.settleaccount.PreSubmitPay;
+import com.asiainfo.mealorder.biz.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.MerchantRegister;
-import com.asiainfo.mealorder.entity.volley.SubmitPayResult;
+import com.asiainfo.mealorder.entity.http.ResultMap;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
+import com.asiainfo.mealorder.listener.DialogDelayListener;
 import com.asiainfo.mealorder.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
+import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.widget.TitleView;
 import com.google.gson.reflect.TypeToken;
 
@@ -110,18 +112,19 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                                     setPayMent(payType);
                                 }
                             } else {
-                                updateNotice("查询失败!");
+                                updateNotice("获取支付方式配置失败,无法结算!",getPayMentResultmListener);
                             }
                         } catch (JSONException e) {
+                            updateNotice("查询支付方式配置失败,无法结算!",getPayMentResultmListener);
                             e.printStackTrace();
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        dismissCommonDialog();
                         Log.e("VolleyLogTag", "VolleyError:" + error.getMessage(), error);
                         showShortTip(VolleyErrorHelper.getMessage(error, mActivity));
+                        updateNotice(VolleyErrorHelper.getMessage(error, mActivity),getPayMentResultmListener);
                     }
                 });
     }
@@ -133,17 +136,31 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         }
     };
 
+    private DialogDelayListener getPayMentResultmListener = new DialogDelayListener() {
+        @Override
+        public void onexecute() {
+            //支付方式查询失败,提示,点击退出后重进刷新
+             finish();
+        }
+    };
+
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            mPreSubmitPay.submit(new Response.Listener<SubmitPayResult>() {
+            showLoadingDF("正在提交结算信息...");
+            mPreSubmitPay.submit(new Response.Listener<ResultMap<SubmitPayInfo>>() {
                 @Override
-                public void onResponse(SubmitPayResult response) {
-                    showShortTip(response.getInfo());
-                    if (response.getStatus()==1){
-                        backToDeskPage();
+                public void onResponse(ResultMap<SubmitPayInfo> response) {
+                    if (response.getErrcode().equals("0")){
+                        SubmitPayInfo lSubmitPayResult=response.getData();
+                        showShortTip(lSubmitPayResult.getInfo().getInfo());
+                        if(lSubmitPayResult.getInfo().getStatus()==1){
+                            updateNotice(lSubmitPayResult.getInfo().getInfo(),1);
+                        }else updateNotice(lSubmitPayResult.getInfo().getInfo(),0);
+                    }else {
+                        showShortTip(response.getMsg());
+                        updateNotice(response.getMsg(),0);
                     }
-
                 }
             },new Response.ErrorListener() {
                 @Override
@@ -154,12 +171,12 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                         case VolleyErrorHelper.ErrorType_Socket_Timeout:
                             Log.e(TAG,
                                     "VolleyError:" + errors.getErrorMsg(), error);
-                            showShortTip("连接中断,请确认支付结果后,重试!");
+                            showShortTip("连接中断,请确认支付结果后,再重试!");
                             //与服务器断开连接情况下,应该提示用户,确认支付结果后,在重新操作,不能直接重新提交,避免重复结算
-                            backToDeskPage();
+                            updateNotice("连接中断,请确认支付结果后,再重试!",1);
                             break;
                         default:
-                            showShortTip(errors.getErrorMsg());
+                            updateNotice(VolleyErrorHelper.getMessage(error, mActivity),0);
                             break;
                     }
                 }
@@ -251,17 +268,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     }
 
     /**
-     * 返回桌台页面
-     */
-    private void backToDeskPage(){
-        Intent intent = new Intent(mActivity, ChooseDeskActivity.class);
-        intent.putExtra("STAFF_ID", merchantRegister.getStaffId());
-        intent.putExtra("STAFF_NAME", merchantRegister.getStaffName());
-        intent.putExtra("CHILD_MERCHANT_ID", merchantRegister.getChildMerchantId());
-        startActivity(intent);
-    }
-
-    /**
      * 提示框
      */
     private void showLoadingDF(String info) {
@@ -275,9 +281,25 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
 
     }
 
-    private void updateNotice(String info) {
+    /**
+     *
+     * @param info
+     * @param type 0无事件,1返回桌台
+     */
+    private void updateNotice(String info,int type) {
         if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
-            mMakeOrderDF.updateNoticeText(info, 0);
+            mMakeOrderDF.updateNoticeText(info, type);
+        }
+    }
+
+    /**
+     *
+     * @param info 提示信息
+     * @param pDialogDelayListener 点击相应事件
+     */
+    private void updateNotice(String info,DialogDelayListener pDialogDelayListener) {
+        if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
+            mMakeOrderDF.updateNoticeText(info, pDialogDelayListener);
         }
     }
 
@@ -323,7 +345,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         } else if (type.equals(PayMent.ComityPayMent.getValue())) {
             payTypeList.put(PayMent.ComityPayMent, payType); //礼让金额
         } else {
-            showShortTip("支付方式不匹配,请查询");
+            KLog.i("支付方式不匹配,请查询");
         }
     }
 

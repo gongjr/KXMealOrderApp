@@ -1,12 +1,12 @@
 package com.asiainfo.mealorder.biz.settleaccount;
 
 import com.android.volley.Response;
+import com.asiainfo.mealorder.biz.order.OrderState;
 import com.asiainfo.mealorder.entity.DeskOrder;
 import com.asiainfo.mealorder.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.entity.MerchantRegister;
 import com.asiainfo.mealorder.entity.OrderGoodsItem;
-import com.asiainfo.mealorder.entity.OrderSubmit;
-import com.asiainfo.mealorder.entity.volley.SubmitPayResult;
+import com.asiainfo.mealorder.entity.http.ResultMap;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.Gson;
@@ -46,10 +46,10 @@ public class PreSubmitPay {
         this.mPrePrice=new PrePrice(mDeskOrder.getOriginalPrice(),mDeskOrder.getNeedPay());
     }
 
-    public void submit(Response.Listener<SubmitPayResult> listener,
+    public void submit(Response.Listener<ResultMap<SubmitPayInfo>> listener,
                        Response.ErrorListener errorListener){
         Map<String, String> postParams=new HashMap<>();
-        String orderData=gson.toJson(deskOrderToOrderSubmit(mDeskOrder));
+        String orderData=gson.toJson(deskOrderToSubmitPayOrder(mDeskOrder));
         String balance=gson.toJson(mBalance);
         String userScoreList=gson.toJson(mUserScoreList);
         String hbList=gson.toJson(mRedPackageReceiveList);
@@ -73,7 +73,7 @@ public class PreSubmitPay {
         //如果选择了会员卡的,需要将会员卡使用变动的金额数据传过去
         postParams.put("Balance",balance);
         //用户名,一般不传
-        postParams.put("userName","");
+//        postParams.put("userName","");
         //为计算完营销活动后应付金额
         postParams.put("shouldPay",getPrePrice().getShouldPay());
         //支付宝微信不打折金额,
@@ -82,7 +82,9 @@ public class PreSubmitPay {
 //        postParams.put("discountableAmount","0");
         //慎传,或不传
 //        postParams.put("needPay","19");
-        HttpController.getInstance().postSubmitPay(postParams, listener, errorListener);
+        Map<String, String> orderSubmitDataParams=new HashMap<>();
+        orderSubmitDataParams.put("orderSubmitData",postParams.toString());
+        HttpController.getInstance().postSubmitPay(orderSubmitDataParams, listener, errorListener);
 
     }
 
@@ -139,13 +141,14 @@ public class PreSubmitPay {
      * @param mDeskOrder
      * @return
      */
-    public OrderSubmit deskOrderToOrderSubmit(DeskOrder mDeskOrder) {
-        OrderSubmit lOrderSubmit = new OrderSubmit();
+    public SubmitPayOrder deskOrderToSubmitPayOrder(DeskOrder mDeskOrder) {
+        SubmitPayOrder lOrderSubmit = new SubmitPayOrder();
         lOrderSubmit.setOrderid(mDeskOrder.getOrderId());
         lOrderSubmit.setOrderType(mDeskOrder.getOrderType());
         lOrderSubmit.setOrderTypeName(mDeskOrder.getOrderTypeName());
         lOrderSubmit.setCreateTime(mDeskOrder.getStrCreateTime());
-        lOrderSubmit.setOrderState(mDeskOrder.getOrderState());
+        //结算订单需要更改状态
+        lOrderSubmit.setOrderState(OrderState.ORDERSTATE_FINISH.getValue());
         lOrderSubmit.setRemark(mDeskOrder.getRemark());
         lOrderSubmit.setOriginalPrice(mDeskOrder.getOriginalPrice());
         lOrderSubmit.setPayType(mDeskOrder.getPayType());
@@ -184,8 +187,10 @@ public class PreSubmitPay {
         orderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItemm.getSalesNum()));
         orderGoodsItem.setSalesPrice(deskOrderGoodsItemm.getSalesPrice());
         List<String> remark = new ArrayList<String>();
+        if (deskOrderGoodsItemm.getRemark()!=null&&deskOrderGoodsItemm.getRemark().length()>0)
         remark.add(deskOrderGoodsItemm.getRemark());
         orderGoodsItem.setRemark(remark);
+        orderGoodsItem.setCreateTime(deskOrderGoodsItemm.getCreateTime());
         orderGoodsItem.setDishesPrice(deskOrderGoodsItemm.getDishesPrice());
         orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
         orderGoodsItem.setSalesState(deskOrderGoodsItemm.getSalesState());

@@ -37,8 +37,17 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	private String isZdzk; //整单折扣
     private String discountPrice; //折扣掉的价格
     private String marketingPrice; //营销掉的价格
+    private String createTime;
 
-	public String getTradeStaffId() {
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String pCreateTime) {
+        createTime = pCreateTime;
+    }
+
+    public String getTradeStaffId() {
 		return tradeStaffId;
 	}
 

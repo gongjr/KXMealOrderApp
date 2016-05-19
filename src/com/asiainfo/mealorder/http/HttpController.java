@@ -4,15 +4,17 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.asiainfo.mealorder.biz.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.entity.http.HurryOrderResult;
+import com.asiainfo.mealorder.entity.http.ResultMap;
 import com.asiainfo.mealorder.entity.volley.SubmitOrderId;
-import com.asiainfo.mealorder.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.entity.volley.appPrintDeskOrderInfoResultData;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -36,6 +38,11 @@ public class HttpController {
      * 测试环境
      */
     public static final String Address_tst = "http://139.129.35.66:30080/tacos";
+
+    /**
+     * 本地主机调试环境
+     */
+    public static final String Address_localtest = "http://192.168.1.122:8080/tacosonline";
 
     /**
      * 使用地址
@@ -83,34 +90,12 @@ public class HttpController {
      * @param listener      响应监听器
      * @param errorListener 异常监听器
      */
-    public void postSubmitPay(final Map<String, String> postParams, Response.Listener<SubmitPayResult> listener,
+    public void postSubmitPay(final Map<String, String> postParams, Response.Listener<ResultMap<SubmitPayInfo>> listener,
                               Response.ErrorListener errorListener) {
-        String param = "/cashier/submitPay.do";
-        ResultMapRequest<SubmitPayResult> ResultMapRequest = new ResultMapRequest<SubmitPayResult>(
-                Request.Method.POST, HOST + param, postParams, SubmitPayResult.class, listener, errorListener);
-        executeRequest(ResultMapRequest);
-    }
-
-    /**
-     * 获取支付方式
-     *
-     * @param getParams     get方式的参数列表
-     * @param listener      响应监听器
-     * @param errorListener 异常监听器
-     */
-    public void getPayMent(Map<String, String> getParams, Response.Listener<SubmitOrderId> listener,
-                           Response.ErrorListener errorListener) {
-        String param = "/cashier/payMent.do?";
-        if (getParams != null) {
-            Iterator iterator = getParams.entrySet().iterator();
-            while (iterator.hasNext()) {
-                Map.Entry entry = (Map.Entry) iterator.next();
-                param += entry.getKey() + "=" + entry.getValue();
-                if (iterator.hasNext()) param += "&";
-            }
-        }
-        ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                HOST + param, SubmitOrderId.class, listener, errorListener);
+        String param = "/appController/submitPay.do";
+        Type type = new TypeToken<ResultMap<SubmitPayInfo>>() {}.getType();
+        ResultMapRequest<ResultMap<SubmitPayInfo>> ResultMapRequest = new ResultMapRequest<ResultMap<SubmitPayInfo>>(
+                Request.Method.POST, HOST + param, postParams, type, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
 

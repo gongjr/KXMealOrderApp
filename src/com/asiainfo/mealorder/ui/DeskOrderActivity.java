@@ -213,6 +213,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
     * */
     private void getDataFromDeskOrder() {
         orderGoodsItemList = mDeskOrder.getOrderGoods(); //所有的菜品
+        if (orderGoodsItemList!=null&&orderGoodsItemList.size()>0){
         int size = orderGoodsItemList.size(); //菜品数量
         //判断菜品类型
         for (int i = 0; i < size; i++) {
@@ -237,6 +238,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                 mCompDishList.add(dishesCompDeskOrderEntity);
             }
         }
+        }
     }
 
     /*
@@ -250,11 +252,13 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                 + "<font color='#D0021B'>" + df.format(originalPrice) + "</font>" + "<font color='#000000'>元</font>";
         total.setText(Html.fromHtml(html));
         if (mDeskOrder.getNeedPay() == null || mDeskOrder.getNeedPay().equals("")) {
+            mDeskOrder.setNeedPay(mDeskOrder.getOriginalPrice());
             offPrice.setText("优惠: " + df.format(0.00) + "元");
         } else {
             Double needPay = StringUtils.str2Double(mDeskOrder.getNeedPay());
             offPrice.setText("优惠: " + df.format(originalPrice - needPay) + "元");
         }
+        if (mDeskOrder.getRemark()!=null&&mDeskOrder.getRemark().length()>0)
         orderRemark.setText("整单备注:"+mDeskOrder.getRemark());
     }
 
@@ -782,6 +786,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
      */
     private void onDeskOrderNotifyKitchenOK() {
         mDeskOrder.setOrderState(OrderState.ORDERSTATE_NORMAL.getValue());
+        mDeskOrder.setNeedPay(mDeskOrder.getOriginalPrice());
         for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
             lDeskOrderGoodsItem.setSalesState("1");
         }
