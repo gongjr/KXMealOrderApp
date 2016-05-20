@@ -9,8 +9,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.listener.OnLeftBtnClickListener;
-import com.asiainfo.mealorder.listener.OnRightBtnClickListener;
+import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
+import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 
 /**
  * @author skynight(skynight@dingtalk.com)

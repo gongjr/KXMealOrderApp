@@ -53,7 +53,8 @@
 -keep class sun.misc.Unsafe { *; }
 #-keep class com.google.gson.stream.** { *; }
 # Application classes that will be serialized/deserialized over Gson
--keep class com.asiainfo.mealorder.entity.** { *; }  ##������Ҫ�ĳɽ������ĸ�  javabean
+-keep class com.asiainfo.mealorder.biz.entity.** { *; }  ##������Ҫ�ĳɽ������ĸ�  javabean
+-keep class com.asiainfo.mealorder.biz.bean.** { *; }  ##������Ҫ�ĳɽ������ĸ�  javabean
 ##---------------End: proguard configuration for Gson  ----------
 
 

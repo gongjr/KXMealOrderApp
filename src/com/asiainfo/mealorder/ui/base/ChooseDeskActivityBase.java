@@ -5,15 +5,11 @@ import java.util.List;
 
 import org.litepal.crud.DataSupport;
 
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.util.Log;
 
-import com.asiainfo.mealorder.config.ActionConstants;
-import com.asiainfo.mealorder.entity.MerchantDesk;
-import com.asiainfo.mealorder.entity.MerchantDeskLocation;
-import com.asiainfo.mealorder.utils.Tools;
+import com.asiainfo.mealorder.biz.entity.MerchantDesk;
+import com.asiainfo.mealorder.biz.entity.MerchantDeskLocation;
 
 public class ChooseDeskActivityBase extends BaseActivity{
 

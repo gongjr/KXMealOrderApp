@@ -3,7 +3,7 @@ package com.asiainfo.mealorder.config;
 import android.content.Context;
 import android.content.SharedPreferences;
 
-import com.asiainfo.mealorder.entity.MerchantRegister;
+import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 
 /**
  *

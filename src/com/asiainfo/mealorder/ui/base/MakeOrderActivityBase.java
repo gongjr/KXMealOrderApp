@@ -13,16 +13,12 @@ import android.view.View;
 import android.view.View.OnTouchListener;
 
 import com.asiainfo.mealorder.db.DataBinder;
-import com.asiainfo.mealorder.entity.DishesComp;
-import com.asiainfo.mealorder.entity.DishesCompItem;
-import com.asiainfo.mealorder.entity.DishesProperty;
-import com.asiainfo.mealorder.entity.DishesPropertyItem;
-import com.asiainfo.mealorder.entity.MerchantDishes;
-import com.asiainfo.mealorder.entity.MerchantDishesType;
-import com.asiainfo.mealorder.entity.OrderGoodsItem;
-import com.asiainfo.mealorder.entity.OrderSubmit;
-
-import de.greenrobot.event.EventBus;
+import com.asiainfo.mealorder.biz.entity.DishesComp;
+import com.asiainfo.mealorder.biz.entity.DishesCompItem;
+import com.asiainfo.mealorder.biz.entity.DishesProperty;
+import com.asiainfo.mealorder.biz.entity.DishesPropertyItem;
+import com.asiainfo.mealorder.biz.entity.MerchantDishes;
+import com.asiainfo.mealorder.biz.entity.MerchantDishesType;
 
 /**
  * 点餐页面基类

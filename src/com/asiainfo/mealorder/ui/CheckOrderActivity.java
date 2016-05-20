@@ -9,11 +9,11 @@ import android.widget.TextView;
 
 import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.adapter.CheckOrderAdapter;
-import com.asiainfo.mealorder.entity.MerchantRegister;
-import com.asiainfo.mealorder.entity.OrderGoodsItem;
-import com.asiainfo.mealorder.entity.OrderSubmit;
-import com.asiainfo.mealorder.entity.helper.DishesCompSelectionEntity;
+import com.asiainfo.mealorder.biz.adapter.CheckOrderAdapter;
+import com.asiainfo.mealorder.biz.entity.MerchantRegister;
+import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
+import com.asiainfo.mealorder.biz.entity.OrderSubmit;
+import com.asiainfo.mealorder.biz.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.reflect.TypeToken;

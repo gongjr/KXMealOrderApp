@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.entity.MerchantRegister;
+import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.PrintWriter;

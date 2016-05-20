@@ -8,7 +8,7 @@ import org.litepal.crud.DataSupport;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.asiainfo.mealorder.entity.DishesCompItem;
+import com.asiainfo.mealorder.biz.entity.DishesCompItem;
 
 public class CompDishesEntityService {
    

@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.widget.EditText;
 
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.listener.OnLeftBtnClickListener;
-import com.asiainfo.mealorder.listener.OnRightBtnClickListener;
+import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
+import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.widget.TitleView;
 

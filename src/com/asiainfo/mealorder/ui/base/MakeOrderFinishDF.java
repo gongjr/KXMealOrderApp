@@ -17,7 +17,7 @@ import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
-import com.asiainfo.mealorder.listener.DialogDelayListener;
+import com.asiainfo.mealorder.biz.listener.DialogDelayListener;
 import com.asiainfo.mealorder.ui.ChooseDeskActivity;
 import com.asiainfo.mealorder.utils.KLog;
 

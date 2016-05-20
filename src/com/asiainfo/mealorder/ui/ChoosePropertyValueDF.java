@@ -14,12 +14,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.adapter.DishPropertyValuesAdapter;
-import com.asiainfo.mealorder.entity.DishesProperty;
-import com.asiainfo.mealorder.entity.DishesPropertyItem;
-import com.asiainfo.mealorder.listener.OnEnsureCheckedPropertyItemsListener;
-import com.asiainfo.mealorder.listener.OnItemClickListener;
-import com.asiainfo.mealorder.listener.OnPropertyCheckedChangeListener;
+import com.asiainfo.mealorder.biz.adapter.DishPropertyValuesAdapter;
+import com.asiainfo.mealorder.biz.entity.DishesProperty;
+import com.asiainfo.mealorder.biz.entity.DishesPropertyItem;
+import com.asiainfo.mealorder.biz.listener.OnEnsureCheckedPropertyItemsListener;
+import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
+import com.asiainfo.mealorder.biz.listener.OnPropertyCheckedChangeListener;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
 import com.asiainfo.mealorder.utils.StringUtils;
 

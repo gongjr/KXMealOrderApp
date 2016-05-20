@@ -14,7 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.app.NotificationCompat;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.entity.AppUpdate;
+import com.asiainfo.mealorder.biz.entity.AppUpdate;
 
 public class UpdateChecker extends Fragment {
 

@@ -3,7 +3,7 @@ package com.asiainfo.mealorder.widget;
 import android.os.Bundle;
 import android.widget.RemoteViews;
 
-import com.asiainfo.mealorder.entity.View.Message;
+import com.asiainfo.mealorder.biz.entity.View.Message;
 
 /**
  * 发送Notification通知实体

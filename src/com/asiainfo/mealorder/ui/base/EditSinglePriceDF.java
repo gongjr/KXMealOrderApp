@@ -1,6 +1,5 @@
 package com.asiainfo.mealorder.ui.base;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -14,15 +13,12 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.entity.DishesProperty;
-import com.asiainfo.mealorder.entity.DishesPropertyItem;
-import com.asiainfo.mealorder.entity.MerchantDishes;
-import com.asiainfo.mealorder.entity.helper.PropertySelectEntity;
-import com.asiainfo.mealorder.listener.OnEnsureCheckedPropertyItemsListener;
-import com.asiainfo.mealorder.listener.OnPriceRatioPropertyItemsListener;
-import com.asiainfo.mealorder.listener.OnPropertyCheckedChangeListener;
+import com.asiainfo.mealorder.biz.entity.DishesProperty;
+import com.asiainfo.mealorder.biz.entity.DishesPropertyItem;
+import com.asiainfo.mealorder.biz.entity.MerchantDishes;
+import com.asiainfo.mealorder.biz.listener.OnPriceRatioPropertyItemsListener;
+import com.asiainfo.mealorder.biz.listener.OnPropertyCheckedChangeListener;
 import com.asiainfo.mealorder.utils.Arith;
-import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.List;

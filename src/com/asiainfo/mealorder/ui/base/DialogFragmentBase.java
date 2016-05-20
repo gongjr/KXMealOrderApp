@@ -5,7 +5,6 @@ import java.util.List;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,15 +13,13 @@ import android.widget.Toast;
 
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.entity.OrderGoodsItem;
-import com.asiainfo.mealorder.entity.OrderSubmit;
+import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
+import com.asiainfo.mealorder.biz.entity.OrderSubmit;
 import com.asiainfo.mealorder.http.RequestManager;
 
-import de.greenrobot.event.EventBus;
 import roboguice.fragment.RoboDialogFragment;
 
 /**

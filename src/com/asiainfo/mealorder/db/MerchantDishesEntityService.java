@@ -3,9 +3,9 @@ package com.asiainfo.mealorder.db;
 import android.database.Cursor;
 import android.util.Log;
 
-import com.asiainfo.mealorder.entity.DishesProperty;
-import com.asiainfo.mealorder.entity.DishesPropertyItem;
-import com.asiainfo.mealorder.entity.MerchantDishes;
+import com.asiainfo.mealorder.biz.entity.DishesProperty;
+import com.asiainfo.mealorder.biz.entity.DishesPropertyItem;
+import com.asiainfo.mealorder.biz.entity.MerchantDishes;
 
 import org.litepal.crud.DataSupport;
 
