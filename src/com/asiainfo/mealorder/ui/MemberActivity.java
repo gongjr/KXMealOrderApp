@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.ui;
 
 import android.os.Bundle;
 import android.text.Html;
+import android.view.View;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.TextView;
@@ -58,14 +59,8 @@ public class MemberActivity extends BaseActivity {
         //设置输入框不可点击
         balanceEdit.setKeyListener(null);
         scoreEdit.setKeyListener(null);
-        MemberCard memberCard = getIntent().getParcelableExtra("MemberCard");
-        memberPresenter = new MemberPresenter(this, memberCard);
-        payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
+        initData();
         setTitleView();
-        memberPresenter.fillViews();
-        List<UserCoupon> userCouponList = memberPresenter.getCoupons();
-        MemberGridViewAdapter adapter = new MemberGridViewAdapter(this, userCouponList, 0);
-        gridView.setAdapter(adapter);
     }
 
     private void setTitleView() {
@@ -73,6 +68,20 @@ public class MemberActivity extends BaseActivity {
         titleView.setRightTxt("下一步");
         titleView.setOnLeftBtnClickListener(onLeftBtnClickListener);
         titleView.setOnRightBtnClickListener(onRightBtnClickListener);
+    }
+
+    private void initData() {
+        MemberCard memberCard = getIntent().getParcelableExtra("MemberCard");
+        memberPresenter = new MemberPresenter(this, memberCard);
+        payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
+        memberPresenter.fillViews();
+        List<UserCoupon> userCouponList = memberPresenter.getCoupons();
+        if (userCouponList.size() == 0) {
+            coupon.setVisibility(View.GONE);
+            gridView.setVisibility(View.GONE);
+        }
+        MemberGridViewAdapter adapter = new MemberGridViewAdapter(this, userCouponList, 0);
+        gridView.setAdapter(adapter);
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
