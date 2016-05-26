@@ -294,4 +294,23 @@ public class HttpController {
         executeRequest(ResultMapRequest);
     }
 
+    /**
+     * 获取会员卡信息
+     *
+     * @param merchantId      商户ID
+     * @param childMerchantId 子商户ID
+     * @param memberMsg       会员信息
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void getMemberCard(String merchantId, String childMerchantId, String memberMsg, Response.Listener listener,
+                              Response.ErrorListener errorListener) {
+        String param = "/appController/queryMembercard.do?merchantId=" + merchantId + "&childMerchantId=" + childMerchantId
+                + "&memberMsg=" + memberMsg;
+
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(Address_localtest + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+
+    }
+
 }
