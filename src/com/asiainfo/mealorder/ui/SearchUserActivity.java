@@ -130,6 +130,7 @@ public class SearchUserActivity extends BaseActivity {
     * */
     public void startMemberActivity(MemberCard memberCard) {
         getOperation().addParameter("MemberCard", memberCard);
+        getOperation().addParameter("payPrice", getIntent().getStringExtra("payPrice"));
         getOperation().forward(MemberActivity.class);
     }
 

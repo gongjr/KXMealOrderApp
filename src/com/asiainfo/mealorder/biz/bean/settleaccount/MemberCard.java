@@ -3,6 +3,7 @@ package com.asiainfo.mealorder.biz.bean.settleaccount;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,7 +15,7 @@ import java.util.List;
 public class MemberCard implements Parcelable {
 
     private String scoreCash;
-    private List<Coupon> yhqList;
+    private List<Coupon> yhqList = new ArrayList<Coupon>(); // 不new的话读取可能会报null错误
     private String phone;
     private String costPrice;
     private String score;
@@ -37,10 +38,10 @@ public class MemberCard implements Parcelable {
     private String accountLeave;
     private String offsetNum;
     private String birthdayLargess;
-    private List<Discount> discountList;
+    private List<Discount> discountList = new ArrayList<Discount>();
     private String isNeedPwd;
     private String cardNumber;
-    private List<UserCoupon> userCoupons;
+    private List<UserCoupon> userCoupons = new ArrayList<UserCoupon>();
 
     protected MemberCard(Parcel in) {
         scoreCash = in.readString();

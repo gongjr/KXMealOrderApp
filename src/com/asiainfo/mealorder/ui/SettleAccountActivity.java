@@ -199,7 +199,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.account_member_card:
-                 getOperation().forward(SearchUserActivity.class);
+                getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getShouldPay());
+                getOperation().forward(SearchUserActivity.class);
                 break;
             case R.id.account_bank_card:
                 mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.BankPayMent), mPrePayPresenter.getPrePrice().getShouldPay());

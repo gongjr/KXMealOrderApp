@@ -231,6 +231,7 @@
     </RelativeLayout>
 
     <TextView
+        android:id="@+id/member_coupon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/member_msg_layout"
@@ -239,6 +240,19 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:textSize="@dimen/text_size_xsmall"/>
+
+    <GridView
+        android:id="@+id/member_gridview"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/member_coupon"
+        android:padding="10dp"
+        android:background="@android:color/white"
+        android:layout_marginTop="10dp"
+        android:numColumns="2"
+        android:horizontalSpacing="10dp"
+        android:scrollbars="none"
+        ></GridView>
 
 
 </RelativeLayout>
