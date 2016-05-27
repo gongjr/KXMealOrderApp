@@ -46,14 +46,16 @@ public class SearchUserPresenter {
                                 mMemberCardList = gson.fromJson(str, new TypeToken<List<MemberCard>>() {
                                 }.getType());
                                 if (mMemberCardList != null && mMemberCardList.size() == 1) {
-                                    Log.d(TAG, "The size is 1");
                                     searchUserActivity.startMemberActivity(mMemberCardList.get(0));
                                 } else {
                                     searchUserActivity.selectMemberCard(mMemberCardList);
                                 }
+                            } else {
+                                searchUserActivity.updateNotice(response.getString("info"), 0);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
+                            searchUserActivity.updateNotice("Json解析失败", 0);
                         }
                     }
                 }, new Response.ErrorListener() {

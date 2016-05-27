@@ -4,8 +4,10 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
 
+import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
+import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.SearchUserPresenter;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
@@ -32,6 +34,8 @@ public class SearchUserActivity extends BaseActivity {
     private MakeOrderFinishDF mMakeOrderDF;
     private ChooseMemberCardDF chooseMemberCardDF;
     private SearchUserPresenter searchUserPresenter;
+    private AppApplication BaseApp;
+    private MerchantRegister merchantRegister;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,6 +44,7 @@ public class SearchUserActivity extends BaseActivity {
         userNum.setFocusable(false);
         setTitleView();
         searchUserPresenter = new SearchUserPresenter(this, gson);
+        merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
         initKeyboardView();
     }
 
@@ -77,7 +82,9 @@ public class SearchUserActivity extends BaseActivity {
     * 获取会员卡信息
     * */
     private void getMemberCardInfo() {
-        searchUserPresenter.getMemberCardInfo("20000080", "20000080", "18651868360");
+        searchUserPresenter.getMemberCardInfo(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
+                userNum.getText().toString());
+//                "20000080", "20000080", "18651868360");
     }
 
     /*
@@ -108,6 +115,12 @@ public class SearchUserActivity extends BaseActivity {
 
     }
 
+    public void updateNotice(String info, int type) {
+        if (mMakeOrderDF != null & mMakeOrderDF.isAdded()) {
+            mMakeOrderDF.updateNoticeText(info, type);
+        }
+    }
+
     public void dismissLoadingDF() {
         try {
             if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
@@ -129,6 +142,7 @@ public class SearchUserActivity extends BaseActivity {
     * 跳转到会员信息页面
     * */
     public void startMemberActivity(MemberCard memberCard) {
+        userNum.setText("");
         getOperation().addParameter("MemberCard", memberCard);
         getOperation().addParameter("payPrice", getIntent().getStringExtra("payPrice"));
         getOperation().forward(MemberActivity.class);

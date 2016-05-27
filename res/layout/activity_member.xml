@@ -164,7 +164,7 @@
                 android:layout_toLeftOf="@+id/member_balance_yen"
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
-                android:text="300"
+                android:text=""
                 android:focusable="false"
                 />
 
@@ -222,7 +222,7 @@
                 android:layout_toLeftOf="@+id/member_score_yen"
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
-                android:text="300"
+                android:text=""
                 android:focusable="false"
                 />
 
@@ -248,7 +248,6 @@
         android:layout_below="@+id/member_coupon"
         android:padding="10dp"
         android:background="@android:color/white"
-        android:layout_marginTop="10dp"
         android:numColumns="2"
         android:horizontalSpacing="10dp"
         android:scrollbars="none"

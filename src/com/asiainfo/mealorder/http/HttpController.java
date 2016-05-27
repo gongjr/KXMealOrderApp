@@ -308,7 +308,7 @@ public class HttpController {
         String param = "/appController/queryMembercard.do?merchantId=" + merchantId + "&childMerchantId=" + childMerchantId
                 + "&memberMsg=" + memberMsg;
 
-        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(Address_localtest + param, null, listener, errorListener);
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
 
     }
