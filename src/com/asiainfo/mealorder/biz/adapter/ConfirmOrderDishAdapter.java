@@ -358,14 +358,6 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
 				}
 			}
 		});
-		if(position<orderGoodsList.size()){
-			//普通菜
-			holder.btn_minus.setVisibility(View.VISIBLE);
-			holder.btn_add.setVisibility(View.VISIBLE);
-		}else{
-		    //套餐菜主菜	
-			holder.btn_minus.setVisibility(View.INVISIBLE);
-			holder.btn_add.setVisibility(View.INVISIBLE);		}
 	}
 	
 	/**

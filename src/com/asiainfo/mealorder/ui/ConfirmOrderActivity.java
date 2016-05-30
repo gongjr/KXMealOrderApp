@@ -311,7 +311,7 @@ public class ConfirmOrderActivity extends BaseActivity{
 	         * 操作套餐菜    			
 	         */
 			if(mDishesCompDataList!=null && mNormalDishDataList!=null 
-					&& mNormalDishDataList.size() >= position - mNormalDishDataList.size()){
+					&&  position>= mNormalDishDataList.size()){
 				int pos = position - mNormalDishDataList.size();
 				DishesCompSelectionEntity dishesCompEntity = mDishesCompDataList.get(pos);
 				OrderGoodsItem mainDishes = dishesCompEntity.getmCompMainDishes();
@@ -324,28 +324,33 @@ public class ConfirmOrderActivity extends BaseActivity{
 					Logger.d(TAG, "套餐菜细项");
 				} break;
 				case Constants.ORDER_DISHES_ACTION_TYPE_ADD:{//数量加
-					int count = mainDishes.getSalesNum()+1;
+                    int oldCount=mainDishes.getSalesNum();
+					int count = oldCount+1;
 					mainDishes.setSalesNum(count);
 					mainDishes.setSalesPrice(Arith.d2str(count*StringUtils.str2Double(mainDishes.getDishesPrice()))+"");
 					dishesCompEntity.setmCompMainDishes(mainDishes);
 					for(int m=0; m<compDishesItemList.size(); m++){
 						OrderGoodsItem mOrderGoodsItem = compDishesItemList.get(m);
-						int cnt = mOrderGoodsItem.getSalesNum()+1;
-						mOrderGoodsItem.setSalesNum(cnt);
+                        int oldNum=mOrderGoodsItem.getSalesNum();
+                        int ratio=oldNum/oldCount;
+						mOrderGoodsItem.setSalesNum(count*ratio);
 						compDishesItemList.set(m, mOrderGoodsItem);
 					}
 					dishesCompEntity.setCompItemDishes(compDishesItemList);
 					mDishesCompDataList.set(pos, dishesCompEntity);
 				} break;
 				case Constants.ORDER_DISHES_ACTION_TYPE_MINUS:{//数量减
-					int count = mainDishes.getSalesNum()-1;
+                    int oldCount=mainDishes.getSalesNum();
+					int count = oldCount-1;
 					if(count>0){
 						mainDishes.setSalesNum(count);
 						mainDishes.setSalesPrice(Arith.d2str(count*StringUtils.str2Double(mainDishes.getDishesPrice()))+"");
 						dishesCompEntity.setmCompMainDishes(mainDishes);
 						for(int m=0; m<compDishesItemList.size(); m++){
 							OrderGoodsItem mOrderGoodsItem = compDishesItemList.get(m);
-							int cnt = mOrderGoodsItem.getSalesNum()-1;
+                            int oldNum=mOrderGoodsItem.getSalesNum();
+                            int radio=oldNum/oldCount;
+							int cnt = radio*count;
 							mOrderGoodsItem.setSalesNum(cnt);
 							compDishesItemList.set(m, mOrderGoodsItem);
 						}
@@ -628,7 +633,7 @@ public class ConfirmOrderActivity extends BaseActivity{
 			for(int m=0; m<mDishesCompDataList.size(); m++){
 				OrderGoodsItem mainCompDishes = mDishesCompDataList.get(m).getmCompMainDishes();
 				countSum += mainCompDishes.getSalesNum();
-				priceSum += StringUtils.str2Double(mainCompDishes.getDishesPrice());
+				priceSum += StringUtils.str2Double(mainCompDishes.getSalesPrice());
 			}
 		}
 		tv_totalCount.setText("共"+countSum+"个菜");
