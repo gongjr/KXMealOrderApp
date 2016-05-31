@@ -72,7 +72,7 @@ public class MemberActivity extends BaseActivity {
 
     private void initData() {
         MemberCard memberCard = getIntent().getParcelableExtra("MemberCard");
-        memberPresenter = new MemberPresenter(this, memberCard);
+        memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
         memberPresenter.fillViews();
         List<UserCoupon> userCouponList = memberPresenter.getCoupons();
@@ -98,28 +98,54 @@ public class MemberActivity extends BaseActivity {
         }
     };
 
-    public void setPhone(String phone) {
-        phoneTxt.setText(phone);
+    /*
+    * 关于页面操作的接口定义
+    * */
+    public interface OnMemberActivityListener {
+        public void setPhone(String phone);
+
+        public void setUserName(String userName);
+
+        public void setCardLevel(String cardLevel);
+
+        public void setBalance(String balance);
+
+        public void setScore(String score);
+
+        public void setCouponTag(String couponTag);
+
     }
 
-    public void setUserName(String userName) {
-        nameTxt.setText(userName);
-    }
+    private OnMemberActivityListener onMemberActivityListener = new OnMemberActivityListener() {
+        @Override
+        public void setPhone(String phone) {
+            phoneTxt.setText(phone);
+        }
 
-    public void setCardLevel(String cardLevel) {
-        cardLevelTxt.setText(cardLevel);
-    }
+        @Override
+        public void setUserName(String userName) {
+            nameTxt.setText(userName);
+        }
 
-    public void setBalance(String balance) {
-        balanceTxt.setText(Html.fromHtml("<font>¥</font><font color='#D0021B'>" + balance));
-    }
+        @Override
+        public void setCardLevel(String cardLevel) {
+            cardLevelTxt.setText(cardLevel);
+        }
 
-    public void setScore(String score) {
-        scoreTxt.setText(Html.fromHtml("<font>¥</font><font color='#D0021B'>" + score));
-    }
+        @Override
+        public void setBalance(String balance) {
+            balanceTxt.setText(Html.fromHtml("<font>¥</font><font color='#D0021B'>" + balance));
+        }
 
-    public void setCouponTag(String couponTag) {
-        coupon.setText("优惠券:  " + couponTag);
-    }
+        @Override
+        public void setScore(String score) {
+            scoreTxt.setText(Html.fromHtml("<font>¥</font><font color='#D0021B'>" + score));
+        }
+
+        @Override
+        public void setCouponTag(String couponTag) {
+            coupon.setText("优惠券:  " + couponTag);
+        }
+    };
 
 }

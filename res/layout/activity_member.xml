@@ -250,6 +250,7 @@
         android:background="@android:color/white"
         android:numColumns="2"
         android:horizontalSpacing="10dp"
+        android:verticalSpacing="15dp"
         android:scrollbars="none"
         ></GridView>
 

@@ -8,6 +8,7 @@ import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
+import com.asiainfo.mealorder.biz.listener.OnDialogListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.SearchUserPresenter;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
@@ -43,7 +44,7 @@ public class SearchUserActivity extends BaseActivity {
         setContentView(R.layout.activity_search_user);
         userNum.setFocusable(false);
         setTitleView();
-        searchUserPresenter = new SearchUserPresenter(this, gson);
+        searchUserPresenter = new SearchUserPresenter(gson, onDialogListener, onActivityOperationListener);
         merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
         initKeyboardView();
     }
@@ -56,7 +57,9 @@ public class SearchUserActivity extends BaseActivity {
             @Override
             public void onConfirm(String s) {
                 showLoadingDF("正在查询会员信息");
-                getMemberCardInfo();
+//                getMemberCardInfo();
+                searchUserPresenter.getOnHttpResponseListener().onHttpResponse(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
+                        userNum.getText().toString());
             }
         });
     }
@@ -84,7 +87,6 @@ public class SearchUserActivity extends BaseActivity {
     private void getMemberCardInfo() {
         searchUserPresenter.getMemberCardInfo(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
                 userNum.getText().toString());
-//                "20000080", "20000080", "18651868360");
     }
 
     /*
@@ -155,6 +157,54 @@ public class SearchUserActivity extends BaseActivity {
         @Override
         public void onFinifhBack(MemberCard memberCard) {
             startMemberActivity(memberCard);
+        }
+    };
+
+    /*
+    *
+    * 关于弹出框相关的操作
+    * */
+    private OnDialogListener onDialogListener = new OnDialogListener() {
+
+        @Override
+        public void showDialog(String msg) {
+            showLoadingDF(msg);
+        }
+
+        @Override
+        public void updateDialogNotice(String msg, int type) {
+            updateNotice(msg, type);
+        }
+
+        @Override
+        public void dismissDialog() {
+            dismissLoadingDF();
+        }
+    } ;
+
+    /*
+    * 关于activity操作的接口
+    * */
+    public interface OnActivityOperationListener {
+        public void showShortTip(String msg);
+        public void startAnotherActivity(MemberCard memberCard);
+        public void selectCard(List<MemberCard> memberCardList);
+    }
+
+    private OnActivityOperationListener onActivityOperationListener = new OnActivityOperationListener() {
+        @Override
+        public void showShortTip(String msg) {
+            showTip(msg);
+        }
+
+        @Override
+        public void startAnotherActivity(MemberCard memberCard) {
+            startMemberActivity(memberCard);
+        }
+
+        @Override
+        public void selectCard(List<MemberCard> memberCardList) {
+            selectMemberCard(memberCardList);
         }
     };
 

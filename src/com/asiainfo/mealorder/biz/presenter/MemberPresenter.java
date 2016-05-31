@@ -12,21 +12,21 @@ import java.util.List;
  */
 public class MemberPresenter {
 
-    private MemberActivity memberActivity;
     private MemberCard memberCard;
+    private MemberActivity.OnMemberActivityListener onMemberActivityListener;
 
-    public MemberPresenter(MemberActivity memberActivity, MemberCard memberCard) {
-        this.memberActivity = memberActivity;
+    public MemberPresenter(MemberCard memberCard, MemberActivity.OnMemberActivityListener onMemberActivityListener) {
         this.memberCard = memberCard;
+        this.onMemberActivityListener = onMemberActivityListener;
     }
 
     public void fillViews() {
-        memberActivity.setPhone(memberCard.getPhone());
-        memberActivity.setUserName(memberCard.getUsername());
-        memberActivity.setCardLevel(memberCard.getLevelName());
-        memberActivity.setBalance(memberCard.getBalance());
-        memberActivity.setScore(memberCard.getScore());
-        memberActivity.setCouponTag(memberCard.getUserCoupons().size() + "张");
+        onMemberActivityListener.setPhone(memberCard.getPhone());
+        onMemberActivityListener.setUserName(memberCard.getUsername());
+        onMemberActivityListener.setCardLevel(memberCard.getLevelName());
+        onMemberActivityListener.setBalance(memberCard.getBalance());
+        onMemberActivityListener.setScore(memberCard.getScore());
+        onMemberActivityListener.setCouponTag(memberCard.getUserCoupons().size() + "张");
     }
 
     public List<UserCoupon> getCoupons() {
