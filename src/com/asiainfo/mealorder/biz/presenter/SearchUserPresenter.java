@@ -61,7 +61,9 @@ public class SearchUserPresenter {
                                 Log.d(TAG, "The card list is: " + str);
                                 mMemberCardList = gson.fromJson(str, new TypeToken<List<MemberCard>>() {
                                 }.getType());
-                                if (mMemberCardList != null && mMemberCardList.size() == 1) {
+                                if (mMemberCardList.size() == 0) {
+                                    onActivityOperationListener.showShortTip("会员卡信息为空,请确认!");
+                                } else if (mMemberCardList != null && mMemberCardList.size() == 1) {
 //                                    searchUserActivity.startMemberActivity(mMemberCardList.get(0));
                                     onActivityOperationListener.startAnotherActivity(mMemberCardList.get(0));
                                 } else {

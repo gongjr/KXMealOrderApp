@@ -241,18 +241,13 @@
         android:layout_marginBottom="10dp"
         android:textSize="@dimen/text_size_xsmall"/>
 
-    <GridView
-        android:id="@+id/member_gridview"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/membre_recyclerview"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/member_coupon"
         android:padding="10dp"
         android:background="@android:color/white"
-        android:numColumns="2"
-        android:horizontalSpacing="10dp"
-        android:verticalSpacing="15dp"
-        android:scrollbars="none"
-        ></GridView>
-
+        ></android.support.v7.widget.RecyclerView>
 
 </RelativeLayout>

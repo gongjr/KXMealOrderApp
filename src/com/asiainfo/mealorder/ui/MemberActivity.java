@@ -1,20 +1,22 @@
 package com.asiainfo.mealorder.ui;
 
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.GridView;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.biz.adapter.MemberGridViewAdapter;
+import com.asiainfo.mealorder.biz.adapter.MemberRecyclerAdapter;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
+import com.asiainfo.mealorder.widget.SpaceItemDecoration;
 import com.asiainfo.mealorder.widget.TitleView;
 
 import java.util.List;
@@ -45,10 +47,10 @@ public class MemberActivity extends BaseActivity {
     private TextView balanceTxt;
     @InjectView(R.id.membre_score)
     private TextView scoreTxt;
-    @InjectView(R.id.member_gridview)
-    private GridView gridView;
     @InjectView(R.id.member_coupon)
     private TextView coupon;
+    @InjectView(R.id.membre_recyclerview)
+    private RecyclerView recyclerView;
 
     private MemberPresenter memberPresenter;
 
@@ -78,10 +80,12 @@ public class MemberActivity extends BaseActivity {
         List<UserCoupon> userCouponList = memberPresenter.getCoupons();
         if (userCouponList.size() == 0) {
             coupon.setVisibility(View.GONE);
-            gridView.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
         }
-        MemberGridViewAdapter adapter = new MemberGridViewAdapter(this, userCouponList, 0);
-        gridView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        MemberRecyclerAdapter adapter = new MemberRecyclerAdapter(this, userCouponList, 0);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(20));
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
