@@ -7,7 +7,7 @@ import android.view.View;
 /**
  * @author skynight(skynight@dingtalk.com)
  * @creatTime 16/6/1 上午9:28
- *
+ * <p/>
  * recyclerview item之间的间距
  */
 public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
@@ -20,11 +20,14 @@ public class SpaceItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (parent.getChildPosition(view) % 2 == 0 || parent.getChildPosition(view) != 0) {
+        int position = parent.getChildPosition(view);
+        int i = position % 2;
+        if (position == 1) {
             outRect.left = space;
+        } else if (i != 0 & position != 0) {
+            outRect.right = space;
         }
-        if (parent.getChildPosition(view) != 0 || parent.getChildPosition(view) != 1) {
-            outRect.top = space;
-        }
+        outRect.top = space;
+
     }
 }
