@@ -32,7 +32,17 @@ public class OrderPay {
 
     private String payMode;
 
-	public Long getOrderId() {
+    private MemberPay memberPay;
+
+    public MemberPay getMemberPay() {
+        return memberPay;
+    }
+
+    public void setMemberPay(MemberPay pMemberPay) {
+        memberPay = pMemberPay;
+    }
+
+    public Long getOrderId() {
 		return orderId;
 	}
 

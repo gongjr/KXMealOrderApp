@@ -43,7 +43,7 @@ public class SubmitPayOrder extends DataSupport implements Serializable{
 	private String originalPrice;
 	private String paidPrice;
 	private String payType;
-	//private String userId;
+	private String userId;
 	private String postAddrId;
 //	private List<String> remark;
 	private String remark;
@@ -54,6 +54,32 @@ public class SubmitPayOrder extends DataSupport implements Serializable{
 	private int orderConfirmType;
 
 	private List<OrderGoodsItem>  orderGoods;
+
+    private String isThisMember;
+
+    public String getIsThisMember() {
+        return isThisMember;
+    }
+
+    public void setIsThisMember(String pIsThisMember) {
+        isThisMember = pIsThisMember;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String pOrderId) {
+        orderId = pOrderId;
+    }
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String pUserId) {
+        userId = pUserId;
+    }
 
     public long getId(){
         return getBaseObjId();
