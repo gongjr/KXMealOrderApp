@@ -334,11 +334,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 String price = data.getStringExtra("payPrice");
                 switch (tag) {
                     case PayPriceActivity.PAY_BANK:
-                        if (isHavePayment(PayMent.BankPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
-                            showShortTip("改支付方式已支付,请换一种支付方式!");
-                            return;
-                        }
-                        mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.BankPayMent), price);
                         bankCard.setBackgroundResource(R.drawable.itemsel_selected);
                         break;
                     case PayPriceActivity.PAY_CASH:
@@ -406,7 +401,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             List<OrderPay> orderPayList = mPrePayPresenter.getOrderPayList();
             mPrePayPresenter.removeOrderPay(StringUtils.double2Str(orderPayList.get(position).getPayPrice()));
             orderPayList.remove(position);
-            Log.d(TAG, "The size is: " + mPrePayPresenter.getOrderPayList().size());
             if (!isHavePayment(type, orderPayList)) {
                 hidePayment(type);
             }
