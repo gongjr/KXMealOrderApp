@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
-import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
+import com.asiainfo.mealorder.biz.listener.OnVisibilityListener;
 import com.asiainfo.mealorder.utils.StringUtils;
 
 import java.util.List;
@@ -24,14 +24,15 @@ public class PayOrderListAdapter extends BaseAdapter {
 
     private Context mContext;
     private List<OrderPay> mOrderPayList;
+    private OnVisibilityListener onVisibilityListener;
 
-    public PayOrderListAdapter(Context context,List<OrderPay> pOrderPays){
-        this.mContext=context;
-        this.mOrderPayList=pOrderPays;
+    public PayOrderListAdapter(Context context, List<OrderPay> pOrderPays) {
+        this.mContext = context;
+        this.mOrderPayList = pOrderPays;
     }
 
-    public void refreshDate(List<OrderPay> pOrderPays){
-        mOrderPayList=pOrderPays;
+    public void refreshDate(List<OrderPay> pOrderPays) {
+        mOrderPayList = pOrderPays;
         notifyDataSetChanged();
     }
 
@@ -51,7 +52,7 @@ public class PayOrderListAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(final int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, final ViewGroup parent) {
         PayOrderViewHolder viewHolder = null;
         if (convertView == null) {
             viewHolder = new PayOrderViewHolder();
@@ -64,22 +65,27 @@ public class PayOrderListAdapter extends BaseAdapter {
             viewHolder = (PayOrderViewHolder) convertView.getTag();
         }
         viewHolder.payTypeName.setText(mOrderPayList.get(position).getPayTypeName());
-        viewHolder.payPrice.setText("¥"+ StringUtils.double2Str(mOrderPayList.get(position).getPayPrice()));
-        if (mOrderPayList.get(position).getPayType().equals(PayMent.UserPayMent.getValue())){
-            viewHolder.delete.setVisibility(View.VISIBLE);
-            //只有会员卡允许删除支付信息
-            viewHolder.delete.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-
-                }
-            });
-        }
+        viewHolder.payPrice.setText("¥" + StringUtils.double2Str(mOrderPayList.get(position).getPayPrice()));
+//        if (mOrderPayList.get(position).getPayType().equals(PayMent.UserPayMent.getValue())){
+        viewHolder.delete.setVisibility(View.VISIBLE);
+        //只有会员卡允许删除支付信息
+        viewHolder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String payType = mOrderPayList.get(position).getPayType();
+                onVisibilityListener.onVisibility(payType, position);
+            }
+        });
+//        }
         return convertView;
     }
 
     private class PayOrderViewHolder {
         private TextView payTypeName, payPrice;
         private Button delete;
+    }
+
+    public void setOnVisibilityListener(OnVisibilityListener onVisibilityListener) {
+        this.onVisibilityListener = onVisibilityListener;
     }
 }

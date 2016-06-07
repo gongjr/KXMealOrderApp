@@ -256,6 +256,13 @@ public class PrePayPresenter {
         mPrePrice.addCurPayPrice(price);
     }
 
+    /*
+    * 根据支付方式,删除支付金额
+    * */
+    public void removeOrderPay(String price) {
+        mPrePrice.deleteCurPayPrice(price);
+    }
+
     /**
      * 最后结算提交的时候,判断是否找零,
      * 有的话,需要向服务器提交找零支付信息

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.asiainfo.mealorder.widget.TitleView
+        android:id="@+id/pay_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"></com.asiainfo.mealorder.widget.TitleView>
+
+    <ImageView
+        android:id="@+id/pay_underline"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/pay_title"
+        android:background="#9E9E9E" />
+
+    <TextView
+        android:id="@+id/pay_price"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pay_underline"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:text="需支付:  ¥300.0"
+        android:textSize="@dimen/text_size_small" />
+
+    <EditText
+        android:id="@+id/pay_eidt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/pay_price"
+        android:layout_margin="15dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:hint="当前需要支付金额"
+        android:padding="15dp"
+        android:textColorHint="#9B9B9B"
+        android:gravity="center"
+        android:textSize="@dimen/text_size_large" />
+
+    <include
+        android:id="@+id/pay_num_keyboard"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        layout="@layout/num_keyboard_view"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

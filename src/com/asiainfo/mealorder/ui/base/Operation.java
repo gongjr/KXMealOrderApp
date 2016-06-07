@@ -47,6 +47,18 @@ public class Operation {
         mContext.overridePendingTransition(R.anim.base_slide_right_in, R.anim.base_slide_remain);
     }
 
+    /**
+     * 跳转Activity
+     *
+     * @param activity 需要跳转至的Activity
+     * @param requestCode 标识符
+     */
+    public void forwardForResult(Class<? extends Activity> activity, int requestCode) {
+        mIntent.setClass(mContext, activity);
+        mContext.startActivityForResult(mIntent, requestCode);
+        mContext.overridePendingTransition(R.anim.base_slide_right_in, R.anim.base_slide_remain);
+    }
+
 
     /**
      * 设置传递参数

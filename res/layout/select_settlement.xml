@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="15dp">
+
+    <LinearLayout
+        android:id="@+id/select_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/select_hanging_account"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="挂账"
+            android:gravity="center"
+            android:background="@drawable/itemsel_selected"
+            android:textSize="@dimen/text_size_large"
+            />
+
+        <TextView
+            android:id="@+id/select_settle_account"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="结账"
+            android:gravity="center"
+            android:background="@drawable/itemsel"
+            android:layout_marginLeft="15dp"
+            android:textSize="@dimen/text_size_large"
+            />
+    </LinearLayout>
+
+    <Button
+        android:id="@+id/select_surebtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/select_layout"
+        android:background="@anim/login_btn_bg"
+        android:layout_marginTop="15dp"
+        android:text="确定"
+        android:textColor="@color/white"
+        />
+
+</RelativeLayout>

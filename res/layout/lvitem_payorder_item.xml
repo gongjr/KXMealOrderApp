@@ -6,7 +6,7 @@
     <TextView
         android:id="@+id/lvitem_payorder_typename"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:paddingLeft="@dimen/Dip_25"
         android:textSize="@dimen/text_size_xsmall"
         android:layout_centerVertical="true"
@@ -16,7 +16,7 @@
     <TextView
         android:id="@+id/lvitem_payorder_price"
         android:layout_width="wrap_content"
-        android:layout_height="match_parent"
+        android:layout_height="45dp"
         android:paddingRight="10dp"
         android:textSize="@dimen/text_size_small"
         android:gravity="center"
@@ -25,14 +25,12 @@
 
     <Button
         android:id="@+id/lvitem_payorder_delete"
-        android:layout_width="75dip"
-        android:layout_height="45dip"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:layout_alignParentRight="true"
-        android:text="删除"
-        android:paddingRight="15dip"
-        android:visibility="invisible"/>
-
-
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dip"
+        android:background="@drawable/delete"/>
 
     <ImageView
         android:layout_width="match_parent"
