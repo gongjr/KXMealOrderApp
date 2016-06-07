@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.biz.presenter;
 
 import com.android.volley.Response;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
+import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderMarketing;
@@ -41,6 +42,8 @@ import java.util.Map;
  * mail : gjr9596@gmail.com
  */
 public class PrePayPresenter {
+    private final static String Response_ok="OK";
+    private final static String Response_error="ERROR";
     /**
      * 当前支付订单信息
      */
@@ -344,18 +347,21 @@ public class PrePayPresenter {
      * 增加用户会员余额支付信息,积分抵扣金额
      * @param memberCard 会员卡信息
      * @param paytype 会员卡支付方式信息
+     * @param pDiscount 会员折扣
      * @param price 输入的会员卡支付金额
      * @param scoreNum 输入的积分抵扣数量
+     * @param listener 响应回调
      */
-    public void addUserBalanceAndScore(MemberCard memberCard,PayType paytype,String price,String scoreNum){
+    public void addUserBalanceAndScore(MemberCard memberCard,PayType paytype,Discount pDiscount,String price,String scoreNum,Response.Listener<String> listener){
+
         Double priceDouble= StringUtils.str2Double(price);
-        Double scoreDouble= StringUtils.str2Double(scoreNum);
         mUserModel.setMemberCard(memberCard);
-        //(1)"isThisMember": "1"是本商户的会员,是否跨域消费,"userId": 2015051100001286,会员卡支付需要将这些信息补入orderdata
+        //(1)对于会员卡支付,首先应该计算会员优惠营销活动,并且更新优惠后的PrePrice对象内容
+        mOrderMarketingList.addAll(mUserModel.addUserMarketing(pDiscount,getPrePrice(),merchantRegister,mDeskOrder));
+        //(2)"isThisMember": "1"是本商户的会员,是否跨域消费,"userId": 2015051100001286,会员卡支付需要将这些信息补入orderdata
         mSubmitPayOrder.setUserId(memberCard.getUserId());
         mSubmitPayOrder.setIsThisMember(memberCard.getIsThisMember());
-
-        //(2)设置orderpay数据
+        //(3)设置orderpay数据
         OrderPay lOrderPay=new OrderPay();
         lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
         lOrderPay.setPayPrice(priceDouble);
@@ -385,11 +391,11 @@ public class PrePayPresenter {
         lMemberPay.setUseScore(useScore);
         mOrderPayList.add(lOrderPay);
         mPrePrice.addCurPayPrice(price);
-        //(3) balance余额变化
+        //(4) balance余额变化
         mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble.longValue());
-        //(4) 会员余额支付积分
+        //(5) 会员余额支付积分
         mUserModel.refreshScoreList(paytype, price, 0, mPrePrice);
-        //(5)积分抵扣金额
+        //(6)积分抵扣金额,需要当做一条支付行为处理
         Double scorePrice=mUserModel.getScorePriceFormScore(scoreNum);
         OrderPay lOrderPay1=new OrderPay();
         lOrderPay1.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
@@ -398,7 +404,47 @@ public class PrePayPresenter {
         lOrderPay1.setPayTypeName("会员积分");
         lOrderPay1.setTradeStaffId(merchantRegister.getStaffId());
         mOrderPayList.add(lOrderPay1);
-        //(6)积分抵扣后,对应mUserScoreList中记录变更,action0
+        mPrePrice.addCurPayPrice(scorePrice.toString());
+        //(7)积分抵扣后,对应mUserScoreList中记录变更,action0
         mUserModel.addDeductionScore(scorePrice);
+        if(listener!=null)listener.onResponse(Response_ok);
     }
+
+    /**
+     * 删除会员卡余额支付记录
+     * @param pOrderPay 对应的支付信息
+     * @param listener 响应回调
+     */
+    public void deleteUserBalance(OrderPay pOrderPay,Response.Listener<String> listener){
+        deleteOrderPay(pOrderPay,null);
+        mUserModel.deleteUserBanlance();
+        if(listener!=null)listener.onResponse(Response_ok);
+    }
+
+    /**
+     * 删除会员卡积分支付记录
+     * @param pOrderPay 对应的支付信息
+     * @param listener 响应回调
+     */
+    public void deleteUserScore(OrderPay pOrderPay,Response.Listener<String> listener){
+        deleteOrderPay(pOrderPay,null);
+        mUserModel.deleteUserDeductionScore();
+        if(listener!=null)listener.onResponse(Response_ok);
+    }
+
+    /**
+     * 所有支付方式都只能存在一条支付信息,保持唯一性加入,删除
+     * @param pOrderPay
+     * @param listener 响应回调
+     */
+    public void deleteOrderPay(OrderPay pOrderPay,Response.Listener<String> listener){
+        for (OrderPay lOrderPay:mOrderPayList){
+            if (lOrderPay.getPayMode().equals(pOrderPay.getPayMode())){
+                mOrderPayList.remove(lOrderPay);
+                break;
+            }
+        }
+        if(listener!=null)listener.onResponse(Response_ok);
+    }
+
 }

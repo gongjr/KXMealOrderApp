@@ -205,7 +205,7 @@ public class UserModel {
             if (lUserScore==null&&action==0){
                 lUserScore=new UserScore();
                 lUserScore.setUserId(Long.valueOf(mMemberCard.getUserId()));
-                lUserScore.setAction(1);
+                lUserScore.setAction(1);//userscore.action1,表示支付累计积分
                 Integer scoreNumInt=Arith.convertsToInt(score);
                 lUserScore.setScoreNum(Long.valueOf(scoreNumInt));
                 mUserScoreList.add(lUserScore);
@@ -231,8 +231,15 @@ public class UserModel {
     }
 
     /**
-     * 增加会员积分抵扣消费记录
-     * @param scorePrice 积分抵扣掉的金额
+     * 清除会员余额支付记录
+     */
+    public void deleteUserBanlance(){
+        mBalance=null;
+        mBalance=new Balance();
+    }
+
+    /**
+     * 清楚会员积分抵扣
      * @return
      */
     public  void addDeductionScore(Double scorePrice) {
@@ -242,5 +249,18 @@ public class UserModel {
         if (scorePrice>=0)lUserScore.setScoreNum(0-scorePrice.longValue());
         else lUserScore.setScoreNum(scorePrice.longValue());
         mUserScoreList.add(lUserScore);
+    }
+
+    /**
+     * 增加会员积分抵扣消费记录
+     * @return
+     */
+    public  void deleteUserDeductionScore() {
+        for (UserScore lUserScore:mUserScoreList){
+            if (lUserScore.getAction()==0){
+                mUserScoreList.remove(lUserScore);
+                break;
+            }
+        }
     }
 }
