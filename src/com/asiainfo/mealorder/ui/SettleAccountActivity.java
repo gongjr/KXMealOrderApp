@@ -180,9 +180,9 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
+        getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getShouldPay());
         switch (v.getId()) {
             case R.id.account_member_card:
-                getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getShouldPay());
                 getOperation().forward(SearchUserActivity.class);
                 break;
             case R.id.account_bank_card:
@@ -232,7 +232,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         public void onSelectBack(int tag) {
             dismissSelectDF();
             if (tag == SelectSettlementDF.HANGING_ACCOUNT) {
-
+                showShortTip("挂账暂不支持!");
             } else {
                 submitOrder();
             }

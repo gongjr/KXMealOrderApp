@@ -2,8 +2,10 @@ package com.asiainfo.mealorder.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
@@ -36,11 +38,14 @@ public class PayPriceActivity extends BaseActivity {
     View num_keyboard;
     @InjectView(R.id.pay_eidt)
     EditText edit;
+    @InjectView(R.id.pay_price)
+    TextView price;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_pay_price);
+        price.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
         setTitleView();
         initKeyboardView();
         edit.setFocusable(false);

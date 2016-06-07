@@ -66,9 +66,7 @@ public class PayOrderListAdapter extends BaseAdapter {
         }
         viewHolder.payTypeName.setText(mOrderPayList.get(position).getPayTypeName());
         viewHolder.payPrice.setText("¥" + StringUtils.double2Str(mOrderPayList.get(position).getPayPrice()));
-//        if (mOrderPayList.get(position).getPayType().equals(PayMent.UserPayMent.getValue())){
         viewHolder.delete.setVisibility(View.VISIBLE);
-        //只有会员卡允许删除支付信息
         viewHolder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -76,7 +74,6 @@ public class PayOrderListAdapter extends BaseAdapter {
                 onVisibilityListener.onVisibility(payType, position);
             }
         });
-//        }
         return convertView;
     }
 
