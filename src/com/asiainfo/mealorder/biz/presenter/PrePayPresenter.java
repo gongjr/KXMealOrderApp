@@ -2,25 +2,23 @@ package com.asiainfo.mealorder.biz.presenter;
 
 import com.android.volley.Response;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
-import com.asiainfo.mealorder.biz.bean.settleaccount.Balance;
-import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderMarketing;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
-import com.asiainfo.mealorder.biz.model.PrePrice;
 import com.asiainfo.mealorder.biz.bean.settleaccount.RedPackageReceive;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayOrder;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
-import com.asiainfo.mealorder.biz.bean.settleaccount.UserScore;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.http.ResultMap;
+import com.asiainfo.mealorder.biz.model.PrePrice;
+import com.asiainfo.mealorder.biz.model.UserModel;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
@@ -55,12 +53,14 @@ public class PrePayPresenter {
      * 当前预付价格
      */
     private PrePrice mPrePrice;
+    /**
+     * 会员支付码信息业务模型
+     */
+    private UserModel mUserModel=null;
     private List<OrderPay> mOrderPayList=new ArrayList<>();
     private List<OrderMarketing> mOrderMarketingList=new ArrayList<>();
     private List<UserCoupon> mUserCouponList =new ArrayList<>();
     private List<RedPackageReceive> mRedPackageReceiveList=new ArrayList<>();
-    private List<UserScore> mUserScoreList = new ArrayList<>();
-    private Balance mBalance=new Balance();
     private Gson gson=new Gson();
     private MerchantRegister merchantRegister;
     private Map<PayMent,PayType> payTypeList=new HashMap<>();
@@ -70,14 +70,15 @@ public class PrePayPresenter {
         this.merchantRegister=merchantRegister;
         this.mPrePrice=new PrePrice(mDeskOrder.getOriginalPrice(),mDeskOrder.getNeedPay());
         this.mSubmitPayOrder=deskOrderToSubmitPayOrder(mDeskOrder);
+        this.mUserModel=new UserModel();
     }
 
     public void submit(Response.Listener<ResultMap<SubmitPayInfo>> listener,
                        Response.ErrorListener errorListener){
         Map<String, String> postParams=new HashMap<>();
         String orderData=gson.toJson(mSubmitPayOrder);
-        String balance=gson.toJson(mBalance);
-        String userScoreList=gson.toJson(mUserScoreList);
+        String balance=gson.toJson(mUserModel.getBalance());
+        String userScoreList=gson.toJson(mUserModel.getUserScoreList());
         String hbList=gson.toJson(mRedPackageReceiveList);
         String couponList=gson.toJson(mUserCouponList);
         String orderMarketingList=gson.toJson(mOrderMarketingList);
@@ -122,37 +123,7 @@ public class PrePayPresenter {
         return mOrderPayList;
     }
 
-    /**
-     * 增加会员积分信息,无会员userid置0无视
-     * 根据user信息与支付信息判断
-     * @return
-     */
-    public  List<UserScore> getUserScoreList(long userid ,long scoreNum) {
-        if (userid!=0){
-        UserScore lUserScore=new UserScore();
-        lUserScore.setUserId(userid);
-        lUserScore.setScoreNum(scoreNum);
-        mUserScoreList.add(lUserScore);
-        }
-        return mUserScoreList;
-    }
 
-    /**
-     * 增加会员余额支付信息,无会员userid置0无视
-     * @param merchantId 总店号
-     * @param userid 会员卡号userid
-     * @param money 变动金额,消费时传负数
-     * @return
-     */
-    public  Balance addBalance(long merchantId,long userid,long money) {
-        if (userid!=0){
-            mBalance.setMerchantId(merchantId);
-            mBalance.setUserId(userid);
-            long price = 0-money;
-            mBalance.setMoney(price);
-        }
-        return mBalance;
-    }
 
     /**
      * 增加营销活动信息
@@ -237,19 +208,12 @@ public class PrePayPresenter {
     }
 
     /**
-     * 根据支付方式,增加支付金额
+     * 根据支付方式,增加支付金额,(会员积分除外)
      * @param paytype
      * @param price
      */
     public void addOrderPay(PayType paytype,String price){
         Double pLDouble= StringUtils.str2Double(price);
-        //如果是会员,需要处理积分关系,需要判断会员是否支付积分和支付方式是否支持积分
-        if (mBalance.getUserId()!=null&&!mBalance.getUserId().equals("0")&&paytype.getIsScore().equals("1")){
-            UserScore lUserScore=new UserScore();
-            if (mUserScoreList.size()>0)lUserScore=mUserScoreList.get(0);
-            lUserScore.setUserId(lUserScore.getScoreNum()+pLDouble.longValue());
-            mUserScoreList.set(0,lUserScore);
-        }
         OrderPay lOrderPay=new OrderPay();
         lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
         lOrderPay.setPayPrice(pLDouble);
@@ -376,119 +340,17 @@ public class PrePayPresenter {
          return payTypeList;
     }
 
-
     /**
-     * 增加会员卡优惠活动
-     * @param memberCard
-     * @param pDiscount
-     */
-    public void addUserMarketing(MemberCard memberCard,Discount pDiscount){
-         //(1)先判断是否有会员折扣优惠,会员折让价格,记录market营销活动
-        if (pDiscount!=null){
-            OrderMarketing lOrderMarketing=new OrderMarketing();
-            long marketingid=8888;//会员折扣优惠活动的marketdingid为8888
-            lOrderMarketing.setMarketingId(marketingid);
-            lOrderMarketing.setMarketingName("[会员]"+pDiscount.getTitle());
-            lOrderMarketing.setCouponName("[会员]"+pDiscount.getTitle());
-            lOrderMarketing.setType("discount");
-            lOrderMarketing.setUserId(Long.valueOf(memberCard.getUserId()));
-            lOrderMarketing.setTradeStaffId(merchantRegister.getStaffId());
-
-            //折扣掉的金额=应收*折扣率
-            Double discount=Double.valueOf(mPrePrice.getShouldPay())*pDiscount.getNum();
-            String discountPrice=mPrePrice.formatPrice(discount);
-            mPrePrice.addFavourablePrice(discountPrice);
-            long needPay =Long.valueOf(discountPrice);
-            lOrderMarketing.setNeedPay(needPay);
-
-            long realpay=0;
-            lOrderMarketing.setRealPay(realpay);
-            lOrderMarketing.setTradeRemark("");
-            lOrderMarketing.setGrouponSn("");
-            long grouponNum=0;
-            lOrderMarketing.setGiveScoreNum(grouponNum);
-            long couponNum=1;
-            lOrderMarketing.setCouponNum(couponNum);
-            long giveScoreNum=0;
-            lOrderMarketing.setGiveScoreNum(giveScoreNum);
-            long couponId=0;
-            lOrderMarketing.setCouponId(couponId);
-            long couponSn=0;
-            lOrderMarketing.setCouponId(couponSn);
-            long subPacketId=0;
-            lOrderMarketing.setSubPacketId(subPacketId);
-            long wixinId=0;
-            lOrderMarketing.setSubPacketId(wixinId);
-            lOrderMarketing.setModify_tag("1");
-            lOrderMarketing.setMemberFavor(true);
-            addOrderMarketing(lOrderMarketing);
-        }
-
-        //(2)是否支持会员价,"1",1支持,需要遍历所有菜品,计算菜品会员价折扣记录market营销活动
-        if(memberCard.getIsMemberPrice().equals("1")){
-            OrderMarketing lOrderMarketing=new OrderMarketing();
-            long marketingid=9999;//会员价优惠活动的marketdingid为8888
-            lOrderMarketing.setMarketingId(marketingid);
-            lOrderMarketing.setMarketingName("会员价优惠");
-            lOrderMarketing.setUserId(Long.valueOf(memberCard.getUserId()));
-            lOrderMarketing.setTradeStaffId(merchantRegister.getStaffId());
-
-            String discount="0.00";
-            //遍历当前订单所有菜品,计算所有菜的会员价折扣总和
-            if(mDeskOrder!=null&&mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0){
-                for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
-                    String discount_OrderGoods=mPrePrice.subPrice(lDeskOrderGoodsItem.getDishesPrice(),lDeskOrderGoodsItem.getMemberPrice());
-                    discount=mPrePrice.addPrice(discount_OrderGoods,discount);
-                }
-            }
-            mPrePrice.addFavourablePrice(discount);
-            long needPay = Long.valueOf(discount);
-            lOrderMarketing.setNeedPay(needPay);
-
-            long realpay=0;
-            lOrderMarketing.setRealPay(realpay);
-            lOrderMarketing.setTradeRemark("");
-
-            lOrderMarketing.setGrouponSn("");
-            long grouponNum=0;
-            lOrderMarketing.setGiveScoreNum(grouponNum);
-            long giveScoreNum=0;
-            lOrderMarketing.setGiveScoreNum(giveScoreNum);
-
-            long couponId=0;
-            lOrderMarketing.setCouponId(couponId);
-            long couponSn=0;
-            lOrderMarketing.setCouponId(couponSn);
-            long couponNum=0;
-            lOrderMarketing.setCouponNum(couponNum);
-
-            lOrderMarketing.setMemberFavor(true);
-            addOrderMarketing(lOrderMarketing);
-        }
-    }
-
-    /**
-     * 删除会员卡优惠活动
-     */
-    public void deleteUserMarketing(){
-        for (OrderMarketing lOrderMarketing:mOrderMarketingList){
-            if (lOrderMarketing.getMarketingId()==8888||lOrderMarketing.getMarketingId()==9999){
-                mPrePrice.deleteFavourablePrice(lOrderMarketing.getNeedPay()+"");
-                mOrderMarketingList.remove(lOrderMarketing);
-            }
-        }
-    }
-
-    /**
-     * 增加用户会员支付信息,积分抵扣金额
+     * 增加用户会员余额支付信息,积分抵扣金额
      * @param memberCard 会员卡信息
      * @param paytype 会员卡支付方式信息
      * @param price 输入的会员卡支付金额
      * @param scoreNum 输入的积分抵扣数量
      */
-    public void addUserBalance(MemberCard memberCard,PayType paytype,String price,String scoreNum){
+    public void addUserBalanceAndScore(MemberCard memberCard,PayType paytype,String price,String scoreNum){
         Double priceDouble= StringUtils.str2Double(price);
-
+        Double scoreDouble= StringUtils.str2Double(scoreNum);
+        mUserModel.setMemberCard(memberCard);
         //(1)"isThisMember": "1"是本商户的会员,是否跨域消费,"userId": 2015051100001286,会员卡支付需要将这些信息补入orderdata
         mSubmitPayOrder.setUserId(memberCard.getUserId());
         mSubmitPayOrder.setIsThisMember(memberCard.getIsThisMember());
@@ -524,18 +386,19 @@ public class PrePayPresenter {
         mOrderPayList.add(lOrderPay);
         mPrePrice.addCurPayPrice(price);
         //(3) balance余额变化
-        addBalance(Long.valueOf(merchantRegister.getChildMerchantId()),Long.valueOf(memberCard.getUserId()),priceDouble.longValue());
-        //(4)会员积分规则
-        memberCard.getCostPrice();
-        memberCard.getScoreNum();
-        memberCard.getIsMemberScore();//会员是否支持积分
-        memberCard.getIsAccountScore();//是否支持账户积分
-        if (mBalance.getUserId()!=null&&!mBalance.getUserId().equals("0")&&paytype.getIsScore().equals("1")){
-            UserScore lUserScore=new UserScore();
-            if (mUserScoreList.size()>0)lUserScore=mUserScoreList.get(0);
-            lUserScore.setUserId(lUserScore.getScoreNum() + priceDouble.longValue());
-            mUserScoreList.set(0,lUserScore);
-        }
+        mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble.longValue());
+        //(4) 会员余额支付积分
+        mUserModel.refreshScoreList(paytype, price, 0, mPrePrice);
+        //(5)积分抵扣金额
+        Double scorePrice=mUserModel.getScorePriceFormScore(scoreNum);
+        OrderPay lOrderPay1=new OrderPay();
+        lOrderPay1.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
+        lOrderPay1.setPayPrice(scorePrice);
+        lOrderPay1.setPayType("9");
+        lOrderPay1.setPayTypeName("会员积分");
+        lOrderPay1.setTradeStaffId(merchantRegister.getStaffId());
+        mOrderPayList.add(lOrderPay1);
+        //(6)积分抵扣后,对应mUserScoreList中记录变更,action0
+        mUserModel.addDeductionScore(scorePrice);
     }
-
 }
