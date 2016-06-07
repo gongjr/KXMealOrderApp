@@ -99,7 +99,7 @@ public class PrePayPresenter {
         //支付宝微信打折金额
 //        postParams.put("discountableAmount","0");
         //慎传,或不传
-//        postParams.put("needPay","19");
+//        postParams.put("needPay",getPrePrice().getShouldPay());
         Map<String, String> orderSubmitDataParams=new HashMap<>();
         orderSubmitDataParams.put("orderSubmitData",postParams.toString());
         HttpController.getInstance().postSubmitPay(orderSubmitDataParams, listener, errorListener);
@@ -167,11 +167,13 @@ public class PrePayPresenter {
         lOrderSubmit.setCreateTime(mDeskOrder.getStrCreateTime());
         //结算订单需要更改状态
         lOrderSubmit.setOrderState(OrderState.ORDERSTATE_FINISH.getValue());
+
         lOrderSubmit.setRemark(mDeskOrder.getRemark());
         lOrderSubmit.setOriginalPrice(mDeskOrder.getOriginalPrice());
         lOrderSubmit.setPayType(mDeskOrder.getPayType());
         lOrderSubmit.setIsNeedInvo(mDeskOrder.getIsNeedInvo());
         lOrderSubmit.setInvoPrice(mDeskOrder.getInvoPrice());
+        lOrderSubmit.setTotalPrice(mDeskOrder.getNeedPay());
         lOrderSubmit.setInvoId(mDeskOrder.getInvoId());
         lOrderSubmit.setInvoTitle(mDeskOrder.getInvoTitle());
         lOrderSubmit.setMerchantId(Long.valueOf(mDeskOrder.getMerchantId()));

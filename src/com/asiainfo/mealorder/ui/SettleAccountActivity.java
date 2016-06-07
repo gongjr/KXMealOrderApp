@@ -58,6 +58,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private TextView zhifubao;
     @InjectView(R.id.account_weixin)
     private TextView weixin;
+    @InjectView(R.id.account_lkl)
+    private TextView lkl;
     @InjectView(R.id.account_total_price)
     private TextView orderPrice;
     @InjectView(R.id.account_favorable_price)
@@ -156,7 +158,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            showLoadingDF("正在提交结算信息...");
             showSelectDF();
         }
     };
@@ -176,6 +177,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         cash.setOnClickListener(this);
         zhifubao.setOnClickListener(this);
         weixin.setOnClickListener(this);
+        lkl.setOnClickListener(this);
     }
 
     @Override
@@ -200,6 +202,9 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             case R.id.account_weixin:
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_WEIXIN);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
+                break;
+            case R.id.account_lkl:
+                showShortTip("拉卡拉设备暂不支持!");
                 break;
         }
     }
@@ -234,6 +239,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             if (tag == SelectSettlementDF.HANGING_ACCOUNT) {
                 showShortTip("挂账暂不支持!");
             } else {
+                showLoadingDF("正在提交结算信息...");
                 submitOrder();
             }
         }

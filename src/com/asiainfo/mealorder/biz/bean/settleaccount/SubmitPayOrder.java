@@ -52,6 +52,7 @@ public class SubmitPayOrder extends DataSupport implements Serializable{
 	private int personNum;
 
 	private int orderConfirmType;
+	private String totalPrice;
 
 	private List<OrderGoodsItem>  orderGoods;
 
@@ -298,4 +299,12 @@ public class SubmitPayOrder extends DataSupport implements Serializable{
     public void setTradeStaffId(String pTradeStaffId) {
         tradeStaffId = pTradeStaffId;
     }
+
+	public String getTotalPrice() {
+		return totalPrice;
+	}
+
+	public void setTotalPrice(String totalPrice) {
+		this.totalPrice = totalPrice;
+	}
 }

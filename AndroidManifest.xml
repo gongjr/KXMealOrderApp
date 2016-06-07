@@ -169,6 +169,12 @@
             android:screenOrientation="portrait" >
         </activity>
         <activity
+            android:name="com.asiainfo.mealorder.ui.LKLPayPriceActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
             android:name="com.asiainfo.mealorder.ui.ConfirmOrderActivity"
             android:label="@string/app_name"
              android:launchMode="singleTop"
