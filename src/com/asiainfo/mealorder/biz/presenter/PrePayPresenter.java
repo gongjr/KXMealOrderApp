@@ -173,7 +173,6 @@ public class PrePayPresenter {
         lOrderSubmit.setPayType(mDeskOrder.getPayType());
         lOrderSubmit.setIsNeedInvo(mDeskOrder.getIsNeedInvo());
         lOrderSubmit.setInvoPrice(mDeskOrder.getInvoPrice());
-        lOrderSubmit.setTotalPrice(mDeskOrder.getNeedPay());
         lOrderSubmit.setInvoId(mDeskOrder.getInvoId());
         lOrderSubmit.setInvoTitle(mDeskOrder.getInvoTitle());
         lOrderSubmit.setMerchantId(Long.valueOf(mDeskOrder.getMerchantId()));
