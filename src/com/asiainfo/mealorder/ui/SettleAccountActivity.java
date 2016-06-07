@@ -182,24 +182,40 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
 
     @Override
     public void onClick(View v) {
-        getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getShouldPay());
+        getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getCurNeedPay());
         switch (v.getId()) {
             case R.id.account_member_card:
                 getOperation().forward(SearchUserActivity.class);
                 break;
             case R.id.account_bank_card:
+                if (isHavePayment(PayMent.BankPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
+                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                    return;
+                }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_BANK);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_cash:
+                if (isHavePayment(PayMent.CashPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
+                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                    return;
+                }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_CASH);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_zhifubao:
+                if (isHavePayment(PayMent.ZhifubaoPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
+                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                    return;
+                }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_ZHIFUBAO);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_weixin:
+                if (isHavePayment(PayMent.WeixinPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
+                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                    return;
+                }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_WEIXIN);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
@@ -212,7 +228,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     public void refreshPrice() {
         Log.d(TAG, "The current pay is: " + mPrePayPresenter.getPrePrice().getCurrentPay() + ", " +
                 "the need pay is: " + mPrePayPresenter.getPrePrice().getShouldPay());
-        if (StringUtils.str2Double(mPrePayPresenter.getPrePrice().getCurrentPay()) > StringUtils.str2Double(mPrePayPresenter.getPrePrice().getShouldPay())) {
+        if (StringUtils.str2Double(mPrePayPresenter.getPrePrice().getCurrentPay()) >= StringUtils.str2Double(mPrePayPresenter.getPrePrice().getShouldPay())) {
             titleView.isRightBtnVisible(true);
         } else {
             titleView.isRightBtnVisible(false);
@@ -318,6 +334,10 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 String price = data.getStringExtra("payPrice");
                 switch (tag) {
                     case PayPriceActivity.PAY_BANK:
+                        if (isHavePayment(PayMent.BankPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
+                            showShortTip("改支付方式已支付,请换一种支付方式!");
+                            return;
+                        }
                         mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.BankPayMent), price);
                         bankCard.setBackgroundResource(R.drawable.itemsel_selected);
                         break;

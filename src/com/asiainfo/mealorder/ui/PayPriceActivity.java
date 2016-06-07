@@ -49,6 +49,7 @@ public class PayPriceActivity extends BaseActivity {
         setTitleView();
         initKeyboardView();
         edit.setFocusable(false);
+        edit.setText(getIntent().getStringExtra("payPrice"));
     }
 
     private void setTitleView() {
