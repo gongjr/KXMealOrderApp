@@ -18,9 +18,9 @@
         android:keyBackground="@anim/btn_num_keyboard_key"
         android:keyPreviewHeight="@dimen/key_height"
         android:keyPreviewLayout="@layout/numkey_preview"
-        android:keyTextColor="@color/black"
+        android:keyTextColor="@color/search_item_choose_ok_text"
         android:keyTextSize="@dimen/text_size_xxlarge"
-        android:labelTextSize="@dimen/text_size_xlarge"/>
+        android:labelTextSize="@dimen/text_size_large"/>
 
     <LinearLayout
         android:layout_width="0dip"

@@ -185,7 +185,7 @@ public class UserModel {
      */
     public void refreshScoreList(PayType paytype,String price,int action,PrePrice mPrePrice){
         Double score= getScoreFormPrice(price);
-        if (mMemberCard.getUserId()!=null&&!mMemberCard.getUserId().equals("0")
+        if (mMemberCard!=null&&mMemberCard.getUserId()!=null&&!mMemberCard.getUserId().equals("0")
                 &&paytype.getIsScore().equals("1")&&mMemberCard.getIsMemberScore().equals("1")){
             UserScore lUserScore=null;
             for (UserScore userscore:mUserScoreList){
@@ -239,7 +239,14 @@ public class UserModel {
     }
 
     /**
-     * 清楚会员积分抵扣
+     * 清除会员积分记录
+     */
+    public void deleteUserScore(){
+        mUserScoreList.clear();
+    }
+
+    /**
+     * 增加会员积分抵扣
      * @return
      */
     public  void addDeductionScore(Double scorePrice) {
@@ -252,7 +259,7 @@ public class UserModel {
     }
 
     /**
-     * 增加会员积分抵扣消费记录
+     * 清除会员积分抵扣消费记录
      * @return
      */
     public  void deleteUserDeductionScore() {

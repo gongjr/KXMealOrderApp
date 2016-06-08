@@ -43,8 +43,8 @@ import java.util.Map;
  * mail : gjr9596@gmail.com
  */
 public class PrePayPresenter {
-    private final static String Response_ok="OK";
-    private final static String Response_error="ERROR";
+    public final static String Response_ok="OK";
+    public final static String Response_error="ERROR";
     /**
      * 当前支付订单信息
      */
@@ -234,13 +234,6 @@ public class PrePayPresenter {
         mPrePrice.addCurPayPrice(price);
     }
 
-    /*
-    * 根据支付方式,删除支付金额
-    * */
-    public void removeOrderPay(String price) {
-        mPrePrice.deleteCurPayPrice(price);
-    }
-
     /**
      * 最后结算提交的时候,判断是否找零,
      * 有的话,需要向服务器提交找零支付信息
@@ -409,8 +402,8 @@ public class PrePayPresenter {
         OrderPay lOrderPay1=new OrderPay();
         lOrderPay1.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
         lOrderPay1.setPayPrice(scorePrice);
-        lOrderPay1.setPayType("9");
-        lOrderPay1.setPayTypeName("会员积分");
+        lOrderPay1.setPayType(PayMent.ScoreDikbPayMent.getValue());
+        lOrderPay1.setPayTypeName(PayMent.ScoreDikbPayMent.getTitle());
         lOrderPay1.setTradeStaffId(merchantRegister.getStaffId());
         mOrderPayList.add(lOrderPay1);
         mPrePrice.addCurPayPrice(scorePrice.toString());
@@ -420,43 +413,19 @@ public class PrePayPresenter {
     }
 
     /**
-     * 删除会员卡余额支付记录
-     * @param pOrderPay 对应的支付信息
-     * @param listener 响应回调
-     */
-    public void deleteUserBalance(OrderPay pOrderPay,Response.Listener<String> listener){
-        deleteOrderPay(pOrderPay,null);
-        mUserModel.deleteUserBanlance();
-        if(listener!=null)listener.onResponse(Response_ok);
-    }
-
-    /**
-     * 删除会员卡积分支付记录
-     * @param pOrderPay 对应的支付信息
-     * @param listener 响应回调
-     */
-    public void deleteUserScore(OrderPay pOrderPay,Response.Listener<String> listener){
-        deleteOrderPay(pOrderPay,null);
-        mUserModel.deleteUserDeductionScore();
-        if(listener!=null)listener.onResponse(Response_ok);
-    }
-
-    /**
      * 所有支付方式都只能存在一条支付信息,保持唯一性加入,删除
      * 删除orderPayList同时,验证积分
      * @param pOrderPay
-     * @param listener 响应回调
      */
-    public void deleteOrderPay(OrderPay pOrderPay,Response.Listener<String> listener){
+    public void deleteOrderPay(OrderPay pOrderPay){
         for (OrderPay lOrderPay:mOrderPayList){
-            if (lOrderPay.getPayMode().equals(pOrderPay.getPayMode())){
+            if (lOrderPay.getPayType().equals(pOrderPay.getPayType())){
                 mOrderPayList.remove(lOrderPay);
-                PayType lPayType=getPayType(lOrderPay.getPayMode());
+                PayType lPayType=getPayTypeFromType(lOrderPay.getPayType());
                 mUserModel.refreshScoreList(lPayType, lOrderPay.getPayPrice().toString(), 0, mPrePrice);
                 break;
             }
         }
-        if(listener!=null)listener.onResponse(Response_ok);
     }
 
     /**
@@ -475,24 +444,74 @@ public class PrePayPresenter {
      */
     public boolean isExistOrderPay(PayMent pPayMent){
         for (OrderPay lOrderPay:mOrderPayList){
-            if (lOrderPay.getPayMode().equals(pPayMent.getValue()))return true;
+            if (lOrderPay.getPayType().equals(pPayMent.getValue()))return true;
         }
         return false;
     }
 
     /**
      * 根据payMode获取对应的支付方式信息
-     * @param payMode
+     * @param payType
      * @return
      */
-    public PayType getPayType(String payMode) {
+    public PayType getPayTypeFromType(String payType) {
         Iterator payList=payTypeList.entrySet().iterator();
         while (payList.hasNext()){
             Map.Entry<PayMent,PayType> entry=(Map.Entry<PayMent,PayType>)payList.next();
-            if (entry.getValue().getPayMode().equals(payMode)){
+            if (entry.getValue().getPayType().equals(payType)){
                 return entry.getValue();
             }
         }
         return null;
+    }
+
+    /**
+     * 根据支付方式,删除支付金额
+     * @param position  orderpay对应位置
+     * @param listener  成功回调回调
+     * */
+    public void removeOrderPay(int position,Response.Listener<String> listener) {
+        OrderPay pOrderPay=getOrderPayList().get(position);
+        if (pOrderPay.getPayType().equals(PayMent.UserPayMent.getValue())){
+            //(1)清除对应余额支付数据
+            mUserModel.deleteUserBanlance();
+            mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
+            deleteOrderPay(pOrderPay);
+            //(2)清除会员积分记录
+            mUserModel.deleteUserScore();
+            //(3)清除对应会员积分抵扣金额
+            for (OrderPay lOrderPay:mOrderPayList){
+                if (lOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())){
+                    mOrderPayList.remove(lOrderPay);
+                    mPrePrice.deleteCurPayPrice(lOrderPay.getPayPrice().toString());
+                    break;
+                }
+            }
+            //(4)最后清除会员的优惠营销活动活动,应收恢复
+            deleteUserMarketing();
+
+        }else if(pOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())){
+            //会员积分抵扣,可以直接删除
+            mOrderPayList.remove(pOrderPay);
+            mUserModel.deleteUserDeductionScore();
+            mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
+        }else{
+            //现金,微信,支付宝,银联卡,直接删orderpay与price,积分
+            mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
+            deleteOrderPay(pOrderPay);
+        }
+        if(listener!=null)listener.onResponse(Response_ok);
+    }
+
+    /**
+     * 清除会员优惠活动
+     */
+    private void deleteUserMarketing(){
+        for (OrderMarketing lOrderMarketing:mOrderMarketingList){
+            if (lOrderMarketing.getMarketingId()==8888||lOrderMarketing.getMarketingId()==9999){
+                mPrePrice.deleteFavourablePrice(lOrderMarketing.getNeedPay().toString());
+                mOrderMarketingList.remove(lOrderMarketing);
+            }
+        }
     }
 }

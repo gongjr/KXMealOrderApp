@@ -45,11 +45,11 @@ public class PayPriceActivity extends BaseActivity {
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_pay_price);
-        price.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
+        price.setText(Html.fromHtml("<font>还需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
         setTitleView();
-        initKeyboardView();
         edit.setFocusable(false);
         edit.setText(getIntent().getStringExtra("payPrice"));
+        initKeyboardView();
     }
 
     private void setTitleView() {

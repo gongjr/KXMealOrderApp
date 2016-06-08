@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.text.Editable;
+import android.text.Selection;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -124,6 +125,7 @@ public class NumKeyboardView {
         @Override
         public void onKey(int primaryCode, int[] keyCodes) {
             Editable editable = ed.getText();
+            Selection.setSelection(editable, editable.length());//光标置尾
             int start = ed.getSelectionStart();
             if (primaryCode == Keyboard.KEYCODE_DONE) {// 完成,搜索确认
 //                hideKeyboard();

@@ -11,7 +11,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.PayOrderListAdapter;
-import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
@@ -185,58 +184,66 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getCurNeedPay());
         switch (v.getId()) {
             case R.id.account_member_card:
+                if (!mPrePayPresenter.isExistPayMent(PayMent.UserPayMent)) {
+                    showShortTip("没有配置 (会员卡支付),请换一种支付方式~.~");
+                    return;
+                }
+                if (mPrePayPresenter.isExistOrderPay(PayMent.UserPayMent)) {
+                    showShortTip("您已使用过 (会员卡支付),请换一种支付方式~.~");
+                    return;
+                }
                 getOperation().forward(SearchUserActivity.class);
                 break;
             case R.id.account_bank_card:
-                if (!mPrePayPresenter.getPayMent().containsKey(PayMent.BankPayMent)) {
-                    showShortTip("没有该支付方式,请换另一种~.~");
+                if (!mPrePayPresenter.isExistPayMent(PayMent.BankPayMent)) {
+                    showShortTip("没有配置 (银行卡支付),请换一种支付方式~.~");
                     return;
                 }
-                if (isHavePayment(PayMent.BankPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
-                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                if (mPrePayPresenter.isExistOrderPay(PayMent.BankPayMent)) {
+                    showShortTip("您已使用过 (银行卡支付),请换一种支付方式~.~");
                     return;
                 }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_BANK);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_cash:
-                if (!mPrePayPresenter.getPayMent().containsKey(PayMent.CashPayMent)) {
-                    showShortTip("没有该支付方式,请换另一种~.~");
+                if (!mPrePayPresenter.isExistPayMent(PayMent.CashPayMent)) {
+                    showShortTip("没有配置 (现金支付),请换一种支付方式~.~");
                     return;
                 }
-                if (isHavePayment(PayMent.CashPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
-                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                if (mPrePayPresenter.isExistOrderPay(PayMent.CashPayMent)) {
+                    showShortTip("您已使用过 (现金支付),请换一种支付方式~.~");
                     return;
                 }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_CASH);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_zhifubao:
-                if (!mPrePayPresenter.getPayMent().containsKey(PayMent.ZhifubaoPayMent)) {
-                    showShortTip("没有该支付方式,请换另一种~.~");
+                if (!mPrePayPresenter.isExistPayMent(PayMent.ZhifubaoPayMent)) {
+                    showShortTip("没有配置 (支付宝支付),请换一种支付方式~.~~.~");
                     return;
                 }
-                if (isHavePayment(PayMent.ZhifubaoPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
-                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                if (mPrePayPresenter.isExistOrderPay(PayMent.ZhifubaoPayMent)) {
+                    showShortTip("您已使用过 (支付宝支付),请换一种支付方式~.~");
                     return;
                 }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_ZHIFUBAO);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_weixin:
-                if (!mPrePayPresenter.getPayMent().containsKey(PayMent.WeixinPayMent)) {
-                    showShortTip("没有该支付方式,请换另一种~.~");
+                if (!mPrePayPresenter.isExistPayMent(PayMent.WeixinPayMent)) {
+                    showShortTip("没有配置 (微信支付),请换一种支付方式~.~");
                     return;
                 }
-                if (isHavePayment(PayMent.WeixinPayMent.getValue(), mPrePayPresenter.getOrderPayList())) {
-                    showShortTip("该支付方式已支付,请换一种支付方式~.~");
+                if (mPrePayPresenter.isExistOrderPay(PayMent.WeixinPayMent)) {
+                    showShortTip("您已使用过 (微信支付),请换一种支付方式~.~");
                     return;
                 }
                 getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_WEIXIN);
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_lkl:
-                showShortTip("拉卡拉设备暂不支持!");
+                showShortTip("本设备不支持 (拉卡拉支付)!");
                 break;
         }
     }
@@ -369,7 +376,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 refreshPayOrderListView();
                 refreshPrice();
             } else if (resultCode == RESULT_CANCELED) {
-                showShortTip("用户取消支付!");
+                showShortTip("取消操作!");
             }
         }
     }
@@ -414,15 +421,22 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
 
     private OnVisibilityListener onVisibilityListener = new OnVisibilityListener() {
         @Override
-        public void onVisibility(String type, int position) {
-            List<OrderPay> orderPayList = mPrePayPresenter.getOrderPayList();
-            mPrePayPresenter.removeOrderPay(StringUtils.double2Str(orderPayList.get(position).getPayPrice()));
-            orderPayList.remove(position);
-            if (!isHavePayment(type, orderPayList)) {
-                hidePayment(type);
-            }
-            refreshPayOrderListView();
-            refreshPrice();
+        public void onVisibility(final String type, int position) {
+            //必然关系,必须等业务模型处理成功后,在进行界面更新
+            mPrePayPresenter.removeOrderPay(position, new Response.Listener<String>() {
+                @Override
+                public void onResponse(String response) {
+                    if (response.equals(mPrePayPresenter.Response_ok)){
+                        if (!mPrePayPresenter.isExistOrderPay(PayMent.WeixinPayMent)) {
+                            hidePayment(type);
+                        }
+                        refreshPayOrderListView();
+                        refreshPrice();
+                    } else{
+                        showShortTip(response);
+                    }
+                }
+            });
         }
     };
 
@@ -441,13 +455,5 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         }
     }
 
-    private boolean isHavePayment(String payType, List<OrderPay> mOrderPayList) {
-        int size = mOrderPayList.size();
-        for (int i = 0; i < size; i++) {
-            if (mOrderPayList.get(i).getPayType().equals(payType)) {
-                return true;
-            }
-        }
-        return false;
-    }
+
 }
