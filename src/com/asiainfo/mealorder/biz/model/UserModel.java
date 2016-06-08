@@ -27,7 +27,7 @@ public class UserModel {
     /**
      * 会员积分记录列表
      */
-    private List<UserScore> mUserScoreList = new ArrayList<>();
+    private List<UserScore> mUserScoreList = new ArrayList<UserScore>();
     /**
      * 会员余额记录
      */
@@ -90,7 +90,7 @@ public class UserModel {
      */
     public List<OrderMarketing> addUserMarketing(Discount pDiscount,
                                  PrePrice mPrePrice,MerchantRegister merchantRegister,DeskOrder mDeskOrder){
-        List<OrderMarketing> mOrderMarketingList=new ArrayList<>();
+        List<OrderMarketing> mOrderMarketingList=new ArrayList<OrderMarketing>();
         //(1)先判断是否有会员折扣优惠,会员折让价格,记录market营销活动
         if (pDiscount!=null){
             OrderMarketing lOrderMarketing=new OrderMarketing();

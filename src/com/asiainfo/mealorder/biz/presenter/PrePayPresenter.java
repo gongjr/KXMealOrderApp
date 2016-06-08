@@ -60,13 +60,13 @@ public class PrePayPresenter {
      * 会员支付码信息业务模型
      */
     private UserModel mUserModel=null;
-    private List<OrderPay> mOrderPayList=new ArrayList<>();
-    private List<OrderMarketing> mOrderMarketingList=new ArrayList<>();
-    private List<UserCoupon> mUserCouponList =new ArrayList<>();
-    private List<RedPackageReceive> mRedPackageReceiveList=new ArrayList<>();
+    private List<OrderPay> mOrderPayList=new ArrayList<OrderPay>();
+    private List<OrderMarketing> mOrderMarketingList=new ArrayList<OrderMarketing>();
+    private List<UserCoupon> mUserCouponList =new ArrayList<UserCoupon>();
+    private List<RedPackageReceive> mRedPackageReceiveList=new ArrayList<RedPackageReceive>();
     private Gson gson=new Gson();
     private MerchantRegister merchantRegister;
-    private Map<PayMent,PayType> payTypeList=new HashMap<>();
+    private Map<PayMent,PayType> payTypeList=new HashMap<PayMent,PayType>();
 
     public PrePayPresenter(DeskOrder lDeskOrder, MerchantRegister merchantRegister){
         this.mDeskOrder=lDeskOrder;
@@ -78,7 +78,7 @@ public class PrePayPresenter {
 
     public void submit(Response.Listener<ResultMap<SubmitPayInfo>> listener,
                        Response.ErrorListener errorListener){
-        Map<String, String> postParams=new HashMap<>();
+        Map<String, String> postParams=new HashMap<String, String>();
         String orderData=gson.toJson(mSubmitPayOrder);
         String balance=gson.toJson(mUserModel.getBalance());
         String userScoreList=gson.toJson(mUserModel.getUserScoreList());
@@ -112,7 +112,7 @@ public class PrePayPresenter {
 //        postParams.put("discountableAmount","0");
         //慎传,或不传
 //        postParams.put("needPay",getPrePrice().getShouldPay());
-        Map<String, String> orderSubmitDataParams=new HashMap<>();
+        Map<String, String> orderSubmitDataParams=new HashMap<String, String>();
         orderSubmitDataParams.put("orderSubmitData",postParams.toString());
         HttpController.getInstance().postSubmitPay(orderSubmitDataParams, listener, errorListener);
 
@@ -168,7 +168,7 @@ public class PrePayPresenter {
         lOrderSubmit.setPaidPrice(mDeskOrder.getPaidPrice());
         lOrderSubmit.setPersonNum(Integer.valueOf(mDeskOrder.getPersonNum()));
         lOrderSubmit.setTradeStaffId(mDeskOrder.getTradeStaffId());
-        ArrayList<OrderGoodsItem> list=new ArrayList<>();
+        ArrayList<OrderGoodsItem> list=new ArrayList<OrderGoodsItem>();
         for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
             list.add(deskOrderGoodsItemToOrderGoodsItem(lDeskOrderGoodsItem));
         }
@@ -248,7 +248,7 @@ public class PrePayPresenter {
     public List<OrderPay> getOrderPayListWithOddChange(){
         Double pLDouble= StringUtils.str2Double(getPrePrice().getOddChange());
         if (pLDouble>0){
-            List<OrderPay> lOrderPays=new ArrayList<>();
+            List<OrderPay> lOrderPays=new ArrayList<OrderPay>();
             for (OrderPay lOrderPay:mOrderPayList){
                 lOrderPays.add(lOrderPay);
             }
