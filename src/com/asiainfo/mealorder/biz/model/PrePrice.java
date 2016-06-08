@@ -21,6 +21,10 @@ public class PrePrice {
      */
     private String shouldPay="0.00";
     /**
+     * 订单初始的应收金额,不随折扣而改变,留存记录
+     */
+    private String initShouldPay="0.00";
+    /**
      * 已付金额
      */
     private String currentPay="0.00";
@@ -41,13 +45,14 @@ public class PrePrice {
     public PrePrice(String orderPrice, String pShouldPay){
         this.orderPrice=df.format(Double.valueOf(orderPrice));
         this.shouldPay=df.format(Double.valueOf(pShouldPay));
+        this.initShouldPay=shouldPay;
         this.favourablePrice=subPrice(orderPrice, shouldPay);
         this.currentPay="0.00";
         this.curNeedPay=shouldPay;
         this.oddChange="0.00";
     }
 
-    private String subPrice(String price1, String price2) {
+    public String subPrice(String price1, String price2) {
         Double onePrice = StringUtils.str2Double(price1);
         Double twoPrice = StringUtils.str2Double(price2);
         Double newprice = Arith.sub(onePrice, twoPrice);
@@ -55,7 +60,7 @@ public class PrePrice {
         return df.format(newprice);
     }
 
-    private String addPrice(String price1, String price2) {
+    public String addPrice(String price1, String price2) {
         Double onePrice = StringUtils.str2Double(price1);
         Double twoPrice = StringUtils.str2Double(price2);
         Double newprice = Arith.add(onePrice, twoPrice);
@@ -129,6 +134,10 @@ public class PrePrice {
         shouldPay=subPrice(orderPrice,favourablePrice);
         curNeedPay=subPrice(shouldPay,currentPay);
         oddChange=subPrice(currentPay,shouldPay);
+    }
+
+    public String formatPrice(Double price){
+        return df.format(price);
     }
 
 }

@@ -34,7 +34,87 @@ public class OrderMarketing {
 
 	private Long marketingReasonId;
 
-	public Long getOrderId() {
+    private Long userId;
+
+    private Long couponSn;
+
+    private String couponName;
+
+    private Long subPacketId;
+
+    private Long wixinId;
+
+    private String type;
+
+    private String modify_tag;
+
+    private boolean isMemberFavor;
+
+    public String getModify_tag() {
+        return modify_tag;
+    }
+
+    public void setModify_tag(String pModify_tag) {
+        modify_tag = pModify_tag;
+    }
+
+    public boolean isMemberFavor() {
+        return isMemberFavor;
+    }
+
+    public void setMemberFavor(boolean pIsMemberFavor) {
+        isMemberFavor = pIsMemberFavor;
+    }
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String pType) {
+        type = pType;
+    }
+
+    public Long getSubPacketId() {
+        return subPacketId;
+    }
+
+    public void setSubPacketId(Long pSubPacketId) {
+        subPacketId = pSubPacketId;
+    }
+
+    public Long getWixinId() {
+        return wixinId;
+    }
+
+    public void setWixinId(Long pWixinId) {
+        wixinId = pWixinId;
+    }
+
+    public String getCouponName() {
+        return couponName;
+    }
+
+    public void setCouponName(String pCouponName) {
+        couponName = pCouponName;
+    }
+
+    public Long getCouponSn() {
+        return couponSn;
+    }
+
+    public void setCouponSn(Long pCouponSn) {
+        couponSn = pCouponSn;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long pUserId) {
+        userId = pUserId;
+    }
+
+    public Long getOrderId() {
 		return orderId;
 	}
 

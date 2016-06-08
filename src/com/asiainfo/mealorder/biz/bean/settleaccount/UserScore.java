@@ -22,11 +22,21 @@ public class UserScore  {
     private String remark;
     
     private String tradeStaffId;
+
+    private int action;//0:积分折扣,1:积分增加
     
     public UserScore(){
     	
     }
-    
+
+    public int getAction() {
+        return action;
+    }
+
+    public void setAction(int pAction) {
+        action = pAction;
+    }
+
     public Long getUserId() {
 		return userId;
 	}
