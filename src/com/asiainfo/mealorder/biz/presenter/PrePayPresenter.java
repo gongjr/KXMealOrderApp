@@ -27,6 +27,7 @@ import com.google.gson.Gson;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -442,6 +443,7 @@ public class PrePayPresenter {
 
     /**
      * 所有支付方式都只能存在一条支付信息,保持唯一性加入,删除
+     * 删除orderPayList同时,验证积分
      * @param pOrderPay
      * @param listener 响应回调
      */
@@ -449,10 +451,48 @@ public class PrePayPresenter {
         for (OrderPay lOrderPay:mOrderPayList){
             if (lOrderPay.getPayMode().equals(pOrderPay.getPayMode())){
                 mOrderPayList.remove(lOrderPay);
+                PayType lPayType=getPayType(lOrderPay.getPayMode());
+                mUserModel.refreshScoreList(lPayType, lOrderPay.getPayPrice().toString(), 0, mPrePrice);
                 break;
             }
         }
         if(listener!=null)listener.onResponse(Response_ok);
     }
 
+    /**
+     * 验证对应支付方式是否在支持的支付方式列表
+     * @param pPayMent
+     * @return
+     */
+    public boolean isExistPayMent(PayMent pPayMent){
+            return payTypeList.containsKey(pPayMent);
+    }
+
+    /**
+     * 验证对应支付方式是否在支持的支付方式列表
+     * @param pPayMent
+     * @return
+     */
+    public boolean isExistOrderPay(PayMent pPayMent){
+        for (OrderPay lOrderPay:mOrderPayList){
+            if (lOrderPay.getPayMode().equals(pPayMent.getValue()))return true;
+        }
+        return false;
+    }
+
+    /**
+     * 根据payMode获取对应的支付方式信息
+     * @param payMode
+     * @return
+     */
+    public PayType getPayType(String payMode) {
+        Iterator payList=payTypeList.entrySet().iterator();
+        while (payList.hasNext()){
+            Map.Entry<PayMent,PayType> entry=(Map.Entry<PayMent,PayType>)payList.next();
+            if (entry.getValue().getPayMode().equals(payMode)){
+                return entry.getValue();
+            }
+        }
+        return null;
+    }
 }
