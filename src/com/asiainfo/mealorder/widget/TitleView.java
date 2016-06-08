@@ -43,7 +43,7 @@ public class TitleView extends RelativeLayout implements View.OnClickListener {
         if (b) {
             rightBtn.setVisibility(VISIBLE);
         } else {
-            rightBtn.setVisibility(GONE);
+            rightBtn.setVisibility(INVISIBLE);
         }
     }
 
