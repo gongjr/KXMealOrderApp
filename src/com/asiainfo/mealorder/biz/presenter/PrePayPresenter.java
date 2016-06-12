@@ -1,10 +1,11 @@
 package com.asiainfo.mealorder.biz.presenter;
 
+import android.util.Log;
+
 import com.android.volley.Response;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
-import com.asiainfo.mealorder.biz.bean.settleaccount.MemberPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderMarketing;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
@@ -86,7 +87,7 @@ public class PrePayPresenter {
         String hbList=gson.toJson(mRedPackageReceiveList);
         String couponList=gson.toJson(mUserCouponList);
         String orderMarketingList=gson.toJson(mOrderMarketingList);
-        String orderPayList=gson.toJson(getOrderPayListWithOddChange());
+        String orderPayList=gson.toJson(getLastOrderPay());
 
         //订单信息
         postParams.put("orderData",orderData);
@@ -124,7 +125,11 @@ public class PrePayPresenter {
     }
 
     public List<OrderPay> getOrderPayList(){
-        return mOrderPayList;
+        List<OrderPay> lOrderPays= new ArrayList<OrderPay>();
+
+        lOrderPays.addAll(mUserModel.getOrderPayList());
+        lOrderPays.addAll(mOrderPayList);
+        return lOrderPays;
     }
 
 
@@ -232,6 +237,13 @@ public class PrePayPresenter {
         lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
         mOrderPayList.add(lOrderPay);
         mPrePrice.addCurPayPrice(price);
+    }
+
+    public List<OrderPay> getLastOrderPay(){
+        List<OrderPay> lOrderPays=new ArrayList<OrderPay>();
+        lOrderPays.addAll(mUserModel.getLastOrderPayList());
+        lOrderPays.addAll(getOrderPayListWithOddChange());
+        return lOrderPays;
     }
 
     /**
@@ -364,54 +376,22 @@ public class PrePayPresenter {
         mSubmitPayOrder.setUserId(memberCard.getUserId());
         mSubmitPayOrder.setIsThisMember(memberCard.getIsThisMember());
         //(3)设置orderpay数据
-        OrderPay lOrderPay=new OrderPay();
-        lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
-        lOrderPay.setPayPrice(priceDouble);
-        lOrderPay.setPayType(paytype.getPayType());
-        lOrderPay.setPayTypeName(paytype.getPayTypeName());
-        lOrderPay.setChangeType(paytype.getChangeType());
-        lOrderPay.setIsScore(paytype.getIsScore());
-        lOrderPay.setPayMode(paytype.getPayMode());
-        lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
-        MemberPay lMemberPay=new MemberPay();
-        lMemberPay.setPayPrice(priceDouble.longValue());
-        lMemberPay.setAccountLeave(Long.valueOf(memberCard.getAccountLeave()));
-        long scoreCash=0;
-        lMemberPay.setScoreCash(scoreCash);
-        lMemberPay.setScore(Long.valueOf(memberCard.getScore()));
-        lMemberPay.setUserId(Long.valueOf(memberCard.getUserId()));
-        lMemberPay.setUsername(memberCard.getUsername());
-        lMemberPay.setMemberType(memberCard.getMemberType());
-        lMemberPay.setPhone(memberCard.getPhone());
-        long scorePercent=1;
-        lMemberPay.setScorePercent(scorePercent);
-        lMemberPay.setCostPrice(Long.valueOf(memberCard.getCostPrice()));
-        lMemberPay.setScoreNum(Long.valueOf(memberCard.getScoreNum()));
-        lMemberPay.setIsAccountScore(memberCard.getIsAccountScore());
-        lMemberPay.setTotalScore(Long.valueOf(memberCard.getScore()));
-        long useScore=0;
-        lMemberPay.setUseScore(useScore);
-        mOrderPayList.add(lOrderPay);
+        mUserModel.addBalanceOrderPay(priceDouble,memberCard,paytype,mDeskOrder,merchantRegister);
         mPrePrice.addCurPayPrice(price);
         //(4) balance余额变化
         mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble.longValue());
         //(5) 会员余额支付积分
         mUserModel.refreshScoreList(paytype, price, 0, mPrePrice);
-        //(6)积分抵扣金额,需要当做一条支付行为处理
-        Double scorePrice = new Double(0);
-        if (!scoreNum.equals("") && scoreNum != null) {
-            scorePrice=mUserModel.getScorePriceFormScore(scoreNum);
+        Log.i("scoreNum","scoreNum:"+scoreNum);
+        if (scoreNum != null&&!scoreNum.equals("")) {
+            //(6)积分抵扣金额,需要当做一条支付行为处理
+            Double scorePrice=mUserModel.getScorePriceFormScore(scoreNum);
+            mUserModel.addDeductionScoreOrderPay(scorePrice, mDeskOrder, merchantRegister);
+            mPrePrice.addCurPayPrice(scorePrice.toString());
+            //(7)积分抵扣后,对应mUserScoreList中记录变更,action0
+            mUserModel.addDeductionScore(scorePrice);
         }
-        OrderPay lOrderPay1=new OrderPay();
-        lOrderPay1.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
-        lOrderPay1.setPayPrice(scorePrice);
-        lOrderPay1.setPayType(PayMent.ScoreDikbPayMent.getValue());
-        lOrderPay1.setPayTypeName(PayMent.ScoreDikbPayMent.getTitle());
-        lOrderPay1.setTradeStaffId(merchantRegister.getStaffId());
-        mOrderPayList.add(lOrderPay1);
-        mPrePrice.addCurPayPrice(scorePrice.toString());
-        //(7)积分抵扣后,对应mUserScoreList中记录变更,action0
-        mUserModel.addDeductionScore(scorePrice);
+
         if(listener!=null)listener.onResponse(Response_ok);
     }
 

@@ -76,6 +76,8 @@ public class MemberActivity extends BaseActivity {
 
     private void initData() {
         memberCard = getIntent().getParcelableExtra("MemberCard");
+        balanceEdit.setText("0.00");
+        scoreEdit.setText("0");
         memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
         memberPresenter.fillViews();
@@ -104,13 +106,13 @@ public class MemberActivity extends BaseActivity {
             String score = scoreEdit.getText().toString();
             if (StringUtils.str2Double(balance) > StringUtils.str2Double(memberCard.getBalance())) {
                 showShortTip("会员余额不足,请确认~.~");
-                balanceEdit.setText("");
+                balanceEdit.setText("0");
                 balanceEdit.requestFocus();
                 return;
             }
             if (StringUtils.str2Double(score) > StringUtils.str2Double(memberCard.getScore())) {
                 showShortTip("积分不足,请确认~.~");
-                scoreEdit.setText("");
+                scoreEdit.setText("0");
                 scoreEdit.requestFocus();
                 return;
             }

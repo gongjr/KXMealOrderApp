@@ -3,7 +3,10 @@ package com.asiainfo.mealorder.biz.model;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Balance;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
+import com.asiainfo.mealorder.biz.bean.settleaccount.MemberPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderMarketing;
+import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
+import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserScore;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
@@ -32,6 +35,10 @@ public class UserModel {
      * 会员余额记录
      */
     private Balance mBalance=new Balance();
+    /**
+     * 会员orderpay数据
+     */
+    private List<OrderPay> mOrderPayList=new ArrayList<OrderPay>();
 
     /**
      * 根据当前选中的会员卡计算对应积分转换金额,无会员返回0.00
@@ -92,46 +99,53 @@ public class UserModel {
                                  PrePrice mPrePrice,MerchantRegister merchantRegister,DeskOrder mDeskOrder){
         List<OrderMarketing> mOrderMarketingList=new ArrayList<OrderMarketing>();
         //(1)先判断是否有会员折扣优惠,会员折让价格,记录market营销活动
-        if (pDiscount!=null){
-            OrderMarketing lOrderMarketing=new OrderMarketing();
-            long marketingid=8888;//会员折扣优惠活动的marketdingid为8888
+        if (mMemberCard!=null) {
+            OrderMarketing lOrderMarketing = new OrderMarketing();
+            long marketingid = 8888;//会员折扣优惠活动的marketdingid为8888
             lOrderMarketing.setMarketingId(marketingid);
-            lOrderMarketing.setMarketingName("[会员]"+pDiscount.getTitle());
-            lOrderMarketing.setCouponName("[会员]"+pDiscount.getTitle());
             lOrderMarketing.setType("discount");
             lOrderMarketing.setUserId(Long.valueOf(mMemberCard.getUserId()));
             lOrderMarketing.setTradeStaffId(merchantRegister.getStaffId());
+            if (pDiscount != null) {
+                lOrderMarketing.setMarketingName("[会员]" + pDiscount.getTitle());
+                lOrderMarketing.setCouponName("[会员]" + pDiscount.getTitle());
+                //折扣掉的金额=应收*折扣率
+                Double discount = Double.valueOf(mPrePrice.getShouldPay()) * pDiscount.getNum()/10;
+                String discountPrice = mPrePrice.formatPrice(discount);
+                mPrePrice.addFavourablePrice(discountPrice);
+                long needPay = Long.valueOf(discountPrice);
+                lOrderMarketing.setNeedPay(needPay);
+            }
+            else{
+                lOrderMarketing.setMarketingName("[会员]无优惠");
+                lOrderMarketing.setCouponName("[会员]无优惠");
+                long needPay = 0;
+                lOrderMarketing.setNeedPay(needPay);
+            }
 
-            //折扣掉的金额=应收*折扣率
-            Double discount=Double.valueOf(mPrePrice.getShouldPay())*pDiscount.getNum();
-            String discountPrice=mPrePrice.formatPrice(discount);
-            mPrePrice.addFavourablePrice(discountPrice);
-            long needPay =Long.valueOf(discountPrice);
-            lOrderMarketing.setNeedPay(needPay);
 
-            long realpay=0;
+            long realpay = 0;
             lOrderMarketing.setRealPay(realpay);
             lOrderMarketing.setTradeRemark("");
             lOrderMarketing.setGrouponSn("");
-            long grouponNum=0;
+            long grouponNum = 0;
             lOrderMarketing.setGiveScoreNum(grouponNum);
-            long couponNum=1;
+            long couponNum = 1;
             lOrderMarketing.setCouponNum(couponNum);
-            long giveScoreNum=0;
+            long giveScoreNum = 0;
             lOrderMarketing.setGiveScoreNum(giveScoreNum);
-            long couponId=0;
+            long couponId = 0;
             lOrderMarketing.setCouponId(couponId);
-            long couponSn=0;
+            long couponSn = 0;
             lOrderMarketing.setCouponId(couponSn);
-            long subPacketId=0;
+            long subPacketId = 0;
             lOrderMarketing.setSubPacketId(subPacketId);
-            long wixinId=0;
+            long wixinId = 0;
             lOrderMarketing.setSubPacketId(wixinId);
             lOrderMarketing.setModify_tag("1");
             lOrderMarketing.setMemberFavor(true);
             mOrderMarketingList.add(lOrderMarketing);
         }
-
         //(2)是否支持会员价,"1",1支持,需要遍历所有菜品,计算菜品会员价折扣记录market营销活动
         if(mMemberCard.getIsMemberPrice().equals("1")){
             OrderMarketing lOrderMarketing=new OrderMarketing();
@@ -268,5 +282,85 @@ public class UserModel {
                 break;
             }
         }
+    }
+
+    /**
+     * 增加会员积分抵扣的orderpay数据
+     * @param scorePrice
+     * @param mDeskOrder
+     * @param merchantRegister
+     */
+    public void addDeductionScoreOrderPay(Double scorePrice,DeskOrder mDeskOrder,MerchantRegister merchantRegister){
+        OrderPay lOrderPay1=new OrderPay();
+        lOrderPay1.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
+        lOrderPay1.setPayPrice(scorePrice);
+        lOrderPay1.setPayType(PayMent.ScoreDikbPayMent.getValue());
+        lOrderPay1.setPayTypeName(PayMent.ScoreDikbPayMent.getTitle());
+        lOrderPay1.setTradeStaffId(merchantRegister.getStaffId());
+        mOrderPayList.add(lOrderPay1);
+    }
+
+    /**
+     * 增加会员余额支付的orderpay信息
+     * @param priceDouble
+     * @param memberCard
+     * @param paytype
+     * @param mDeskOrder
+     * @param merchantRegister
+     */
+    public void addBalanceOrderPay(Double priceDouble,MemberCard memberCard,PayType paytype,DeskOrder mDeskOrder,MerchantRegister merchantRegister){
+        OrderPay lOrderPay=new OrderPay();
+        lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
+        lOrderPay.setPayPrice(priceDouble);
+        lOrderPay.setPayType(paytype.getPayType());
+        lOrderPay.setPayTypeName(paytype.getPayTypeName());
+        lOrderPay.setChangeType(paytype.getChangeType());
+        lOrderPay.setIsScore(paytype.getIsScore());
+        lOrderPay.setPayMode(paytype.getPayMode());
+        lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
+        MemberPay lMemberPay=new MemberPay();
+        lMemberPay.setPayPrice(priceDouble.longValue());
+        lMemberPay.setAccountLeave(Long.valueOf(memberCard.getAccountLeave()));
+        long scoreCash=0;
+        lMemberPay.setScoreCash(scoreCash);
+        lMemberPay.setScore(Long.valueOf(memberCard.getScore()));
+        lMemberPay.setUserId(Long.valueOf(memberCard.getUserId()));
+        lMemberPay.setUsername(memberCard.getUsername());
+        lMemberPay.setMemberType(memberCard.getMemberType());
+        lMemberPay.setPhone(memberCard.getPhone());
+        long scorePercent=1;
+        lMemberPay.setScorePercent(scorePercent);
+        lMemberPay.setCostPrice(Long.valueOf(memberCard.getCostPrice()));
+        lMemberPay.setScoreNum(Long.valueOf(memberCard.getScoreNum()));
+        lMemberPay.setIsAccountScore(memberCard.getIsAccountScore());
+        lMemberPay.setTotalScore(Long.valueOf(memberCard.getScore()));
+        long useScore=0;
+        lMemberPay.setUseScore(useScore);
+        mOrderPayList.add(lOrderPay);
+    }
+
+    public List<OrderPay> getOrderPayList() {
+        return mOrderPayList;
+    }
+
+    /**
+     * 清除orderPaylist
+     */
+    public void clearOrderPayList(){
+        mOrderPayList.clear();
+    }
+
+    /**
+     * 返回有效的会员orderpay数据集,payprice大于0
+     * @return
+     */
+    public List<OrderPay> getLastOrderPayList() {
+        List<OrderPay> lOrderPays=new ArrayList<OrderPay>();
+        for (OrderPay lOrderPay:mOrderPayList){
+            if (lOrderPay.getPayPrice()>0){
+                lOrderPays.add(lOrderPay);
+            }
+        }
+        return lOrderPays;
     }
 }
