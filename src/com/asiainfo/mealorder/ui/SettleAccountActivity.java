@@ -11,6 +11,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.PayOrderListAdapter;
+import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
@@ -469,16 +470,17 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private void isBackFromMemberActivity() {
         if (getIntent().getParcelableExtra("memberCard") != null) {
             final MemberCard mMemberCard = getIntent().getParcelableExtra("memberCard");
+            Discount discount = (Discount) getIntent().getSerializableExtra("discount");
             String balance = getIntent().getStringExtra("balance");
             String score = getIntent().getStringExtra("score");
-            mPrePayPresenter.addUserBalanceAndScore(mMemberCard, mPrePayPresenter.getPayMent().get(PayMent.UserPayMent), null, balance, score,
+            mPrePayPresenter.addUserBalanceAndScore(mMemberCard, mPrePayPresenter.getPayMent().get(PayMent.UserPayMent), discount, balance, score,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             if (response.equals(mPrePayPresenter.Response_ok)) {
                                 memberCard.setBackgroundResource(R.drawable.itemsel_selected);
-                                refreshPrice();
                                 refreshPayOrderListView();
+                                refreshPrice();
                             } else {
                                 showShortTip(response);
                             }

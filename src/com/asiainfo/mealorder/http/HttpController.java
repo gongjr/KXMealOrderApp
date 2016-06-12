@@ -47,7 +47,7 @@ public class HttpController {
     /**
      * 使用地址
      */
-    public static final String HOST = Address_tst;
+    public static final String HOST = Address_release;
 
     /**
      * AppKey 服务器约定app更新key字段

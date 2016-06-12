@@ -103,11 +103,11 @@ public class UserModel {
             lOrderMarketing.setTradeStaffId(merchantRegister.getStaffId());
 
             //折扣掉的金额=应收*折扣率
-            Double discount=Double.valueOf(mPrePrice.getShouldPay())*pDiscount.getNum();
-            String discountPrice=mPrePrice.formatPrice(discount);
+            Double discount=Double.valueOf(mPrePrice.getShouldPay())*pDiscount.getNum()/10;
+            String discountPrice=mPrePrice.formatPrice(Double.valueOf(mPrePrice.getShouldPay()) - discount);
             mPrePrice.addFavourablePrice(discountPrice);
-            long needPay =Long.valueOf(discountPrice);
-            lOrderMarketing.setNeedPay(needPay);
+//            long needPay =Long.valueOf(discountPrice);
+            lOrderMarketing.setNeedPay(Double.valueOf(discountPrice).longValue());
 
             long realpay=0;
             lOrderMarketing.setRealPay(realpay);
