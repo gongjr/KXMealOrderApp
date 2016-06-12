@@ -1,5 +1,8 @@
 package com.asiainfo.mealorder.utils;
+
 import java.math.BigDecimal;
+import java.text.DecimalFormat;
+
 /**
  * 进行BigDecimal对象的加减乘除，四舍五入等运算的工具类
  * Created by gjr on 2015/10/27.
@@ -61,7 +64,7 @@ public class Arith {
      * @return 两个参数的商
      */
     public static double div(double v1,double v2){
-        return div(v1,v2,DEF_DIV_SCALE);
+        return div(v1, v2, DEF_DIV_SCALE);
     }
 
     /**
@@ -77,9 +80,14 @@ public class Arith {
             throw new IllegalArgumentException(
                     "The scale must be a positive integer or zero");
         }
-        BigDecimal b1 = new BigDecimal(Double.toString(v1));
-        BigDecimal b2 = new BigDecimal(Double.toString(v2));
-        return b1.divide(b2,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
+        if(v2 == 0) {
+            DecimalFormat df = new DecimalFormat("#.00");
+            return Double.parseDouble(df.format(v1));
+        } else {
+            BigDecimal b1 = new BigDecimal(Double.toString(v1));
+            BigDecimal b2 = new BigDecimal(Double.toString(v2));
+            return b1.divide(b2,scale,BigDecimal.ROUND_HALF_UP).doubleValue();
+        }
     }
 
     /**

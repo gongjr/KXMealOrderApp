@@ -31,7 +31,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        android:layout_marginTop="10dp">
+        android:layout_marginTop="10dp"
+        android:focusable="true"
+        android:focusableInTouchMode="true">
 
         <TextView
             android:id="@+id/member_phone_tag"
@@ -164,8 +166,9 @@
                 android:layout_toLeftOf="@+id/member_balance_yen"
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
+                android:numeric="decimal"
+                android:singleLine="true"
                 android:text=""
-                android:focusable="false"
                 />
 
         </RelativeLayout>
@@ -223,7 +226,8 @@
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
                 android:text=""
-                android:focusable="false"
+                android:numeric="decimal"
+                android:singleLine="true"
                 />
 
         </RelativeLayout>

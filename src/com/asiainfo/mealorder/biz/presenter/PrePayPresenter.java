@@ -398,7 +398,10 @@ public class PrePayPresenter {
         //(5) 会员余额支付积分
         mUserModel.refreshScoreList(paytype, price, 0, mPrePrice);
         //(6)积分抵扣金额,需要当做一条支付行为处理
-        Double scorePrice=mUserModel.getScorePriceFormScore(scoreNum);
+        Double scorePrice = new Double(0);
+        if (!scoreNum.equals("") && scoreNum != null) {
+            scorePrice=mUserModel.getScorePriceFormScore(scoreNum);
+        }
         OrderPay lOrderPay1=new OrderPay();
         lOrderPay1.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
         lOrderPay1.setPayPrice(scorePrice);

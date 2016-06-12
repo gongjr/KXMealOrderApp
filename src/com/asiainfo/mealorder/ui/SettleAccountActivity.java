@@ -11,6 +11,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.PayOrderListAdapter;
+import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
+import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
@@ -88,6 +90,14 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         setContentView(R.layout.activity_account);
         initData();
         initListener();
+        isBackFromMemberActivity();
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
+        isBackFromMemberActivity();
     }
 
     public void initData() {
@@ -455,5 +465,30 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    private boolean isHavePayment(String payType, List<OrderPay> mOrderPayList) {
+        int size = mOrderPayList.size();
+        for (int i = 0; i < size; i++) {
+            if (mOrderPayList.get(i).getPayType().equals(payType)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    private void isBackFromMemberActivity() {
+        if (getIntent().getParcelableExtra("memberCard") != null) {
+            MemberCard memberCard = getIntent().getParcelableExtra("memberCard");
+            String balance = getIntent().getStringExtra("balance");
+            String score = getIntent().getStringExtra("score");
+            mPrePayPresenter.addUserBalanceAndScore(memberCard, mPrePayPresenter.getPayMent().get(PayMent.UserPayMent), null, balance, score,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            Log.d(TAG, "The response is: " + response);
+                        }
+                    });
+            refreshPrice();
+            refreshPayOrderListView();
+        }
+    }
 }
