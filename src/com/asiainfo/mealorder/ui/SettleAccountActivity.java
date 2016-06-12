@@ -12,7 +12,6 @@ import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.PayOrderListAdapter;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
-import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
@@ -198,7 +197,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("没有配置 (会员卡支付),请换一种支付方式~.~");
                     return;
                 }
-                if (mPrePayPresenter.isExistOrderPay(PayMent.UserPayMent)) {
+                if (mPrePayPresenter.isExistOrderPay(PayMent.UserPayMent.getValue())) {
                     showShortTip("您已使用过 (会员卡支付),请换一种支付方式~.~");
                     return;
                 }
@@ -209,7 +208,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("没有配置 (银行卡支付),请换一种支付方式~.~");
                     return;
                 }
-                if (mPrePayPresenter.isExistOrderPay(PayMent.BankPayMent)) {
+                if (mPrePayPresenter.isExistOrderPay(PayMent.BankPayMent.getValue())) {
                     showShortTip("您已使用过 (银行卡支付),请换一种支付方式~.~");
                     return;
                 }
@@ -221,7 +220,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("没有配置 (现金支付),请换一种支付方式~.~");
                     return;
                 }
-                if (mPrePayPresenter.isExistOrderPay(PayMent.CashPayMent)) {
+                if (mPrePayPresenter.isExistOrderPay(PayMent.CashPayMent.getValue())) {
                     showShortTip("您已使用过 (现金支付),请换一种支付方式~.~");
                     return;
                 }
@@ -233,7 +232,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("没有配置 (支付宝支付),请换一种支付方式~.~~.~");
                     return;
                 }
-                if (mPrePayPresenter.isExistOrderPay(PayMent.ZhifubaoPayMent)) {
+                if (mPrePayPresenter.isExistOrderPay(PayMent.ZhifubaoPayMent.getValue())) {
                     showShortTip("您已使用过 (支付宝支付),请换一种支付方式~.~");
                     return;
                 }
@@ -245,7 +244,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("没有配置 (微信支付),请换一种支付方式~.~");
                     return;
                 }
-                if (mPrePayPresenter.isExistOrderPay(PayMent.WeixinPayMent)) {
+                if (mPrePayPresenter.isExistOrderPay(PayMent.WeixinPayMent.getValue())) {
                     showShortTip("您已使用过 (微信支付),请换一种支付方式~.~");
                     return;
                 }
@@ -436,13 +435,13 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             mPrePayPresenter.removeOrderPay(position, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
-                    if (response.equals(mPrePayPresenter.Response_ok)){
-                        if (!mPrePayPresenter.isExistOrderPay(PayMent.WeixinPayMent)) {
+                    if (response.equals(mPrePayPresenter.Response_ok)) {
+                        if (!mPrePayPresenter.isExistOrderPay(type)) {
                             hidePayment(type);
                         }
                         refreshPayOrderListView();
                         refreshPrice();
-                    } else{
+                    } else {
                         showShortTip(response);
                     }
                 }
@@ -462,33 +461,29 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             zhifubao.setBackgroundResource(R.drawable.itemsel);
         } else if (payType.equals(PayMent.WeixinPayMent.getValue())) {
             weixin.setBackgroundResource(R.drawable.itemsel);
+        } else if (payType.equals(PayMent.UserPayMent.getValue())) {
+            memberCard.setBackgroundResource(R.drawable.itemsel);
         }
-    }
-
-    private boolean isHavePayment(String payType, List<OrderPay> mOrderPayList) {
-        int size = mOrderPayList.size();
-        for (int i = 0; i < size; i++) {
-            if (mOrderPayList.get(i).getPayType().equals(payType)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void isBackFromMemberActivity() {
         if (getIntent().getParcelableExtra("memberCard") != null) {
-            MemberCard memberCard = getIntent().getParcelableExtra("memberCard");
+            final MemberCard mMemberCard = getIntent().getParcelableExtra("memberCard");
             String balance = getIntent().getStringExtra("balance");
             String score = getIntent().getStringExtra("score");
-            mPrePayPresenter.addUserBalanceAndScore(memberCard, mPrePayPresenter.getPayMent().get(PayMent.UserPayMent), null, balance, score,
+            mPrePayPresenter.addUserBalanceAndScore(mMemberCard, mPrePayPresenter.getPayMent().get(PayMent.UserPayMent), null, balance, score,
                     new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-                            Log.d(TAG, "The response is: " + response);
+                            if (response.equals(mPrePayPresenter.Response_ok)) {
+                                memberCard.setBackgroundResource(R.drawable.itemsel_selected);
+                                refreshPrice();
+                                refreshPayOrderListView();
+                            } else {
+                                showShortTip(response);
+                            }
                         }
                     });
-            refreshPrice();
-            refreshPayOrderListView();
         }
     }
 }

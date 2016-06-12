@@ -102,10 +102,6 @@ public class MemberActivity extends BaseActivity {
         public void onRightBtnClick() {
             String balance = balanceEdit.getText().toString();
             String score = scoreEdit.getText().toString();
-            if (balance.equals("") && score.equals("")){
-                showShortTip("请先输入支付金额或者积分!");
-                return;
-            }
             if (StringUtils.str2Double(balance) > StringUtils.str2Double(memberCard.getBalance())) {
                 showShortTip("会员余额不足,请确认~.~");
                 balanceEdit.setText("");

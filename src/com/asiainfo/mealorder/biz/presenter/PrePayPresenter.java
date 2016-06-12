@@ -442,12 +442,12 @@ public class PrePayPresenter {
 
     /**
      * 验证对应支付方式是否在支持的支付方式列表
-     * @param pPayMent
+     * @param type
      * @return
      */
-    public boolean isExistOrderPay(PayMent pPayMent){
+    public boolean isExistOrderPay(String type){
         for (OrderPay lOrderPay:mOrderPayList){
-            if (lOrderPay.getPayType().equals(pPayMent.getValue()))return true;
+            if (lOrderPay.getPayType().equals(type))return true;
         }
         return false;
     }

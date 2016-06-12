@@ -86,7 +86,7 @@ public class PayPriceActivity extends BaseActivity {
     OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            if (edit.getText() == null || edit.getText().equals("")) {
+            if (edit.getText().toString().equals("")) {
                 showShortTip("输入结果为空!");
                 return;
             }
