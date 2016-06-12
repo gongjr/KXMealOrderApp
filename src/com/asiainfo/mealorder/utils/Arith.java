@@ -82,7 +82,7 @@ public class Arith {
         }
         if(v2 == 0) {
             DecimalFormat df = new DecimalFormat("#.00");
-            return Double.parseDouble(df.format(v1));
+            return Double.parseDouble("0.00");
         } else {
             BigDecimal b1 = new BigDecimal(Double.toString(v1));
             BigDecimal b2 = new BigDecimal(Double.toString(v2));

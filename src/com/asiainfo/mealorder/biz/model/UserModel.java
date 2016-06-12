@@ -150,8 +150,7 @@ public class UserModel {
                 }
             }
             mPrePrice.addFavourablePrice(discount);
-            long needPay = Long.parseLong(discount);
-            lOrderMarketing.setNeedPay(needPay);
+            lOrderMarketing.setNeedPay(Double.valueOf(discount).longValue());
 
             long realpay=0;
             lOrderMarketing.setRealPay(realpay);

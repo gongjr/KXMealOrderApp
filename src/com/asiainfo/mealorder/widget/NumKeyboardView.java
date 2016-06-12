@@ -59,6 +59,7 @@ public class NumKeyboardView {
             @Override
             public void onClick(View v) {
                 Editable editable = ed.getText();
+                Selection.setSelection(editable, editable.length());//光标置尾
                 int start = ed.getSelectionStart();
                 if (editable != null && editable.length() > 0) {
                     if (start > 0) {

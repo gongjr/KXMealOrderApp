@@ -3,8 +3,9 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:gravity="center"
-          android:background="#eeeeeeee"
+          android:background="@color/translucent_background"
           android:textStyle="bold"
           android:textSize="30sp"
+          android:textColor="@color/translucent_background"
     >
 </TextView>
