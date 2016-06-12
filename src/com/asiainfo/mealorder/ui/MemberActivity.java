@@ -16,6 +16,7 @@ import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
+import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.widget.SpaceItemDecoration;
 import com.asiainfo.mealorder.widget.TitleView;
 
@@ -99,8 +100,22 @@ public class MemberActivity extends BaseActivity {
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            if (balanceEdit.getText().toString().equals("") && scoreEdit.getText().toString().equals("")){
+            String balance = balanceEdit.getText().toString();
+            String score = scoreEdit.getText().toString();
+            if (balance.equals("") && score.equals("")){
                 showShortTip("请先输入支付金额或者积分!");
+                return;
+            }
+            if (StringUtils.str2Double(balance) > StringUtils.str2Double(memberCard.getBalance())) {
+                showShortTip("会员余额不足,请确认~.~");
+                balanceEdit.setText("");
+                balanceEdit.requestFocus();
+                return;
+            }
+            if (StringUtils.str2Double(score) > StringUtils.str2Double(memberCard.getScore())) {
+                showShortTip("积分不足,请确认~.~");
+                scoreEdit.setText("");
+                scoreEdit.requestFocus();
                 return;
             }
             getOperation().addParameter("memberCard", memberCard);
