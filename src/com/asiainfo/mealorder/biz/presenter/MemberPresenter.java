@@ -1,5 +1,6 @@
 package com.asiainfo.mealorder.biz.presenter;
 
+import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
 import com.asiainfo.mealorder.ui.MemberActivity;
@@ -33,4 +34,7 @@ public class MemberPresenter {
         return memberCard.getUserCoupons();
     }
 
+    public List<Discount> getDiscounts() {
+        return memberCard.getDiscountList();
+    }
 }

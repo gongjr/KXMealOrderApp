@@ -6,12 +6,16 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Html;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.MemberRecyclerAdapter;
+import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
+import com.asiainfo.mealorder.biz.listener.OnChooseCardListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
@@ -52,9 +56,15 @@ public class MemberActivity extends BaseActivity {
     private TextView coupon;
     @InjectView(R.id.membre_recyclerview)
     private RecyclerView recyclerView;
+    @InjectView(R.id.member_card_level_layout)
+    LinearLayout cardLevelLayout;
+    @InjectView(R.id.member_arrow)
+    ImageView arrow;
 
     private MemberPresenter memberPresenter;
     private MemberCard memberCard;
+    private ChooseCardLevelDF chooseCardLevelDF;
+    private Discount currentDiscount = null;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -65,6 +75,7 @@ public class MemberActivity extends BaseActivity {
 //        scoreEdit.setKeyListener(null);
         initData();
         setTitleView();
+        initListener();
     }
 
     private void setTitleView() {
@@ -76,20 +87,30 @@ public class MemberActivity extends BaseActivity {
 
     private void initData() {
         memberCard = getIntent().getParcelableExtra("MemberCard");
-        balanceEdit.setText("0.00");
-        scoreEdit.setText("0");
+        if (memberCard.getDiscountList().size() != 0) {
+            currentDiscount = memberCard.getDiscountList().get(0);
+        }
         memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
         memberPresenter.fillViews();
         List<UserCoupon> userCouponList = memberPresenter.getCoupons();
-        if (userCouponList.size() == 0) {
-            coupon.setVisibility(View.GONE);
-            recyclerView.setVisibility(View.GONE);
-        }
-        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
-        MemberRecyclerAdapter adapter = new MemberRecyclerAdapter(this, userCouponList, 0);
-        recyclerView.setAdapter(adapter);
-        recyclerView.addItemDecoration(new SpaceItemDecoration(20));
+
+        isVisibleCoupon(userCouponList);
+        setRecyclerViewContent(userCouponList);
+
+        isVisibleArrow();
+    }
+
+    private void initListener() {
+        cardLevelLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (arrow.getVisibility() == View.VISIBLE) {
+                    showCardLevelDF();
+                    chooseCardLevelDF.setOnChooseCardListener(onChooseCardListener);
+                }
+            }
+        });
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
@@ -106,19 +127,20 @@ public class MemberActivity extends BaseActivity {
             String score = scoreEdit.getText().toString();
             if (StringUtils.str2Double(balance) > StringUtils.str2Double(memberCard.getBalance())) {
                 showShortTip("会员余额不足,请确认~.~");
-                balanceEdit.setText("0");
+                balanceEdit.setText("");
                 balanceEdit.requestFocus();
                 return;
             }
             if (StringUtils.str2Double(score) > StringUtils.str2Double(memberCard.getScore())) {
                 showShortTip("积分不足,请确认~.~");
-                scoreEdit.setText("0");
+                scoreEdit.setText("");
                 scoreEdit.requestFocus();
                 return;
             }
             getOperation().addParameter("memberCard", memberCard);
             getOperation().addParameter("balance", balanceEdit.getText().toString());
             getOperation().addParameter("score", scoreEdit.getText().toString());
+            getOperation().addParameter("discount", currentDiscount);
             getOperation().forward(SettleAccountActivity.class);
         }
     };
@@ -170,6 +192,74 @@ public class MemberActivity extends BaseActivity {
         @Override
         public void setCouponTag(String couponTag) {
             coupon.setText("优惠券:  " + couponTag);
+        }
+    };
+
+    /*
+    * 判断优惠券是否显示
+    * */
+    private void isVisibleCoupon(List<UserCoupon> userCouponList) {
+        if (userCouponList.size() == 0) {
+            coupon.setVisibility(View.GONE);
+            recyclerView.setVisibility(View.GONE);
+        }
+    }
+
+    /*
+    * 设置recyclerview内容
+    * */
+    private void setRecyclerViewContent(List<UserCoupon> userCouponList) {
+        recyclerView.setLayoutManager(new StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL));
+        MemberRecyclerAdapter adapter = new MemberRecyclerAdapter(this, userCouponList, 0);
+        recyclerView.setAdapter(adapter);
+        recyclerView.addItemDecoration(new SpaceItemDecoration(20));
+    }
+
+    /*
+    * 判断卡级别箭头是否显示
+    * */
+    private void isVisibleArrow() {
+        List<Discount> discountList = memberPresenter.getDiscounts();
+        if (discountList.size() == 0) {
+            cardLevelTxt.setText("无优惠");
+        } else {
+            Discount discount = discountList.get(0);
+            cardLevelTxt.setText(discount.getTitle());
+            arrow.setVisibility(View.VISIBLE);
+        }
+    }
+
+    /*
+    * 显示选择卡级别页面
+    * */
+    private void showCardLevelDF() {
+        if (chooseCardLevelDF == null) {
+            chooseCardLevelDF = ChooseCardLevelDF.newInstence(memberCard.getDiscountList());
+        }
+        chooseCardLevelDF.show(getSupportFragmentManager(), "MemberActivity");
+    }
+
+    private void dismissCardLevelDF() {
+        try {
+            if (chooseCardLevelDF != null && chooseCardLevelDF.isAdded()) {
+                chooseCardLevelDF.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private OnChooseCardListener onChooseCardListener = new OnChooseCardListener() {
+        @Override
+        public void onChooseCard(int position, Discount discount) {
+            dismissCardLevelDF();
+            chooseCardLevelDF.setCurrentPosition(position);
+            if (discount == null) {
+                cardLevelTxt.setText("无优惠");
+            } else {
+                cardLevelTxt.setText(discount.getTitle());
+                currentDiscount = discount;
+            }
         }
     };
 

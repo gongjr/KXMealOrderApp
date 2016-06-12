@@ -315,7 +315,7 @@ public class PrePayPresenter {
     public void initPayMethodFromServer(Response.Listener listener,
                               Response.ErrorListener errorListener) {
         HttpController.getInstance().getPayMethod(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
-                listener,errorListener);
+                listener, errorListener);
     }
 
     /**
@@ -490,11 +490,19 @@ public class PrePayPresenter {
      * 清除会员优惠活动
      */
     private void deleteUserMarketing(){
-        for (OrderMarketing lOrderMarketing:mOrderMarketingList){
+        Iterator<OrderMarketing> orderMarketingIte = mOrderMarketingList.iterator();
+        while (orderMarketingIte.hasNext()) {
+            OrderMarketing lOrderMarketing = orderMarketingIte.next();
             if (lOrderMarketing.getMarketingId()==8888||lOrderMarketing.getMarketingId()==9999){
                 mPrePrice.deleteFavourablePrice(lOrderMarketing.getNeedPay().toString());
-                mOrderMarketingList.remove(lOrderMarketing);
+                orderMarketingIte.remove();
             }
         }
+//        for (OrderMarketing lOrderMarketing:mOrderMarketingList){
+//            if (lOrderMarketing.getMarketingId()==8888||lOrderMarketing.getMarketingId()==9999){
+//                mPrePrice.deleteFavourablePrice(lOrderMarketing.getNeedPay().toString());
+//                mOrderMarketingList.remove(lOrderMarketing);
+//            }
+//        }
     }
 }

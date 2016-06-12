@@ -123,29 +123,36 @@ public class UserModel {
                 lOrderMarketing.setNeedPay(needPay);
             }
 
+            //折扣掉的金额=应收*折扣率
+            Double discount=Double.valueOf(mPrePrice.getShouldPay())*pDiscount.getNum();
+            String discountPrice=mPrePrice.formatPrice(discount);
+            mPrePrice.addFavourablePrice(discountPrice);
+            long needPay =Long.valueOf(discountPrice);
+            lOrderMarketing.setNeedPay(needPay);
 
-            long realpay = 0;
+            long realpay=0;
             lOrderMarketing.setRealPay(realpay);
             lOrderMarketing.setTradeRemark("");
             lOrderMarketing.setGrouponSn("");
-            long grouponNum = 0;
+            long grouponNum=0;
             lOrderMarketing.setGiveScoreNum(grouponNum);
-            long couponNum = 1;
+            long couponNum=1;
             lOrderMarketing.setCouponNum(couponNum);
-            long giveScoreNum = 0;
+            long giveScoreNum=0;
             lOrderMarketing.setGiveScoreNum(giveScoreNum);
-            long couponId = 0;
+            long couponId=0;
             lOrderMarketing.setCouponId(couponId);
-            long couponSn = 0;
+            long couponSn=0;
             lOrderMarketing.setCouponId(couponSn);
-            long subPacketId = 0;
+            long subPacketId=0;
             lOrderMarketing.setSubPacketId(subPacketId);
-            long wixinId = 0;
+            long wixinId=0;
             lOrderMarketing.setSubPacketId(wixinId);
             lOrderMarketing.setModify_tag("1");
             lOrderMarketing.setMemberFavor(true);
             mOrderMarketingList.add(lOrderMarketing);
         }
+
         //(2)是否支持会员价,"1",1支持,需要遍历所有菜品,计算菜品会员价折扣记录market营销活动
         if(mMemberCard.getIsMemberPrice().equals("1")){
             OrderMarketing lOrderMarketing=new OrderMarketing();

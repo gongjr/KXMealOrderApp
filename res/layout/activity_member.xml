@@ -103,16 +103,36 @@
             android:layout_below="@+id/member_underline03"
             />
 
-        <TextView
-            android:id="@+id/member_card_level"
+        <LinearLayout
+            android:id="@+id/member_card_level_layout"
             android:layout_width="wrap_content"
             android:layout_height="45dp"
+            android:orientation="horizontal"
             android:layout_alignParentRight="true"
-            android:layout_marginRight="15dp"
-            android:text="普卡"
-            android:textSize="@dimen/text_size_xxsmall"
-            android:gravity="center"
-            android:layout_alignTop="@+id/member_card_level_tag"/>
+            android:layout_alignTop="@+id/member_card_level_tag"
+            >
+
+            <TextView
+                android:id="@+id/member_card_level"
+                android:layout_width="wrap_content"
+                android:layout_height="45dp"
+                android:text="普卡"
+                android:textSize="@dimen/text_size_xxsmall"
+                android:layout_marginRight="15dp"
+                android:gravity="center"/>
+
+            <ImageView
+                android:id="@+id/member_arrow"
+                android:layout_width="20dip"
+                android:layout_height="20dip"
+                android:background="@anim/arrow_to_right_btn_bg"
+                android:layout_gravity="center"
+                android:layout_marginRight="15dp"
+                android:visibility="gone"
+                />
+
+
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/member_underline04"
@@ -168,7 +188,7 @@
                 android:padding="10dp"
                 android:numeric="decimal"
                 android:singleLine="true"
-                android:text=""
+                android:text="0"
                 />
 
         </RelativeLayout>
@@ -225,7 +245,7 @@
                 android:layout_toLeftOf="@+id/member_score_yen"
                 android:layout_marginRight="5dp"
                 android:padding="10dp"
-                android:text=""
+                android:text="0"
                 android:numeric="decimal"
                 android:singleLine="true"
                 />
