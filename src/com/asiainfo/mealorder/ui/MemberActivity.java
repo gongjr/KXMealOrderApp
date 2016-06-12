@@ -53,14 +53,15 @@ public class MemberActivity extends BaseActivity {
     private RecyclerView recyclerView;
 
     private MemberPresenter memberPresenter;
+    private MemberCard memberCard;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_member);
-        //设置输入框不可点击
-        balanceEdit.setKeyListener(null);
-        scoreEdit.setKeyListener(null);
+//        //设置输入框不可点击
+//        balanceEdit.setKeyListener(null);
+//        scoreEdit.setKeyListener(null);
         initData();
         setTitleView();
     }
@@ -73,7 +74,7 @@ public class MemberActivity extends BaseActivity {
     }
 
     private void initData() {
-        MemberCard memberCard = getIntent().getParcelableExtra("MemberCard");
+        memberCard = getIntent().getParcelableExtra("MemberCard");
         memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + getIntent().getStringExtra("payPrice") + "</font>"));
         memberPresenter.fillViews();
@@ -98,6 +99,13 @@ public class MemberActivity extends BaseActivity {
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
+            if (balanceEdit.getText().toString().equals("") && scoreEdit.getText().toString().equals("")){
+                showShortTip("请先输入支付金额或者积分!");
+                return;
+            }
+            getOperation().addParameter("memberCard", memberCard);
+            getOperation().addParameter("balance", balanceEdit.getText().toString());
+            getOperation().addParameter("score", scoreEdit.getText().toString());
             getOperation().forward(SettleAccountActivity.class);
         }
     };
