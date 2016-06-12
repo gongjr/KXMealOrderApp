@@ -379,7 +379,7 @@ public class PrePayPresenter {
         mUserModel.addBalanceOrderPay(priceDouble,memberCard,paytype,mDeskOrder,merchantRegister);
         mPrePrice.addCurPayPrice(price);
         //(4) balance余额变化
-        mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble.longValue());
+        mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble);
         //(5) 会员余额支付积分
         mUserModel.refreshScoreList(paytype, price, 0, mPrePrice);
         Log.i("scoreNum","scoreNum:"+scoreNum);
@@ -450,32 +450,29 @@ public class PrePayPresenter {
 
     /**
      * 根据支付方式,删除支付金额
-     * @param position  orderpay对应位置
+     * @param pOrderPay orderpay信息
      * @param listener  成功回调回调
      * */
-    public void removeOrderPay(int position,Response.Listener<String> listener) {
-        OrderPay pOrderPay=getOrderPayList().get(position);
+    public void removeOrderPay(OrderPay pOrderPay,Response.Listener<String> listener) {
         if (pOrderPay.getPayType().equals(PayMent.UserPayMent.getValue())){
-            //(1)清除对应余额支付数据
+            //(1)usermodel,会员模型中余额,积分,orderpay清除
             mUserModel.deleteUserBanlance();
-            mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
-            deleteOrderPay(pOrderPay);
-            //(2)清除会员积分记录
+            mUserModel.clearOrderPayList();
             mUserModel.deleteUserScore();
-            //(3)清除对应会员积分抵扣金额
+            //(2)PrePrice预支付金额业务类,价格减少
+            mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
             for (OrderPay lOrderPay:mOrderPayList){
                 if (lOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())){
-                    mOrderPayList.remove(lOrderPay);
                     mPrePrice.deleteCurPayPrice(lOrderPay.getPayPrice().toString());
                     break;
                 }
             }
-            //(4)最后清除会员的优惠营销活动活动,应收恢复
+            //(3)最后清除会员的优惠营销活动活动,应收恢复
             deleteUserMarketing();
 
         }else if(pOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())){
             //会员积分抵扣,可以直接删除
-            mOrderPayList.remove(pOrderPay);
+            mUserModel.deleteDeductionScoreOrderPay();
             mUserModel.deleteUserDeductionScore();
             mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
         }else{
@@ -498,11 +495,5 @@ public class PrePayPresenter {
                 orderMarketingIte.remove();
             }
         }
-//        for (OrderMarketing lOrderMarketing:mOrderMarketingList){
-//            if (lOrderMarketing.getMarketingId()==8888||lOrderMarketing.getMarketingId()==9999){
-//                mPrePrice.deleteFavourablePrice(lOrderMarketing.getNeedPay().toString());
-//                mOrderMarketingList.remove(lOrderMarketing);
-//            }
-//        }
     }
 }

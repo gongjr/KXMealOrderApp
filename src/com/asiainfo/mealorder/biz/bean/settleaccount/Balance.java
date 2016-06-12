@@ -11,7 +11,7 @@ public class Balance {
 
     private Integer depositCode;
 
-    private Long money;
+    private Double money;
 
     private Long balance;
 
@@ -88,11 +88,11 @@ public class Balance {
         this.depositCode = depositCode;
     }
 
-    public Long getMoney() {
+    public Double getMoney() {
         return money;
     }
 
-    public void setMoney(Long money) {
+    public void setMoney(Double money) {
         this.money = money;
     }
 

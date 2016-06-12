@@ -10,7 +10,7 @@ public class OrderMarketing {
 	
 	private Long marketingId;
 	
-	private Long needPay;
+	private Double needPay;
 	
 	private Long realPay;
 	
@@ -130,11 +130,11 @@ public class OrderMarketing {
 		this.marketingId = marketingId;
 	}
 
-	public Long getNeedPay() {
+	public Double getNeedPay() {
 		return needPay;
 	}
 
-	public void setNeedPay(Long needPay) {
+	public void setNeedPay(Double needPay) {
 		this.needPay = needPay;
 	}
 

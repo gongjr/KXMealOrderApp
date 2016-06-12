@@ -13,6 +13,7 @@ import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.PayOrderListAdapter;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
+import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
@@ -429,11 +430,11 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         });
     }
 
-    private OnVisibilityListener onVisibilityListener = new OnVisibilityListener() {
+    private OnVisibilityListener<OrderPay> onVisibilityListener = new OnVisibilityListener<OrderPay>() {
         @Override
-        public void onVisibility(final String type, int position) {
+        public void onVisibility(final String type, OrderPay pOrderPay) {
             //必然关系,必须等业务模型处理成功后,在进行界面更新
-            mPrePayPresenter.removeOrderPay(position, new Response.Listener<String>() {
+            mPrePayPresenter.removeOrderPay(pOrderPay, new Response.Listener<String>() {
                 @Override
                 public void onResponse(String response) {
                     if (response.equals(mPrePayPresenter.Response_ok)) {

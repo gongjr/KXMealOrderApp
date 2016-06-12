@@ -111,24 +111,15 @@ public class UserModel {
                 lOrderMarketing.setCouponName("[会员]" + pDiscount.getTitle());
                 //折扣掉的金额=应收*折扣率
                 Double discount = Double.valueOf(mPrePrice.getShouldPay()) * pDiscount.getNum()/10;
-                String discountPrice = mPrePrice.formatPrice(discount);
+                String discountPrice = mPrePrice.formatPrice(Double.valueOf(mPrePrice.getShouldPay())-discount);
                 mPrePrice.addFavourablePrice(discountPrice);
-                long needPay = Long.valueOf(discountPrice);
-                lOrderMarketing.setNeedPay(needPay);
+                lOrderMarketing.setNeedPay(Double.valueOf(discountPrice));
             }
             else{
                 lOrderMarketing.setMarketingName("[会员]无优惠");
                 lOrderMarketing.setCouponName("[会员]无优惠");
-                long needPay = 0;
-                lOrderMarketing.setNeedPay(needPay);
+                lOrderMarketing.setNeedPay(0.00);
             }
-
-            //折扣掉的金额=应收*折扣率
-            Double discount=Double.valueOf(mPrePrice.getShouldPay())*pDiscount.getNum();
-            String discountPrice=mPrePrice.formatPrice(discount);
-            mPrePrice.addFavourablePrice(discountPrice);
-            long needPay =Long.valueOf(discountPrice);
-            lOrderMarketing.setNeedPay(needPay);
 
             long realpay=0;
             lOrderMarketing.setRealPay(realpay);
@@ -171,7 +162,7 @@ public class UserModel {
                 }
             }
             mPrePrice.addFavourablePrice(discount);
-            lOrderMarketing.setNeedPay(Double.valueOf(discount).longValue());
+            lOrderMarketing.setNeedPay(Double.valueOf(discount));
 
             long realpay=0;
             lOrderMarketing.setRealPay(realpay);
@@ -240,11 +231,11 @@ public class UserModel {
      * @param money 变动金额,消费时传负数
      * @return
      */
-    public  Balance addBalance(long merchantId,long userid,long money) {
+    public  Balance addBalance(long merchantId,long userid,Double money) {
         if (userid!=0){
             mBalance.setMerchantId(merchantId);
             mBalance.setUserId(userid);
-            long price = 0-money;
+            Double price = 0-money;
             mBalance.setMoney(price);
         }
         return mBalance;
@@ -355,6 +346,18 @@ public class UserModel {
      */
     public void clearOrderPayList(){
         mOrderPayList.clear();
+    }
+
+    /**
+     * 清除积分抵扣的orderPay
+     */
+    public void deleteDeductionScoreOrderPay(){
+        for (OrderPay lOrderPay:mOrderPayList){
+            if (lOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())){
+                mOrderPayList.remove(lOrderPay);
+                break;
+            }
+        }
     }
 
     /**

@@ -71,7 +71,7 @@ public class PayOrderListAdapter extends BaseAdapter {
             @Override
             public void onClick(View v) {
                 String payType = mOrderPayList.get(position).getPayType();
-                onVisibilityListener.onVisibility(payType, position);
+                onVisibilityListener.onVisibility(payType, mOrderPayList.get(position));
             }
         });
         return convertView;
