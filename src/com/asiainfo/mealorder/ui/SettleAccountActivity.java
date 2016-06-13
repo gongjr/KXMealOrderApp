@@ -83,6 +83,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
      */
     private PrePayPresenter mPrePayPresenter;
     private static final int REQUEST_CODE = 10000;
+    public static final int RESULT_CODE = 10001;
 
 
     @Override
@@ -203,7 +204,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("您已使用过 (会员卡支付),请换一种支付方式~.~");
                     return;
                 }
-                getOperation().forward(SearchUserActivity.class);
+                getOperation().forwardForResult(SearchUserActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_bank_card:
                 if (!mPrePayPresenter.isExistPayMent(PayMent.BankPayMent)) {
@@ -386,7 +387,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 }
                 refreshPayOrderListView();
                 refreshPrice();
-            } else if (resultCode == RESULT_CANCELED) {
+            } else if (resultCode == RESULT_CODE) {
                 showShortTip("取消操作!");
             }
         }

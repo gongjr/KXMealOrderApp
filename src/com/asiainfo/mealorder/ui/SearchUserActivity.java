@@ -67,8 +67,8 @@ public class SearchUserActivity extends BaseActivity {
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
         @Override
         public void onLeftBtnClick() {
+            setResult(SettleAccountActivity.RESULT_CODE);
             finish();
-
         }
     };
 

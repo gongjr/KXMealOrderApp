@@ -115,7 +115,7 @@ public class PayPriceActivity extends BaseActivity {
     }
 
     private void backToPreviousCancel() {
-        setResult(RESULT_CANCELED);
+        setResult(SettleAccountActivity.RESULT_CODE);
         finish();
     }
 }
