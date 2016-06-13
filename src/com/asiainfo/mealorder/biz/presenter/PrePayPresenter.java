@@ -81,9 +81,9 @@ public class PrePayPresenter {
     public void submit(Response.Listener<ResultMap<SubmitPayInfo>> listener,
                        Response.ErrorListener errorListener){
         Map<String, String> postParams=new HashMap<String, String>();
-        String orderData=gson.toJson(mSubmitPayOrder);
+        String orderData=gson.toJson(getLastSubmitPayOrder());
         String balance=gson.toJson(mUserModel.getBalance());
-        String userScoreList=gson.toJson(mUserModel.getUserScoreList());
+        String userScoreList=gson.toJson(mUserModel.getLastUserScoreList());
         String hbList=gson.toJson(mRedPackageReceiveList);
         String couponList=gson.toJson(mUserCouponList);
         String orderMarketingList=gson.toJson(mOrderMarketingList);
@@ -154,9 +154,6 @@ public class PrePayPresenter {
         lOrderSubmit.setOrderType(mDeskOrder.getOrderType());
         lOrderSubmit.setOrderTypeName(mDeskOrder.getOrderTypeName());
         lOrderSubmit.setCreateTime(mDeskOrder.getStrCreateTime());
-        //结算订单需要更改状态
-        lOrderSubmit.setOrderState(OrderState.ORDERSTATE_FINISH.getValue());
-
         lOrderSubmit.setRemark(mDeskOrder.getRemark());
         lOrderSubmit.setOriginalPrice(mDeskOrder.getOriginalPrice());
         lOrderSubmit.setPayType(mDeskOrder.getPayType());
@@ -469,6 +466,9 @@ public class PrePayPresenter {
             }
             //(3)最后清除会员的优惠营销活动活动,应收恢复
             deleteUserMarketing();
+            //(4)清除订单会员信息
+            mSubmitPayOrder.setUserId(null);
+            mSubmitPayOrder.setIsThisMember(null);
 
         }else if(pOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())){
             //会员积分抵扣,可以直接删除
@@ -495,5 +495,28 @@ public class PrePayPresenter {
                 orderMarketingIte.remove();
             }
         }
+    }
+
+    /**
+     * 最后提交时,需要判断当前支付方式,设置对应order信息
+     * 如果存在微信支付宝扫码付,订单状态设8
+     * 不存在时,设为9,完成结束状态
+     * @return
+     */
+    private SubmitPayOrder getLastSubmitPayOrder(){
+        Boolean isFinsish=true;
+        for (OrderPay lOrderPay:mOrderPayList){
+            if (lOrderPay.getPayType().equals(PayMent.WeixinPayMent.getValue())
+                    ||lOrderPay.getPayType().equals(PayMent.ZhifubaoPayMent.getValue())){
+                isFinsish=false;
+                break;
+            }
+        }
+        if (isFinsish){
+            mSubmitPayOrder.setOrderState(OrderState.ORDERSTATE_FINISH.getValue());
+        }else{
+            mSubmitPayOrder.setOrderState(OrderState.ORDERSTATE_CODEPAYING.getValue());
+        }
+        return mSubmitPayOrder;
     }
 }

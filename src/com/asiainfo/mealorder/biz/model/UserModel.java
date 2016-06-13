@@ -126,7 +126,7 @@ public class UserModel {
             lOrderMarketing.setTradeRemark("");
             lOrderMarketing.setGrouponSn("");
             long grouponNum=0;
-            lOrderMarketing.setGiveScoreNum(grouponNum);
+            lOrderMarketing.setGrouponNum(grouponNum);
             long couponNum=1;
             lOrderMarketing.setCouponNum(couponNum);
             long giveScoreNum=0;
@@ -170,7 +170,7 @@ public class UserModel {
 
             lOrderMarketing.setGrouponSn("");
             long grouponNum=0;
-            lOrderMarketing.setGiveScoreNum(grouponNum);
+            lOrderMarketing.setGrouponNum(grouponNum);
             long giveScoreNum=0;
             lOrderMarketing.setGiveScoreNum(giveScoreNum);
 
@@ -334,6 +334,7 @@ public class UserModel {
         lMemberPay.setTotalScore(Long.valueOf(memberCard.getScore()));
         long useScore=0;
         lMemberPay.setUseScore(useScore);
+        lOrderPay.setMemberPay(lMemberPay);
         mOrderPayList.add(lOrderPay);
     }
 
@@ -372,5 +373,19 @@ public class UserModel {
             }
         }
         return lOrderPays;
+    }
+
+    /**
+     * 返回有效的会员积分集
+     * @return
+     */
+    public List<UserScore>  getLastUserScoreList() {
+        List<UserScore> lUserScoreList = new ArrayList<UserScore>();
+        for (UserScore UserScore:mUserScoreList){
+            if (UserScore.getScoreNum()!=0){
+                lUserScoreList.add(UserScore);
+            }
+        }
+        return lUserScoreList;
     }
 }
