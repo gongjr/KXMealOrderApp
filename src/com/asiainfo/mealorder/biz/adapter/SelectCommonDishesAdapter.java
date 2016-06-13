@@ -29,7 +29,7 @@ import com.asiainfo.mealorder.biz.listener.OnDishesCompClickListener;
 import com.asiainfo.mealorder.biz.listener.OnDishesToBasketAnimListener;
 import com.asiainfo.mealorder.biz.listener.OnEnsureCheckedPropertyItemsListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
-import com.asiainfo.mealorder.ui.ChoosePropertyValueDF;
+import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.utils.Tools;

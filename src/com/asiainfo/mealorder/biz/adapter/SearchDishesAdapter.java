@@ -24,7 +24,7 @@ import com.asiainfo.mealorder.biz.listener.OnChangeDishCountListener;
 import com.asiainfo.mealorder.biz.listener.OnEnsureCheckedPropertyItemsListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
 import com.asiainfo.mealorder.biz.listener.OnSearchDishesCompUpdateListener;
-import com.asiainfo.mealorder.ui.ChoosePropertyValueDF;
+import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Logger;
 import com.google.gson.Gson;

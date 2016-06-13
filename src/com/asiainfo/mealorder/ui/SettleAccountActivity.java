@@ -27,6 +27,7 @@ import com.asiainfo.mealorder.biz.listener.OnVisibilityListener;
 import com.asiainfo.mealorder.biz.presenter.PrePayPresenter;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
+import com.asiainfo.mealorder.ui.PoPup.SelectSettlementDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.utils.StringUtils;

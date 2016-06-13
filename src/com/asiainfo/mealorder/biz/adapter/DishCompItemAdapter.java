@@ -32,7 +32,7 @@ import com.asiainfo.mealorder.biz.entity.helper.PropertySelectEntity;
 import com.asiainfo.mealorder.biz.listener.OnDishesCompCheckedChangedListener;
 import com.asiainfo.mealorder.biz.listener.OnEnsureCheckedPropertyItemsListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
-import com.asiainfo.mealorder.ui.ChoosePropertyValueDF;
+import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;

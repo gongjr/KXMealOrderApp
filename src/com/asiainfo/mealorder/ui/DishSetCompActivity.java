@@ -29,6 +29,7 @@ import com.asiainfo.mealorder.biz.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
+import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
 import com.asiainfo.mealorder.ui.base.MakeOrderActivityBase;
 import com.asiainfo.mealorder.widget.base.SimpleSectionedListAdapter;
 import com.asiainfo.mealorder.widget.base.SimpleSectionedListAdapter.Section;

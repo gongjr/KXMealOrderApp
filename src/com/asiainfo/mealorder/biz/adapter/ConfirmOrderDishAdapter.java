@@ -38,7 +38,7 @@ import com.asiainfo.mealorder.biz.listener.OnEnsureCheckedPropertyItemsListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
 import com.asiainfo.mealorder.biz.listener.OnOrderDishesActionListener;
 import com.asiainfo.mealorder.biz.listener.OnPriceRatioPropertyItemsListener;
-import com.asiainfo.mealorder.ui.ChoosePropertyValueDF;
+import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
 import com.asiainfo.mealorder.ui.base.EditSinglePriceDF;
 import com.asiainfo.mealorder.utils.Logger;
 import com.asiainfo.mealorder.utils.Tools;

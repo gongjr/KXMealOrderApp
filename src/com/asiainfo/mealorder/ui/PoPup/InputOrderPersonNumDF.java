@@ -1,4 +1,4 @@
-package com.asiainfo.mealorder.ui;
+package com.asiainfo.mealorder.ui.PoPup;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

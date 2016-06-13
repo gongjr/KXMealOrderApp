@@ -19,6 +19,7 @@ import com.asiainfo.mealorder.biz.listener.OnChooseCardListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
+import com.asiainfo.mealorder.ui.PoPup.ChooseCardLevelDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.widget.SpaceItemDecoration;

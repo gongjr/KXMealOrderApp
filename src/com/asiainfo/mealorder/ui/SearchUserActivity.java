@@ -11,6 +11,7 @@ import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.listener.OnDialogListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.SearchUserPresenter;
+import com.asiainfo.mealorder.ui.PoPup.ChooseMemberCardDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.widget.NumKeyboardView;
