@@ -1,14 +1,13 @@
 package com.asiainfo.mealorder.biz.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.asiainfo.mealorder.R;
 
@@ -67,21 +66,19 @@ public class CardLevelAdapter extends BaseAdapter {
         } else {
             holder.checkBox.setChecked(false);
         }
-        holder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+        final CardLevelViewHolder finalHolder = holder;
+        holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                Log.d("ChooseCardAdapter", "The checked position is: " + position + ", and isChecked is: " + isChecked);
-                if (isChecked) {
-                    setSelectedPosition(position);
+            public void onClick(View v) {
+                if (!finalHolder.checkBox.isChecked()) {
+                    Toast.makeText(context, "已经选中,不能取消!", Toast.LENGTH_SHORT).show();
+                } else {
+                    selectPosition = position;
                 }
+                notifyDataSetChanged();
             }
         });
         return convertView;
-    }
-
-    private void setSelectedPosition(int position) {
-        this.selectPosition = position;
-        notifyDataSetChanged();
     }
 
     public int getSelectPosition() {
