@@ -256,6 +256,7 @@ public class MemberActivity extends BaseActivity {
             chooseCardLevelDF.setCurrentPosition(position);
             if (discount == null) {
                 cardLevelTxt.setText("无优惠");
+                currentDiscount = null;
             } else {
                 cardLevelTxt.setText(discount.getTitle());
                 currentDiscount = discount;

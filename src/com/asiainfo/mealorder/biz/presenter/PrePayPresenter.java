@@ -426,7 +426,7 @@ public class PrePayPresenter {
      * @return
      */
     public boolean isExistOrderPay(String type){
-        for (OrderPay lOrderPay:mOrderPayList){
+        for (OrderPay lOrderPay:getOrderPayList()){
             if (lOrderPay.getPayType().equals(type))return true;
         }
         return false;
