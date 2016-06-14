@@ -329,7 +329,7 @@ public class MemberActivity extends BaseActivity {
             cardLevelTxt.setText("无优惠");
         } else {
             Discount discount = discountList.get(0);
-            cardLevelTxt.setText(discount.getTitle());
+            cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + ")");
             arrow.setVisibility(View.VISIBLE);
         }
     }
@@ -363,7 +363,7 @@ public class MemberActivity extends BaseActivity {
                 cardLevelTxt.setText("无优惠");
                 currentDiscount = null;
             } else {
-                cardLevelTxt.setText(discount.getTitle());
+                cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + ")");
                 currentDiscount = discount;
             }
         }
