@@ -110,15 +110,43 @@
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
                 android:background="#D5D5D5" />
-
-            <TextView
-                android:id="@+id/account_favorable_price"
+            <RelativeLayout
+                android:id="@+id/favorable_group"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
-                android:gravity="right|center_vertical"
-                android:paddingRight="@dimen/Dip_20"
-                android:text="¥15.0"
-                android:textSize="@dimen/text_size_small" />
+                android:layout_height="45dip">
+                <TextView
+                    android:id="@+id/account_favorable_price_flag"
+                    android:layout_width="match_parent"
+                    android:layout_height="45dp"
+                    android:gravity="right|center_vertical"
+                    android:text="- "
+                    android:textSize="@dimen/text_size_large"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/account_favorable_price"
+                    />
+                <TextView
+                    android:id="@+id/account_favorable_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="45dp"
+                    android:gravity="center_vertical"
+                    android:text="¥15.0"
+                    android:textSize="@dimen/text_size_small"
+                    android:layout_centerVertical="true"
+                    android:layout_toLeftOf="@+id/favorable_arrow"
+                    />
+                <ImageView
+                    android:id="@+id/favorable_arrow"
+                    android:layout_width="20dip"
+                    android:layout_height="20dip"
+                    android:background="@anim/arrow_to_right_btn_bg"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="5dp"
+                    android:layout_centerVertical="true"
+                    android:layout_alignParentRight="true"
+                    />
+                </RelativeLayout>
+
+
 
             <ImageView
                 android:layout_width="match_parent"
