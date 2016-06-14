@@ -79,6 +79,7 @@ public class MemberActivity extends BaseActivity {
 
     private String needPayValue;
     private Double totalPayValue;
+    private int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -108,17 +109,16 @@ public class MemberActivity extends BaseActivity {
         if (memberCard.getDiscountList().size() != 0) {
             currentDiscount = memberCard.getDiscountList().get(0);
         }
-        isVisibleArrow();
-        if (mPrePayPresenter!=null)
-        needPayValue = mPrePayPresenter.getCurNeedPayWithMemberMarketing(memberCard,currentDiscount);
+        if (mPrePayPresenter!=null) {
+            needPayValue = mPrePayPresenter.getCurNeedPayWithMemberMarketing(memberCard,currentDiscount);
+        }
         totalPayValue = StringUtils.str2Double(needPayValue);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + needPayValue + "</font>"));
         memberPresenter.fillViews();
+        isVisibleArrow();
         List<UserCoupon> userCouponList = memberPresenter.getCoupons();
         isVisibleCoupon(userCouponList);
         setRecyclerViewContent(userCouponList);
-
-
     }
 
     private void initListener() {
@@ -357,17 +357,28 @@ public class MemberActivity extends BaseActivity {
         }
     }
 
+    /*
+    * 选择卡级别之后返回的监听事件
+    * */
     private OnChooseCardListener onChooseCardListener = new OnChooseCardListener() {
         @Override
         public void onChooseCard(int position, Discount discount) {
             dismissCardLevelDF();
-            chooseCardLevelDF.setCurrentPosition(position);
-            if (discount == null) {
-                cardLevelTxt.setText("无优惠");
-                currentDiscount = null;
-            } else {
-                cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + ")");
-                currentDiscount = discount;
+            if (currentPosition != position) {
+                currentPosition = position;
+                chooseCardLevelDF.setCurrentPosition(position);
+                if (discount == null) {
+                    cardLevelTxt.setText("无优惠");
+                    currentDiscount = null;
+                } else {
+                    cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + ")");
+                    currentDiscount = discount;
+                }
+                String price = mPrePayPresenter.getCurNeedPayWithMemberMarketing(memberCard, currentDiscount);
+                payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + price + "</font>"));
+                totalPayValue = StringUtils.str2Double(price);
+                needPayValue = price;
+                initCheckBoxAndEdit();
             }
         }
     };
@@ -396,5 +407,17 @@ public class MemberActivity extends BaseActivity {
         Double needPrice = StringUtils.str2Double(needPayValue);
         Double mPrice = StringUtils.str2Double(price);
         needPayValue = StringUtils.double2Str(needPrice - mPrice);
+    }
+
+    /*
+    * 初始化checkbox和edit
+    * */
+    private void initCheckBoxAndEdit() {
+        if (balanceCheckBox.isChecked()) {
+            balanceCheckBox.setChecked(false);
+        }
+        if (scoreCheckBox.isChecked()) {
+            scoreCheckBox.setChecked(false);
+        }
     }
 }
