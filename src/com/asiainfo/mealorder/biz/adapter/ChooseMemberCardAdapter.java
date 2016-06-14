@@ -66,7 +66,7 @@ public class ChooseMemberCardAdapter extends BaseAdapter {
         }
         MemberCard memberCard = memberCardList.get(position);
         holder.cardName.setText(memberCard.getCardName());
-        holder.balance.setText("余额: " + memberCard.getBalance());
+        holder.balance.setText("余额: " + memberCard.getAccountLeave());
         return convertView;
     }
 

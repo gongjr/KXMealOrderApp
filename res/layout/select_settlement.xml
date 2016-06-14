@@ -17,7 +17,7 @@
             android:layout_width="0dp"
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="挂账"
+            android:text="挂单"
             android:gravity="center"
             android:background="@drawable/itemsel_selected"
             android:textSize="@dimen/text_size_large"

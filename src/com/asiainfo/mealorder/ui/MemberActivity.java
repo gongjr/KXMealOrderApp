@@ -3,13 +3,9 @@ package com.asiainfo.mealorder.ui;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.text.Editable;
 import android.text.Html;
-import android.text.TextWatcher;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -23,10 +19,8 @@ import com.asiainfo.mealorder.biz.listener.OnChooseCardListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
-import com.asiainfo.mealorder.biz.presenter.PrePayPresenter;
 import com.asiainfo.mealorder.ui.PoPup.ChooseCardLevelDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
-import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.widget.SpaceItemDecoration;
 import com.asiainfo.mealorder.widget.TitleView;
 
@@ -42,10 +36,6 @@ public class MemberActivity extends BaseActivity {
 
     @InjectView(R.id.member_title)
     private TitleView titleView;
-    @InjectView(R.id.member_balance_edit)
-    private EditText balanceEdit;
-    @InjectView(R.id.membre_score_edit)
-    private EditText scoreEdit;
     @InjectView(R.id.member_pay_price)
     private TextView payPrice;
     @InjectView(R.id.member_phone)
@@ -72,22 +62,17 @@ public class MemberActivity extends BaseActivity {
     CheckBox scoreCheckBox;
 
     private MemberPresenter memberPresenter;
-    private PrePayPresenter mPrePayPresenter;
     private MemberCard memberCard;
     private ChooseCardLevelDF chooseCardLevelDF;
     private Discount currentDiscount = null;
 
     private String needPayValue;
-    private Double totalPayValue;
     private int currentPosition = 0;
 
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_member);
-//        //设置输入框不可点击
-//        balanceEdit.setKeyListener(null);
-//        scoreEdit.setKeyListener(null);
         initData();
         setTitleView();
         initListener();
@@ -103,16 +88,10 @@ public class MemberActivity extends BaseActivity {
     private void initData() {
         memberCard = getIntent().getParcelableExtra("MemberCard");
         needPayValue = getIntent().getStringExtra("payPrice");
-        //获取当前共享的预支付PrePayPresenter信息
         memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
-        mPrePayPresenter=(PrePayPresenter)baseApp.gainData(baseApp.KEY_PrePayPresenter);
         if (memberCard.getDiscountList().size() != 0) {
             currentDiscount = memberCard.getDiscountList().get(0);
         }
-        if (mPrePayPresenter!=null) {
-            needPayValue = mPrePayPresenter.getCurNeedPayWithMemberMarketing(memberCard,currentDiscount);
-        }
-        totalPayValue = StringUtils.str2Double(needPayValue);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + needPayValue + "</font>"));
         memberPresenter.fillViews();
         isVisibleArrow();
@@ -131,93 +110,6 @@ public class MemberActivity extends BaseActivity {
                 }
             }
         });
-        balanceCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (StringUtils.str2Double(needPayValue) == 0) {
-                        showShortTip("金额已支付,无需额外支付~.~");
-                        balanceCheckBox.setChecked(false);
-                    } else {
-                        if (isEnough(memberCard.getBalance())) {
-                            balanceEdit.setText(needPayValue);
-                            needPayValue = "0";
-                        } else {
-                            balanceEdit.setText(memberCard.getBalance());
-                            subPrice(balanceEdit.getText().toString());
-                        }
-                    }
-                } else {
-                    plusPrice(balanceEdit.getText().toString());
-                    balanceEdit.setText("0");
-                }
-            }
-        });
-        scoreCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    if (StringUtils.str2Double(needPayValue) == 0) {
-                        showShortTip("金额已支付,无需额外支付~.~");
-                        scoreCheckBox.setChecked(false);
-                    } else {
-                        Double value = memberPresenter.getScorePriceFormScore(memberCard.getScore());
-                        if (isEnough(StringUtils.double2Str(value))) {
-                            scoreEdit.setText(needPayValue);
-                            needPayValue = "0";
-                        } else {
-                            scoreEdit.setText(StringUtils.double2Str(value));
-                            subPrice(scoreEdit.getText().toString());
-                        }
-                    }
-                } else {
-                    plusPrice(scoreEdit.getText().toString());
-                    scoreEdit.setText("0");
-                }
-            }
-        });
-        balanceEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Double price = plusPrice(balanceEdit.getText().toString(), scoreEdit.getText().toString());
-                if (totalPayValue >= price) {
-                    needPayValue = StringUtils.double2Str(totalPayValue - price);
-                } else {
-                    showShortTip("金额已超出所需支付金额~.~");
-                    balanceEdit.setText(StringUtils.double2Str(totalPayValue - StringUtils.str2Double(scoreEdit.getText().toString())));
-                }
-            }
-        });
-        scoreEdit.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-                Double price = plusPrice(balanceEdit.getText().toString(), scoreEdit.getText().toString());
-                if (totalPayValue >= price) {
-                    needPayValue = StringUtils.double2Str(totalPayValue - price);
-                } else {
-                    showShortTip("金额已超出所需支付金额~.~");
-                    scoreEdit.setText(StringUtils.double2Str(totalPayValue - StringUtils.str2Double(balanceEdit.getText().toString())));
-                }
-            }
-        });
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
@@ -230,23 +122,9 @@ public class MemberActivity extends BaseActivity {
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            String balance = balanceEdit.getText().toString();
-            String score = scoreEdit.getText().toString();
-            if (StringUtils.str2Double(balance) > StringUtils.str2Double(memberCard.getBalance())) {
-                showShortTip("会员余额不足,请确认~.~");
-                balanceEdit.setText("0");
-                balanceEdit.requestFocus();
-                return;
-            }
-            if (StringUtils.str2Double(score) > StringUtils.str2Double(memberCard.getScore())) {
-                showShortTip("积分不足,请确认~.~");
-                scoreEdit.setText("0");
-                scoreEdit.requestFocus();
-                return;
-            }
             getOperation().addParameter("memberCard", memberCard);
-            getOperation().addParameter("balance", balanceEdit.getText().toString());
-            getOperation().addParameter("score", scoreEdit.getText().toString());
+            getOperation().addParameter("balance", balanceCheckBox.isChecked());
+            getOperation().addParameter("score", scoreCheckBox.isChecked());
             getOperation().addParameter("discount", currentDiscount);
             getOperation().forward(SettleAccountActivity.class);
         }
@@ -374,50 +252,8 @@ public class MemberActivity extends BaseActivity {
                     cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + ")");
                     currentDiscount = discount;
                 }
-                String price = mPrePayPresenter.getCurNeedPayWithMemberMarketing(memberCard, currentDiscount);
-                payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + price + "</font>"));
-                totalPayValue = StringUtils.str2Double(price);
-                needPayValue = price;
-                initCheckBoxAndEdit();
+                payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + needPayValue + "</font>"));
             }
         }
     };
-
-    /*
-    * 判断会员积分和余额是否大于需付金额
-    * */
-    private boolean isEnough(String balance) {
-        if (StringUtils.str2Double(balance) >= StringUtils.str2Double(needPayValue)) {
-            return true;
-        }
-        return false;
-    }
-
-    private void plusPrice(String price) {
-        Double needPrice = StringUtils.str2Double(needPayValue);
-        Double mPrice = StringUtils.str2Double(price);
-        needPayValue = StringUtils.double2Str(needPrice + mPrice);
-    }
-
-    private Double plusPrice(String p1, String p2) {
-        return StringUtils.str2Double(p1) + StringUtils.str2Double(p2);
-    }
-
-    private void subPrice(String price) {
-        Double needPrice = StringUtils.str2Double(needPayValue);
-        Double mPrice = StringUtils.str2Double(price);
-        needPayValue = StringUtils.double2Str(needPrice - mPrice);
-    }
-
-    /*
-    * 初始化checkbox和edit
-    * */
-    private void initCheckBoxAndEdit() {
-        if (balanceCheckBox.isChecked()) {
-            balanceCheckBox.setChecked(false);
-        }
-        if (scoreCheckBox.isChecked()) {
-            scoreCheckBox.setChecked(false);
-        }
-    }
 }

@@ -72,6 +72,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private TextView shouldPay;
     @InjectView(R.id.account_payed_price)
     private TextView currentPay;
+    @InjectView(R.id.account_curneedpay_price)
+    private TextView curNeedPay;
     @InjectView(R.id.account_change_price)
     private TextView oddChange;
     @InjectView(R.id.account_payorderlist)
@@ -88,8 +90,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private PrePayPresenter mPrePayPresenter;
     private static final int REQUEST_CODE = 10000;
     public static final int RESULT_CODE = 10001;
-    private String PrePayPresenter_Key="PrePayPresenter_Key";
-
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -210,8 +210,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip("您已使用过 (会员卡支付),请换一种支付方式~.~");
                     return;
                 }
-                //更新共享mPrePayPresenter信息
-                baseApp.assignData(baseApp.KEY_PrePayPresenter,mPrePayPresenter);
                 getOperation().forwardForResult(SearchUserActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_bank_card:
@@ -289,6 +287,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         favourablePrice.setText("¥" + mPrePayPresenter.getPrePrice().getFavourablePrice());
         shouldPay.setText("¥" + mPrePayPresenter.getPrePrice().getShouldPay());
         currentPay.setText("¥" + mPrePayPresenter.getPrePrice().getCurrentPay());
+        curNeedPay.setText("¥" + mPrePayPresenter.getPrePrice().getCurNeedPay());
         oddChange.setText("¥" + mPrePayPresenter.getPrePrice().getOddChange());
     }
 
@@ -422,7 +421,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     showShortTip(lSubmitPayResult.getInfo().getInfo());
                     if (lSubmitPayResult.getInfo().getStatus() == 1) {
                         updateNotice(lSubmitPayResult.getInfo().getInfo(), 1);
-                        baseApp.removeData(baseApp.KEY_PrePayPresenter);//清除当前共享预支付信息,预防泄露
                     } else updateNotice(lSubmitPayResult.getInfo().getInfo(), 0);
                 } else {
                     showShortTip(response.getMsg());
@@ -488,12 +486,11 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     }
 
     private void isBackFromMemberActivity() {
-        baseApp.removeData(baseApp.KEY_PrePayPresenter);//清除当前共享预支付信息,预防泄露
         if (getIntent().getParcelableExtra("memberCard") != null) {
             final MemberCard mMemberCard = getIntent().getParcelableExtra("memberCard");
             Discount discount = (Discount) getIntent().getSerializableExtra("discount");
-            String balance = getIntent().getStringExtra("balance");
-            String score = getIntent().getStringExtra("score");
+            boolean balance = getIntent().getBooleanExtra("balance",false);
+            boolean score = getIntent().getBooleanExtra("score",false);
             mPrePayPresenter.addUserBalanceAndScore(mMemberCard, mPrePayPresenter.getPayMent().get(PayMent.UserPayMent), discount, balance, score,
                     new Response.Listener<String>() {
                         @Override
@@ -508,11 +505,5 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                         }
                     });
         }
-    }
-
-    @Override
-    protected void onDestroy() {
-        baseApp.removeData(baseApp.KEY_PrePayPresenter);//清除当前共享预支付信息,预防泄露
-        super.onDestroy();
     }
 }

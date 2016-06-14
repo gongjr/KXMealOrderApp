@@ -86,6 +86,19 @@
                 android:layout_height="45dp"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
+                android:text="还需支付"
+                android:textSize="@dimen/text_size_small" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D5D5D5" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="@dimen/Dip_20"
                 android:text="找零"
                 android:textSize="@dimen/text_size_small" />
         </LinearLayout>
@@ -124,7 +137,8 @@
                     android:layout_toLeftOf="@+id/account_favorable_price"
                     android:gravity="right|center_vertical"
                     android:text="- "
-                    android:textSize="@dimen/text_size_large" />
+                    android:textSize="@dimen/text_size_large"
+                    android:textColor="#D0021B"/>
 
                 <TextView
                     android:id="@+id/account_favorable_price"
@@ -175,6 +189,20 @@
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥315.0"
+                android:textSize="@dimen/text_size_small" />
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="#D5D5D5" />
+
+            <TextView
+                android:id="@+id/account_curneedpay_price"
+                android:layout_width="match_parent"
+                android:layout_height="45dp"
+                android:gravity="right|center_vertical"
+                android:paddingRight="@dimen/Dip_20"
+                android:text="¥30.0"
                 android:textSize="@dimen/text_size_small" />
 
             <ImageView

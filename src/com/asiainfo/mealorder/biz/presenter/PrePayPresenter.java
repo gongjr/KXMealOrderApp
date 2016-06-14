@@ -1,7 +1,5 @@
 package com.asiainfo.mealorder.biz.presenter;
 
-import android.util.Log;
-
 import com.android.volley.Response;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
@@ -366,36 +364,41 @@ public class PrePayPresenter {
      * @param memberCard 会员卡信息
      * @param paytype    会员卡支付方式信息
      * @param pDiscount  会员折扣
-     * @param price      输入的会员卡支付金额
-     * @param mScorePrice   输入的积分抵扣数量
+     * @param isBanlance 是余额支付
+     * @param isScore   是否积分抵扣
      * @param listener   响应回调
      */
-    public void addUserBalanceAndScore(MemberCard memberCard, PayType paytype, Discount pDiscount, String price, String mScorePrice, Response.Listener<String> listener) {
-
-        Double priceDouble = StringUtils.str2Double(price);
+    public void addUserBalanceAndScore(MemberCard memberCard, PayType paytype, Discount pDiscount, Boolean isBanlance, Boolean isScore, Response.Listener<String> listener) {
         mUserModel.setMemberCard(memberCard);
         //(1)对于会员卡支付,首先应该计算会员优惠营销活动,并且更新优惠后的PrePrice对象内容
         mOrderMarketingList.addAll(mUserModel.addUserMarketing(pDiscount, getPrePrice(), merchantRegister, mDeskOrder));
         //(2)"isThisMember": "1"是本商户的会员,是否跨域消费,"userId": 2015051100001286,会员卡支付需要将这些信息补入orderdata
         mSubmitPayOrder.setUserId(memberCard.getUserId());
         mSubmitPayOrder.setIsThisMember(memberCard.getIsThisMember());
+        //(3)根据积分抵扣和余额支付,及需要支付金额,判断赋予应该积分抵扣和余额支付的值
+        Double scorePrice=0.00;
+        if (isScore){
+            Double scores=mUserModel.getScorePriceFormScore(memberCard.getScore());
+            scorePrice= scores >= Double.valueOf(mPrePrice.getCurNeedPay())?Double.valueOf(mPrePrice.getCurNeedPay()):scores;
+        }
+        //(4)积分抵扣金额,需要当做一条支付行为处理
+        mUserModel.addDeductionScoreOrderPay(scorePrice, mDeskOrder, merchantRegister);
+        mPrePrice.addCurPayPrice(scorePrice.toString());
+        //(5)积分抵扣后,对应mUserScoreList中记录变更,action0
+        mUserModel.addDeductionScore(scorePrice);
+
+        Double priceDouble=0.00;
+        if (isBanlance){
+            Double balance=Double.valueOf(memberCard.getAccountLeave());
+            priceDouble = balance>=Double.valueOf(mPrePrice.getCurNeedPay())?Double.valueOf(mPrePrice.getCurNeedPay()):balance;
+        }
         //(3)设置orderpay数据
         mUserModel.addBalanceOrderPay(priceDouble, memberCard, paytype, mDeskOrder, merchantRegister);
-        mPrePrice.addCurPayPrice(price);
+        mPrePrice.addCurPayPrice(priceDouble.toString());
         //(4) balance余额变化
         mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble);
         //(5) 会员余额支付积分
-        mUserModel.refreshScoreList(paytype, price, 0, mPrePrice);
-        Log.i("scoreNum", "scoreNum:" + mScorePrice);
-        if (mScorePrice != null && !mScorePrice.equals("")) {
-            //(6)积分抵扣金额,需要当做一条支付行为处理
-            Double scorePrice = StringUtils.str2Double(mScorePrice);
-            mUserModel.addDeductionScoreOrderPay(scorePrice, mDeskOrder, merchantRegister);
-            mPrePrice.addCurPayPrice(scorePrice.toString());
-            //(7)积分抵扣后,对应mUserScoreList中记录变更,action0
-            mUserModel.addDeductionScore(scorePrice);
-        }
-
+        mUserModel.refreshScoreList(paytype, priceDouble.toString(), 0, mPrePrice);
         if (listener != null) listener.onResponse(Response_ok);
     }
 
