@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -75,6 +76,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private TextView oddChange;
     @InjectView(R.id.account_payorderlist)
     private ListView curPayOrderListView;
+    @InjectView(R.id.favorable_group)
+    private RelativeLayout favorable_group;
     private PayOrderListAdapter mPayOrderListAdapter;
     private MakeOrderFinishDF mMakeOrderDF;
     private SelectSettlementDF selectSettlementDF;
@@ -190,6 +193,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         zhifubao.setOnClickListener(this);
         weixin.setOnClickListener(this);
         lkl.setOnClickListener(this);
+        favorable_group.setOnClickListener(this);
     }
 
     @Override
@@ -257,6 +261,15 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.account_lkl:
                 showShortTip("本设备不支持 (拉卡拉支付)!");
+                break;
+            case R.id.favorable_group:
+                if (mPrePayPresenter.getMarketingList().size()>0){
+                    String marketingListString=gson.toJson(mPrePayPresenter.getMarketingList());
+                    getOperation().addParameter(MarketingActivity.MarketingListString, marketingListString);
+                    getOperation().forwardForResult(MarketingActivity.class, 0);
+                }else{
+                    showShortTip("当前无优惠可显示!");
+                }
                 break;
         }
     }

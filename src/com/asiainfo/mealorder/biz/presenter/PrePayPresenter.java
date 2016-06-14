@@ -519,4 +519,8 @@ public class PrePayPresenter {
         }
         return mSubmitPayOrder;
     }
+
+    public List<OrderMarketing> getMarketingList(){
+        return mOrderMarketingList;
+    }
 }

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="45dip"
+    android:background="@color/white">
+    <TextView
+        android:id="@+id/lvitem_ordermarketing_typename"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:paddingLeft="@dimen/Dip_25"
+        android:textSize="@dimen/text_size_xsmall"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"/>
+
+    <TextView
+        android:id="@+id/lvitem_ordermarketing_price"
+        android:layout_width="wrap_content"
+        android:layout_height="45dp"
+        android:paddingRight="10dp"
+        android:textSize="@dimen/text_size_small"
+        android:gravity="center"
+        android:layout_centerVertical="true"
+        android:layout_toLeftOf="@+id/lvitem_ordermarketing_delete"/>
+
+    <Button
+        android:id="@+id/lvitem_ordermarketing_delete"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:layout_marginRight="15dip"
+        android:background="@drawable/delete"/>
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="#D5D5D5"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"/>
+
+</RelativeLayout>

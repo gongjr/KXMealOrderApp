@@ -192,6 +192,12 @@
             android:launchMode="singleTop"
             android:screenOrientation="portrait" >
         </activity>
+        <activity
+            android:name="com.asiainfo.mealorder.ui.MarketingActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTop"
+            android:screenOrientation="portrait" >
+        </activity>
         
         <service
             android:name="com.asiainfo.mealorder.utils.DownloadService"
