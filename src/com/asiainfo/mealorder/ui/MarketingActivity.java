@@ -27,7 +27,7 @@ public class MarketingActivity extends BaseActivity{
     public final static String MarketingListString="MarketingListString";
     @InjectView(R.id.marketing_title)
     private TitleView titleView;
-    @InjectView(R.id.marketing__seleted_list)
+    @InjectView(R.id.marketing_seleted_list)
     private ListView mListView;
     private MarketingPresenter mMarketingPresenter;
     private MarketingListAdapter mMarketingListAdapter;

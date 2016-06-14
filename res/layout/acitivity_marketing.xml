@@ -10,9 +10,14 @@
         android:id="@+id/marketing_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></com.asiainfo.mealorder.widget.TitleView>
-
+    <ImageView
+        android:id="@+id/marketing_underline01"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@+id/member_title"
+        android:background="#9E9E9E" />
     <ListView
-        android:id="@+id/marketing__seleted_list"
+        android:id="@+id/marketing_seleted_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

@@ -110,7 +110,7 @@ public class ChooseCardLevelDF extends DialogFragmentBase {
         int size = discountList.size();
         for (int i=0; i<size; i++) {
             Discount discount = discountList.get(i);
-            stringList.add(discount.getTitle() + "(" + discount.getNum() + ")");
+            stringList.add(discount.getTitle() + "(" + discount.getNum() + "折)");
         }
         stringList.add("无优惠");
         return stringList;

@@ -332,7 +332,7 @@ public class MemberActivity extends BaseActivity {
             cardLevelTxt.setText("无优惠");
         } else {
             Discount discount = discountList.get(0);
-            cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + ")");
+            cardLevelTxt.setText(discount.getTitle() + "(" + discount.getNum() + "折)");
             arrow.setVisibility(View.VISIBLE);
         }
     }
