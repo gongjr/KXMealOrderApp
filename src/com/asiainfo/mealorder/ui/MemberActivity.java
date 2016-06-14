@@ -6,6 +6,7 @@ import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -144,7 +145,7 @@ public class MemberActivity extends BaseActivity {
                             needPayValue = "0";
                         } else {
                             balanceEdit.setText(memberCard.getBalance());
-                            subPrice(balanceEdit.getText().toString());
+//                            subPrice(balanceEdit.getText().toString());
                         }
                     }
                 } else {
@@ -167,7 +168,8 @@ public class MemberActivity extends BaseActivity {
                             needPayValue = "0";
                         } else {
                             scoreEdit.setText(StringUtils.double2Str(value));
-                            subPrice(scoreEdit.getText().toString());
+//                            subPrice(scoreEdit.getText().toString());
+                            Log.d(TAG, "The needPay is: " + needPayValue);
                         }
                     }
                 } else {
