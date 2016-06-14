@@ -367,7 +367,7 @@ public class PrePayPresenter {
      * @param paytype    会员卡支付方式信息
      * @param pDiscount  会员折扣
      * @param price      输入的会员卡支付金额
-     * @param scoreNum   输入的积分抵扣数量
+     * @param mScorePrice   输入的积分抵扣数量
      * @param listener   响应回调
      */
     public void addUserBalanceAndScore(MemberCard memberCard, PayType paytype, Discount pDiscount, String price, String mScorePrice, Response.Listener<String> listener) {
@@ -535,5 +535,32 @@ public class PrePayPresenter {
 
     public List<OrderMarketing> getMarketingList(){
         return mOrderMarketingList;
+    }
+
+    /**
+     * 根据当前会员信息,与折扣类型,以及当前已支付价格,计算会员营销后的还需支付价格
+     * @param memberCard
+     * @param pDiscount
+     * @return
+     */
+    public String getCurNeedPayWithMemberMarketing(MemberCard memberCard,Discount pDiscount){
+        String CurNeedPay="0.00";
+        String discountPrice="0.00";
+        if (pDiscount != null) {
+            //折扣掉的金额=应收*折扣率
+            Double discount = Double.valueOf(mPrePrice.getShouldPay()) * pDiscount.getNum()/10;
+            discountPrice = mPrePrice.formatPrice(Double.valueOf(mPrePrice.getShouldPay())-discount);
+
+        }
+        //遍历当前订单所有菜品,计算所有菜的会员价折扣总和
+        if(mDeskOrder!=null&&mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0){
+            for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
+                String discount_OrderGoods=mPrePrice.subPrice(lDeskOrderGoodsItem.getDishesPrice(),lDeskOrderGoodsItem.getMemberPrice());
+                discountPrice=mPrePrice.addPrice(discount_OrderGoods,discountPrice);
+            }
+        }
+        String newShouldPay=mPrePrice.subPrice(mPrePrice.getShouldPay(),discountPrice);
+        CurNeedPay=mPrePrice.subPrice(newShouldPay,mPrePrice.getCurrentPay());
+        return CurNeedPay;
     }
 }

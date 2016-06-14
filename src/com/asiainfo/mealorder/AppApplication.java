@@ -49,6 +49,11 @@ public class AppApplication extends LitePalApplication{
      */
     public static final String KEY_GLOABLE_PUBLICATTR="PublicAttr";
     /**
+     * 共享当前的预支付PrePayPresenter
+     * PrePayPresenter_Key
+     */
+    public static final String KEY_PrePayPresenter="CurPrePayPresenter";
+    /**
      * 对外提供Application Context
      * @return
      */

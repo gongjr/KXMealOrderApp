@@ -22,8 +22,8 @@ import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
 import com.asiainfo.mealorder.biz.listener.OnChooseCardListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
-import com.asiainfo.mealorder.biz.model.UserModel;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
+import com.asiainfo.mealorder.biz.presenter.PrePayPresenter;
 import com.asiainfo.mealorder.ui.PoPup.ChooseCardLevelDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.utils.StringUtils;
@@ -72,10 +72,11 @@ public class MemberActivity extends BaseActivity {
     CheckBox scoreCheckBox;
 
     private MemberPresenter memberPresenter;
+    private PrePayPresenter mPrePayPresenter;
     private MemberCard memberCard;
     private ChooseCardLevelDF chooseCardLevelDF;
     private Discount currentDiscount = null;
-    private UserModel mUserModel = null;
+
     private String needPayValue;
     private Double totalPayValue;
 
@@ -100,22 +101,24 @@ public class MemberActivity extends BaseActivity {
 
     private void initData() {
         memberCard = getIntent().getParcelableExtra("MemberCard");
-        mUserModel = new UserModel();
-        mUserModel.setMemberCard(memberCard);
         needPayValue = getIntent().getStringExtra("payPrice");
-        totalPayValue = StringUtils.str2Double(needPayValue);
+        //获取当前共享的预支付PrePayPresenter信息
+        memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
+        mPrePayPresenter=(PrePayPresenter)baseApp.gainData(baseApp.KEY_PrePayPresenter);
         if (memberCard.getDiscountList().size() != 0) {
             currentDiscount = memberCard.getDiscountList().get(0);
         }
-        memberPresenter = new MemberPresenter(memberCard, onMemberActivityListener);
+        isVisibleArrow();
+        if (mPrePayPresenter!=null)
+        needPayValue = mPrePayPresenter.getCurNeedPayWithMemberMarketing(memberCard,currentDiscount);
+        totalPayValue = StringUtils.str2Double(needPayValue);
         payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + needPayValue + "</font>"));
         memberPresenter.fillViews();
         List<UserCoupon> userCouponList = memberPresenter.getCoupons();
-
         isVisibleCoupon(userCouponList);
         setRecyclerViewContent(userCouponList);
 
-        isVisibleArrow();
+
     }
 
     private void initListener() {
@@ -158,7 +161,7 @@ public class MemberActivity extends BaseActivity {
                         showShortTip("金额已支付,无需额外支付~.~");
                         scoreCheckBox.setChecked(false);
                     } else {
-                        Double value = mUserModel.getScorePriceFormScore(memberCard.getScore());
+                        Double value = memberPresenter.getScorePriceFormScore(memberCard.getScore());
                         if (isEnough(StringUtils.double2Str(value))) {
                             scoreEdit.setText(needPayValue);
                             needPayValue = "0";
@@ -291,7 +294,7 @@ public class MemberActivity extends BaseActivity {
         @Override
         public void setScore(String score) {
             scoreTxt.setText(Html.fromHtml("<font color='#D0021B'>" + score + "抵" +
-                    mUserModel.getScorePriceFormScore(score) + "元"));
+                    memberPresenter.getScorePriceFormScore(score) + "元"));
         }
 
         @Override

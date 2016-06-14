@@ -3,6 +3,7 @@ package com.asiainfo.mealorder.biz.presenter;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
+import com.asiainfo.mealorder.biz.model.UserModel;
 import com.asiainfo.mealorder.ui.MemberActivity;
 
 import java.util.List;
@@ -15,10 +16,12 @@ public class MemberPresenter {
 
     private MemberCard memberCard;
     private MemberActivity.OnMemberActivityListener onMemberActivityListener;
-
+    private UserModel mUserModel = null;
     public MemberPresenter(MemberCard memberCard, MemberActivity.OnMemberActivityListener onMemberActivityListener) {
         this.memberCard = memberCard;
         this.onMemberActivityListener = onMemberActivityListener;
+        mUserModel = new UserModel();
+        mUserModel.setMemberCard(memberCard);
     }
 
     public void fillViews() {
@@ -36,5 +39,9 @@ public class MemberPresenter {
 
     public List<Discount> getDiscounts() {
         return memberCard.getDiscountList();
+    }
+
+    public Double getScorePriceFormScore(String scoreNum){
+        return mUserModel.getScorePriceFormScore(scoreNum);
     }
 }
