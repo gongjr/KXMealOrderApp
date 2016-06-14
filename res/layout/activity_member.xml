@@ -191,6 +191,16 @@
                 android:text="0"
                 />
 
+            <CheckBox
+                android:id="@+id/member_balance_checkbox"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/member_select_chk_bg"
+                android:layout_toLeftOf="@+id/member_balance_edit"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:button="@null"/>
+
         </RelativeLayout>
 
         <ImageView
@@ -249,6 +259,16 @@
                 android:numeric="decimal"
                 android:singleLine="true"
                 />
+
+            <CheckBox
+                android:id="@+id/member_score_checkbox"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:background="@drawable/member_select_chk_bg"
+                android:layout_toLeftOf="@+id/membre_score_edit"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="10dp"
+                android:button="@null"/>
 
         </RelativeLayout>
 
