@@ -2,10 +2,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/activity_root_style"
     android:layout_height="wrap_content"
-    android:paddingBottom="5dp"
     android:paddingLeft="10dp"
-    android:paddingRight="10dp"
-    android:paddingTop="10dp">
+    android:paddingRight="10dp">
 
     <Button
         android:id="@+id/title_leftbtn"

@@ -158,7 +158,8 @@ public class UserModel {
             if(mDeskOrder!=null&&mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0){
                 for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
                     String discount_OrderGoods=mPrePrice.subPrice(lDeskOrderGoodsItem.getDishesPrice(),lDeskOrderGoodsItem.getMemberPrice());
-                    discount=mPrePrice.addPrice(discount_OrderGoods,discount);
+                    Double allDiscount= Double.valueOf(discount_OrderGoods)*Double.valueOf(lDeskOrderGoodsItem.getSalesNum());
+                    discount=mPrePrice.addPrice(allDiscount.toString(),discount);
                 }
             }
             mPrePrice.addFavourablePrice(discount);

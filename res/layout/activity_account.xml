@@ -31,7 +31,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
                 android:text="消费总额"
@@ -44,7 +44,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
                 android:text="优惠"
@@ -57,7 +57,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
                 android:text="应收金额"
@@ -70,7 +70,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
                 android:text="已付金额"
@@ -83,7 +83,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
                 android:text="还需支付"
@@ -96,7 +96,7 @@
 
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="center_vertical"
                 android:paddingLeft="@dimen/Dip_20"
                 android:text="找零"
@@ -113,7 +113,7 @@
             <TextView
                 android:id="@+id/account_total_price"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥300.0"
@@ -127,12 +127,12 @@
             <RelativeLayout
                 android:id="@+id/favorable_group"
                 android:layout_width="match_parent"
-                android:layout_height="45dip">
+                android:layout_height="40dip">
 
                 <TextView
                     android:id="@+id/account_favorable_price_flag"
                     android:layout_width="match_parent"
-                    android:layout_height="45dp"
+                    android:layout_height="40dip"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/account_favorable_price"
                     android:gravity="right|center_vertical"
@@ -143,7 +143,7 @@
                 <TextView
                     android:id="@+id/account_favorable_price"
                     android:layout_width="wrap_content"
-                    android:layout_height="45dp"
+                    android:layout_height="40dip"
                     android:layout_centerVertical="true"
                     android:layout_toLeftOf="@+id/favorable_arrow"
                     android:gravity="center_vertical"
@@ -170,7 +170,7 @@
             <TextView
                 android:id="@+id/account_need_price"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥285.0"
@@ -185,7 +185,7 @@
             <TextView
                 android:id="@+id/account_payed_price"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥315.0"
@@ -199,7 +199,7 @@
             <TextView
                 android:id="@+id/account_curneedpay_price"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥30.0"
@@ -213,7 +213,7 @@
             <TextView
                 android:id="@+id/account_change_price"
                 android:layout_width="match_parent"
-                android:layout_height="45dp"
+                android:layout_height="40dip"
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥30.0"
@@ -227,7 +227,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/account_msg_layout"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="15dip"
         android:paddingLeft="@dimen/Dip_20"
         android:text="支付方式"
         android:textSize="@dimen/text_size_small" />
@@ -247,9 +247,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/account_bottom_layout_ii"
         android:layout_below="@+id/account_pay_method_tag_line"
-        android:layout_marginBottom="10dp"
-        android:divider="@null"
-        android:scrollbars="none"></ListView>
+        android:layout_marginBottom="10dp"></ListView>
 
 
     <LinearLayout

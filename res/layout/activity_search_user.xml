@@ -3,7 +3,8 @@
               android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
-              android:background="@color/numkey_bg">
+              android:background="@color/numkey_bg"
+              style="@style/activity_root_style">
 
     <com.asiainfo.mealorder.widget.TitleView
         android:id="@+id/code_title"
@@ -15,8 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="1dip"
         android:background="@color/numkey_stroke_s"
-        android:layout_below="@+id/code_title"
-        android:layout_marginTop="15dip"/>
+        android:layout_below="@+id/code_title"/>
 
 
     <EditText
