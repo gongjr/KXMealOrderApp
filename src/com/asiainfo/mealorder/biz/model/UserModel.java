@@ -306,8 +306,9 @@ public class UserModel {
      * @param paytype
      * @param mDeskOrder
      * @param merchantRegister
+     * @param scorePrice
      */
-    public void addBalanceOrderPay(Double priceDouble,MemberCard memberCard,PayType paytype,DeskOrder mDeskOrder,MerchantRegister merchantRegister){
+    public void addBalanceOrderPay(Double priceDouble,MemberCard memberCard,PayType paytype,DeskOrder mDeskOrder,MerchantRegister merchantRegister,Double scorePrice){
         OrderPay lOrderPay=new OrderPay();
         lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
         lOrderPay.setPayPrice(priceDouble);
@@ -317,12 +318,21 @@ public class UserModel {
         lOrderPay.setIsScore(paytype.getIsScore());
         lOrderPay.setPayMode(paytype.getPayMode());
         lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
+        //变动后的积分余额信息传给后台O(∩_∩)O~
         MemberPay lMemberPay=new MemberPay();
-        lMemberPay.setPayPrice(priceDouble.longValue());
-        lMemberPay.setAccountLeave(Long.valueOf(memberCard.getAccountLeave()));
-        long scoreCash=0;
-        lMemberPay.setScoreCash(scoreCash);
-        lMemberPay.setScore(Long.valueOf(memberCard.getScore()));
+        lMemberPay.setPayPrice(priceDouble);
+        Double balance=Double.valueOf(memberCard.getAccountLeave())-priceDouble;
+        lMemberPay.setAccountLeave(balance);
+
+        lMemberPay.setScoreCash(scorePrice);
+        long useScore=getScoreFormPrice(scorePrice.toString()).longValue();
+        long scoreBanlance=0;
+        if (Long.valueOf(memberCard.getScore())>=useScore)
+            scoreBanlance=Long.valueOf(memberCard.getScore())-useScore;
+        lMemberPay.setScore(scoreBanlance);
+        lMemberPay.setTotalScore(Long.valueOf(memberCard.getScore()));
+        lMemberPay.setUseScore(useScore);
+
         lMemberPay.setUserId(Long.valueOf(memberCard.getUserId()));
         lMemberPay.setUsername(memberCard.getUsername());
         lMemberPay.setMemberType(memberCard.getMemberType());
@@ -332,9 +342,8 @@ public class UserModel {
         lMemberPay.setCostPrice(Long.valueOf(memberCard.getCostPrice()));
         lMemberPay.setScoreNum(Long.valueOf(memberCard.getScoreNum()));
         lMemberPay.setIsAccountScore(memberCard.getIsAccountScore());
-        lMemberPay.setTotalScore(Long.valueOf(memberCard.getScore()));
-        long useScore=0;
-        lMemberPay.setUseScore(useScore);
+
+
         lOrderPay.setMemberPay(lMemberPay);
         mOrderPayList.add(lOrderPay);
     }

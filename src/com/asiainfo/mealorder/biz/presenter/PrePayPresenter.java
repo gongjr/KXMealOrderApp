@@ -393,7 +393,7 @@ public class PrePayPresenter {
             priceDouble = balance>=Double.valueOf(mPrePrice.getCurNeedPay())?Double.valueOf(mPrePrice.getCurNeedPay()):balance;
         }
         //(3)设置orderpay数据
-        mUserModel.addBalanceOrderPay(priceDouble, memberCard, paytype, mDeskOrder, merchantRegister);
+        mUserModel.addBalanceOrderPay(priceDouble, memberCard, paytype, mDeskOrder, merchantRegister,scorePrice);
         mPrePrice.addCurPayPrice(priceDouble.toString());
         //(4) balance余额变化
         mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble);

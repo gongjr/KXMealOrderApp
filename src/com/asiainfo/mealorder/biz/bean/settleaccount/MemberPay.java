@@ -5,9 +5,9 @@ package com.asiainfo.mealorder.biz.bean.settleaccount;
  * mail : gjr9596@gmail.com
  */
 public class MemberPay {
-    private Long payPrice;
-    private Long accountLeave;
-    private Long scoreCash;
+    private Double payPrice;
+    private Double accountLeave;
+    private Double scoreCash;
     private Long score;
     private Long userId;
     private String username;
@@ -20,27 +20,27 @@ public class MemberPay {
     private Long totalScore;
     private Long useScore;
 
-    public Long getPayPrice() {
+    public Double getPayPrice() {
         return payPrice;
     }
 
-    public void setPayPrice(Long pPayPrice) {
+    public void setPayPrice(Double pPayPrice) {
         payPrice = pPayPrice;
     }
 
-    public Long getAccountLeave() {
+    public Double getAccountLeave() {
         return accountLeave;
     }
 
-    public void setAccountLeave(Long pAccountLeave) {
+    public void setAccountLeave(Double pAccountLeave) {
         accountLeave = pAccountLeave;
     }
 
-    public Long getScoreCash() {
+    public Double getScoreCash() {
         return scoreCash;
     }
 
-    public void setScoreCash(Long pScoreCash) {
+    public void setScoreCash(Double pScoreCash) {
         scoreCash = pScoreCash;
     }
 

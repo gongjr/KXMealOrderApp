@@ -17,7 +17,7 @@ public enum PayMent {
     ZhifubaoPayMent("5","支付宝支付"),
     DianpingPayMent("6","点评闪惠"),
     AutoMolingPayMent("7","自动抹零"),
-    ScoreDikbPayMent("9","积分抵扣"),
+    ScoreDikbPayMent("9","会员积分"),
     OddChangePayMent("10","找零"),
     MarketCardPayMent("94","商场卡"),
     ComityPayMent("999999","礼让金额");
