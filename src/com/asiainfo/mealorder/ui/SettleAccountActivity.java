@@ -304,7 +304,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         public void onSelectBack(int tag) {
             dismissSelectDF();
             if (tag == SelectSettlementDF.HANGING_ACCOUNT) {
-                showShortTip("挂账暂不支持!");
+                showShortTip("挂单暂不支持!");
             } else {
                 showLoadingDF("正在提交结算信息...");
                 submitOrder();
