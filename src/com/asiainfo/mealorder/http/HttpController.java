@@ -42,12 +42,12 @@ public class HttpController {
     /**
      * 本地主机调试环境
      */
-    public static final String Address_localtest = "http://192.168.1.131:8080/tacosonline";
+    public static final String Address_localtest = "http://192.168.1.115:8080/tacosonline";
 
     /**
      * 使用地址
      */
-    public static final String HOST = Address_debug;
+    public static final String HOST = Address_release;
 
     /**
      * AppKey 服务器约定app更新key字段

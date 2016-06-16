@@ -396,7 +396,7 @@ public class PrePayPresenter {
         mUserModel.addBalanceOrderPay(priceDouble, memberCard, paytype, mDeskOrder, merchantRegister,scorePrice);
         mPrePrice.addCurPayPrice(priceDouble.toString());
         //(4) balance余额变化
-        mUserModel.addBalance(Long.valueOf(merchantRegister.getChildMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble);
+        mUserModel.addBalance(Long.valueOf(memberCard.getMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble);
         //(5) 会员余额支付积分
         mUserModel.refreshScoreList(paytype, priceDouble.toString(), 0, mPrePrice);
         if (listener != null) listener.onResponse(Response_ok);
