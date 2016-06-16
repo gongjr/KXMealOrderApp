@@ -36,11 +36,13 @@ public class ChooseMemberCardDF extends DialogFragmentBase implements View.OnCli
     private MemberCard selecteMemberCard;
     private OnFinifhBackListener onFinifhBackListener;
 
+    public  static ChooseMemberCardDF chooseMemberCardDF;
     /*
     * 初始化,获取ChooseMemberCardDF对象,对外开放,设置所需传递的数据
     * */
     public static ChooseMemberCardDF newInstance(List<MemberCard> memberCardList) {
-        ChooseMemberCardDF chooseMemberCardDF = new ChooseMemberCardDF();
+        if (chooseMemberCardDF==null)
+        chooseMemberCardDF = new ChooseMemberCardDF();
         Bundle bundle = new Bundle();
         bundle.putParcelableArrayList("MemberCardList", (ArrayList<? extends Parcelable>) memberCardList);
         if (chooseMemberCardDF.getArguments() != null) {

@@ -34,7 +34,6 @@ public class SearchUserActivity extends BaseActivity {
     private View num_keyboard;
     private NumKeyboardView mNumKeyboardView;
     private MakeOrderFinishDF mMakeOrderDF;
-    private ChooseMemberCardDF chooseMemberCardDF;
     private SearchUserPresenter searchUserPresenter;
     private AppApplication BaseApp;
     private MerchantRegister merchantRegister;
@@ -94,9 +93,7 @@ public class SearchUserActivity extends BaseActivity {
     * 选取会员卡
     * */
     public void selectMemberCard(List<MemberCard> memberCardList) {
-        if (chooseMemberCardDF == null) {
-            chooseMemberCardDF = ChooseMemberCardDF.newInstance(memberCardList);
-        }
+        ChooseMemberCardDF chooseMemberCardDF = ChooseMemberCardDF.newInstance(memberCardList);
         chooseMemberCardDF.setOnFinishBackListener(onFinifhBackListener);
         chooseMemberCardDF.show(getSupportFragmentManager(), "selectMemberCard");
     }
@@ -145,7 +142,6 @@ public class SearchUserActivity extends BaseActivity {
     * 跳转到会员信息页面
     * */
     public void startMemberActivity(MemberCard memberCard) {
-        userNum.setText("");
         getOperation().addParameter("MemberCard", memberCard);
         getOperation().addParameter("payPrice", getIntent().getStringExtra("payPrice"));
         getOperation().forward(MemberActivity.class);
