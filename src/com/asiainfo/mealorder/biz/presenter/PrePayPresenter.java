@@ -17,6 +17,7 @@ import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.http.ResultMap;
+import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.biz.model.PrePrice;
 import com.asiainfo.mealorder.biz.model.UserModel;
 import com.asiainfo.mealorder.http.HttpController;
@@ -118,6 +119,51 @@ public class PrePayPresenter {
 
     }
 
+    public void submitHangUpOrder(Response.Listener<SubmitPayResult> listener,
+                       Response.ErrorListener errorListener) {
+        Map<String, String> postParams = new HashMap<String, String>();
+        String orderData = gson.toJson(getLastSubmitPayOrder());
+        String balance = gson.toJson(mUserModel.getBalance());
+        String userScoreList = gson.toJson(mUserModel.getLastUserScoreList());
+        String hbList = gson.toJson(mRedPackageReceiveList);
+        String couponList = gson.toJson(mUserCouponList);
+        String orderMarketingList = gson.toJson(mOrderMarketingList);
+        String orderPayList = gson.toJson(getLastOrderPay());
+        String memberData = gson.toJson(mUserModel.getMemberData());
+
+        //订单信息
+        postParams.put("orderData", orderData);
+        //会员折扣营销,会员价优惠等营销活动
+        postParams.put("orderMarketingList", orderMarketingList);
+        //选择的支付方式,包含各个支付方式各自的支付金额
+        postParams.put("OrderPayList", orderPayList);
+        //优惠活动劵相关
+        postParams.put("couponList", couponList);
+        //其他相关
+        postParams.put("hbList", hbList);
+        //如果选择了会员卡的,先判断会员是否支持积分"isMemberScore": "1",,根据金额比例计算对应积分,"costPrice": 1,"scoreNum": 1,
+        //根据"OrderPayList": 选择的支付方式,是否支持积分"isScore": "1",算出总共积分值提交
+        postParams.put("UserScoreList", userScoreList);
+        //如果选择了会员卡的,需要将会员卡使用变动的金额数据传过去
+        postParams.put("Balance", balance);
+        //挂单会员信息
+        postParams.put("memberData", memberData);
+        //用户名,一般不传
+//        postParams.put("userName","");
+        //为计算完营销活动后应付金额
+//        postParams.put("shouldPay", getPrePrice().getShouldPay());
+        //支付宝微信不打折金额,
+//        postParams.put("undiscountableAmount","0");
+        //支付宝微信打折金额
+//        postParams.put("discountableAmount","0");
+        //慎传,或不传
+        postParams.put("needPay","0.00");
+        Map<String, String> orderSubmitDataParams = new HashMap<String, String>();
+        orderSubmitDataParams.put("orderSubmitData", postParams.toString());
+        HttpController.getInstance().postSubmitHangUpOrder(orderSubmitDataParams, listener, errorListener);
+
+    }
+
     public PrePrice getPrePrice() {
         return mPrePrice;
     }
@@ -172,6 +218,7 @@ public class PrePayPresenter {
         lOrderSubmit.setPersonNum(Integer.valueOf(mDeskOrder.getPersonNum()));
         lOrderSubmit.setTradeStaffId(mDeskOrder.getTradeStaffId());
         ArrayList<OrderGoodsItem> list = new ArrayList<OrderGoodsItem>();
+        if (mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0)
         for (DeskOrderGoodsItem lDeskOrderGoodsItem : mDeskOrder.getOrderGoods()) {
             list.add(deskOrderGoodsItemToOrderGoodsItem(lDeskOrderGoodsItem));
         }
@@ -371,7 +418,8 @@ public class PrePayPresenter {
     public void addUserBalanceAndScore(MemberCard memberCard, PayType paytype, Discount pDiscount, Boolean isBanlance, Boolean isScore, Response.Listener<String> listener) {
         mUserModel.setMemberCard(memberCard);
         //(1)对于会员卡支付,首先应该计算会员优惠营销活动,并且更新优惠后的PrePrice对象内容
-        mOrderMarketingList.addAll(mUserModel.addUserMarketing(pDiscount, getPrePrice(), merchantRegister, mDeskOrder));
+        List<OrderMarketing> lOrderMarketings=mUserModel.addUserMarketing(pDiscount, getPrePrice(), merchantRegister, mDeskOrder);
+        mOrderMarketingList.addAll(lOrderMarketings);
         //(2)"isThisMember": "1"是本商户的会员,是否跨域消费,"userId": 2015051100001286,会员卡支付需要将这些信息补入orderdata
         mSubmitPayOrder.setUserId(memberCard.getUserId());
         mSubmitPayOrder.setIsThisMember(memberCard.getIsThisMember());
@@ -393,7 +441,7 @@ public class PrePayPresenter {
             priceDouble = balance>=Double.valueOf(mPrePrice.getCurNeedPay())?Double.valueOf(mPrePrice.getCurNeedPay()):balance;
         }
         //(3)设置orderpay数据
-        mUserModel.addBalanceOrderPay(priceDouble, memberCard, paytype, mDeskOrder, merchantRegister,scorePrice);
+        mUserModel.addBalanceOrderPay(priceDouble, memberCard, paytype, mDeskOrder, merchantRegister,scorePrice,lOrderMarketings);
         mPrePrice.addCurPayPrice(priceDouble.toString());
         //(4) balance余额变化
         mUserModel.addBalance(Long.valueOf(memberCard.getMerchantId()), Long.valueOf(memberCard.getUserId()), priceDouble);
@@ -484,7 +532,7 @@ public class PrePayPresenter {
             //(4)清除订单会员信息
             mSubmitPayOrder.setUserId(null);
             mSubmitPayOrder.setIsThisMember(null);
-
+            mUserModel.clearMemberData();
         } else if (pOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())) {
             //会员积分抵扣,可以直接删除
             mUserModel.deleteDeductionScoreOrderPay();

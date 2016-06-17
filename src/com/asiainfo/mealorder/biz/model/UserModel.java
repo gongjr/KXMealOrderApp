@@ -3,6 +3,8 @@ package com.asiainfo.mealorder.biz.model;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Balance;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
+import com.asiainfo.mealorder.biz.bean.settleaccount.MemberData;
+import com.asiainfo.mealorder.biz.bean.settleaccount.MemberFavor;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderMarketing;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
@@ -39,7 +41,10 @@ public class UserModel {
      * 会员orderpay数据
      */
     private List<OrderPay> mOrderPayList=new ArrayList<OrderPay>();
-
+    /**
+     * 会员变动信息
+     */
+    private MemberData mMemberData;
     /**
      * 根据当前选中的会员卡计算对应积分转换金额,无会员返回0.00
      * @param scoreNum
@@ -307,8 +312,9 @@ public class UserModel {
      * @param mDeskOrder
      * @param merchantRegister
      * @param scorePrice
+     * @param pOrderMarketings
      */
-    public void addBalanceOrderPay(Double priceDouble,MemberCard memberCard,PayType paytype,DeskOrder mDeskOrder,MerchantRegister merchantRegister,Double scorePrice){
+    public void addBalanceOrderPay(Double priceDouble,MemberCard memberCard,PayType paytype,DeskOrder mDeskOrder,MerchantRegister merchantRegister,Double scorePrice,List<OrderMarketing> pOrderMarketings){
         OrderPay lOrderPay=new OrderPay();
         lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
         lOrderPay.setPayPrice(priceDouble);
@@ -346,6 +352,26 @@ public class UserModel {
 
         lOrderPay.setMemberPay(lMemberPay);
         mOrderPayList.add(lOrderPay);
+
+        MemberData pMemberData=new MemberData();
+        pMemberData.setMemberPay(lMemberPay);
+        for (OrderMarketing lOrderMarketing:pOrderMarketings){
+            if (lOrderMarketing.getMarketingId()==8888){
+                MemberFavor lMemberFavor=new MemberFavor();
+                lMemberFavor.setType(lOrderMarketing.getType());
+                lMemberFavor.setTitle(lOrderMarketing.getMarketingName());
+                lMemberFavor.setPrice(lOrderMarketing.getNeedPay());
+                pMemberData.getMemberFavor().add(lMemberFavor);
+                break;
+            }
+        }
+        pMemberData.setIsMemberPrice(memberCard.getIsMemberPrice());
+        pMemberData.setIsMemberScore(memberCard.getIsMemberScore());
+        pMemberData.setIsThisMember(memberCard.getIsThisMember());
+        pMemberData.setLevel(Long.valueOf(memberCard.getLevel()));
+        pMemberData.setMerchantId(Long.valueOf(memberCard.getMerchantId()));
+        setMemberData(pMemberData);
+
     }
 
     public List<OrderPay> getOrderPayList() {
@@ -397,5 +423,18 @@ public class UserModel {
             }
         }
         return lUserScoreList;
+    }
+
+    public MemberData getMemberData() {
+        return mMemberData;
+    }
+
+    public void setMemberData(MemberData pMemberData) {
+        mMemberData = pMemberData;
+    }
+
+    public void clearMemberData(){
+        mMemberData=null;
+        mMemberData=new MemberData();
     }
 }

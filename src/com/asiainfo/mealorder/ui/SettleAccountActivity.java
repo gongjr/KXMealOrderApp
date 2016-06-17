@@ -21,6 +21,7 @@ import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.http.ResultMap;
+import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.biz.listener.DialogDelayListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
@@ -304,7 +305,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         public void onSelectBack(int tag) {
             dismissSelectDF();
             if (tag == SelectSettlementDF.HANGING_ACCOUNT) {
-                showShortTip("挂单暂不支持!");
+                showLoadingDF("正在提交挂单信息...");
+                submitHangUpOrder();
             } else {
                 showLoadingDF("正在提交结算信息...");
                 submitOrder();
@@ -438,6 +440,40 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                                 "VolleyError:" + errors.getErrorMsg(), error);
                         //与服务器断开连接情况下,应该提示用户,确认支付结果后,在重新操作,不能直接重新提交,避免重复结算
                         updateNotice("连接中断,请确认支付结果后,再重试!", 1);
+                        break;
+                    default:
+                        updateNotice(VolleyErrorHelper.getMessage(error, mActivity), 0);
+                        break;
+                }
+            }
+        });
+    }
+
+    /*
+    * 订单挂单
+    * */
+    private void submitHangUpOrder() {
+        mPrePayPresenter.submitHangUpOrder(new Response.Listener<SubmitPayResult>() {
+            @Override
+            public void onResponse(SubmitPayResult response) {
+                if (response.getStatus()==1) {
+                    updateNotice(response.getInfo(), 1);
+                } else if(response.getStatus()==0){
+                    showShortTip(response.getInfo());
+                    updateNotice(response.getInfo(), 0);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                        mActivity);
+                switch (errors.getErrorType()) {
+                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
+                        Log.e(TAG,
+                                "VolleyError:" + errors.getErrorMsg(), error);
+                        //与服务器断开连接情况下,应该提示用户,确认挂单结果后,在重新操作,不能直接重新提交,避免重复结算
+                        updateNotice("连接中断,请确认挂单结果后,再重试!", 1);
                         break;
                     default:
                         updateNotice(VolleyErrorHelper.getMessage(error, mActivity), 0);

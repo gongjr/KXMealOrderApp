@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
+import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.biz.entity.http.HurryOrderResult;
 import com.asiainfo.mealorder.biz.entity.http.ResultMap;
@@ -42,12 +43,12 @@ public class HttpController {
     /**
      * 本地主机调试环境
      */
-    public static final String Address_localtest = "http://192.168.1.115:8080/tacosonline";
+    public static final String Address_localtest = "http://192.168.1.131:8080/tacosonline";
 
     /**
      * 使用地址
      */
-    public static final String HOST = Address_release;
+    public static final String HOST = Address_localtest;
 
     /**
      * AppKey 服务器约定app更新key字段
@@ -98,6 +99,22 @@ public class HttpController {
                 Request.Method.POST, HOST + param, postParams, type, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
+
+    /**
+     * 挂单接口
+     *
+     * @param postParams    post参数
+     * @param listener      响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void postSubmitHangUpOrder(final Map<String, String> postParams, Response.Listener<SubmitPayResult> listener,
+                              Response.ErrorListener errorListener) {
+        String param = "/appController/submitHangUpOrder.do";
+        ResultMapRequest<SubmitPayResult> ResultMapRequest = new ResultMapRequest<SubmitPayResult>(
+                Request.Method.POST, HOST + param, postParams, SubmitPayResult.class, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
 
     /**
      * 获取自动更新版本信息
