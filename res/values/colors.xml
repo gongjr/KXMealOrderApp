@@ -40,6 +40,7 @@
     <color name="numkey_bg_s">#fff8f8f8</color>
 
     <color name="numkey_stroke_s">#979797</color>
+    <color name="num_keyboard_press1">#e7e7e7</color>
 
     <color name="numkey_user_edit_hint_">#9b9b9b</color>
 
