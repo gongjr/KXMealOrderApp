@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <shape xmlns:android="http://schemas.android.com/apk/res/android"> 
-    <solid android:color="@drawable/num_keyboard_press" />
+    <solid android:color="@color/num_keyboard_press1" />
     <stroke
-        android:width="1dip"
+        android:width="0.5dip"
         android:color="@color/numkey_stroke_s" />
 </shape>
