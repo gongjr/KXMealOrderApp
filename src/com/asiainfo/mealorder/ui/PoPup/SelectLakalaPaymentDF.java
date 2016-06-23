@@ -15,15 +15,15 @@ import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
  * @author skynight(skynight@dingtalk.com)
  * @creatTime 16/6/6 上午10:19
  */
-public class SelectSettlementDF  extends DialogFragmentBase implements View.OnClickListener {
+public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.OnClickListener {
 
-    public static final int HANGING_ACCOUNT = 0;  //挂账
-    public static final int SETTLE_ACCOUNT = 1;  //结账
+    public static final int PayMent_bank = 0;  //银行卡
+    public static final int PayMent_code = 1;  //扫码
     private View view;
-    private OnSelectBackListener onSelectBackListener;
-    private int index = HANGING_ACCOUNT;
-    private TextView hangingAccount;
-    private TextView settleAccount;
+    private OnSelectPayMentListener onSelectBackListener;
+    private int index = PayMent_bank;
+    private TextView paymentBank;
+    private TextView paymentCode;
     private Button sureBtn;
 
     @SuppressLint("InlinedApi")
@@ -49,23 +49,25 @@ public class SelectSettlementDF  extends DialogFragmentBase implements View.OnCl
     @Override
     public void onStart() {
         super.onStart();
-        index = HANGING_ACCOUNT;
+        index = PayMent_bank;
         setCurSelectBg(index);
     }
 
     private void initView() {
-        hangingAccount = (TextView) view.findViewById(R.id.select_hanging_account);
-        settleAccount = (TextView) view.findViewById(R.id.select_settle_account);
+        paymentBank = (TextView) view.findViewById(R.id.select_hanging_account);
+        paymentCode = (TextView) view.findViewById(R.id.select_settle_account);
         sureBtn = (Button) view.findViewById(R.id.select_surebtn);
+        paymentBank.setText("银行卡");
+        paymentCode.setText("扫码");
     }
 
     private void initListener() {
-        hangingAccount.setOnClickListener(this);
-        settleAccount.setOnClickListener(this);
+        paymentBank.setOnClickListener(this);
+        paymentCode.setOnClickListener(this);
         sureBtn.setOnClickListener(this);
     }
 
-    public void setOnSelectBackListener(OnSelectBackListener onSelectBackListener) {
+    public void setOnSelectBackListener(OnSelectPayMentListener onSelectBackListener) {
         this.onSelectBackListener = onSelectBackListener;
     }
 
@@ -76,27 +78,29 @@ public class SelectSettlementDF  extends DialogFragmentBase implements View.OnCl
                 onSelectBackListener.onSelectBack(index);
                 break;
             case R.id.select_hanging_account:
-                index = HANGING_ACCOUNT;
+                index = PayMent_bank;
                 setCurSelectBg(index);
                 break;
             case R.id.select_settle_account:
-                index = SETTLE_ACCOUNT;
+                index = PayMent_code;
                 setCurSelectBg(index);
                 break;
         }
     }
 
     private void setCurSelectBg(int index){
-        if (index==HANGING_ACCOUNT){
-            hangingAccount.setBackgroundResource(R.drawable.itemsel_selected);
-            settleAccount.setBackgroundResource(R.drawable.itemsel);
-        }else if(index==SETTLE_ACCOUNT){
-            settleAccount.setBackgroundResource(R.drawable.itemsel_selected);
-            hangingAccount.setBackgroundResource(R.drawable.itemsel);
+        if (index==PayMent_code){
+            paymentCode.setBackgroundResource(R.drawable.itemsel_selected);
+            paymentBank.setBackgroundResource(R.drawable.itemsel);
+        }else if(index==PayMent_bank){
+            paymentBank.setBackgroundResource(R.drawable.itemsel_selected);
+            paymentCode.setBackgroundResource(R.drawable.itemsel);
+
         }
+
     }
 
-    public interface OnSelectBackListener {
+    public interface OnSelectPayMentListener {
         public void  onSelectBack(int tag);
     }
 }

@@ -28,11 +28,15 @@ public class LKLPayPriceActivity extends BaseActivity {
     @InjectView(R.id.lkl_title)
     TitleView titleView;
 
+    private String curNeedPay="0.0";
+
     @Override
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_lkl_pay_price);
         edit.setFocusable(false);
+        curNeedPay=getIntent().getStringExtra("payPrice");
+        edit.setText(curNeedPay);
         initKeyboardView();
         setTitleView();
     }

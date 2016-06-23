@@ -16,6 +16,7 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.R;
+import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.config.SystemPrefData;
@@ -182,6 +183,7 @@ public class LoginActivity extends BaseActivity {
         login=mActivity.getSharedPreferences(Constants.Preferences_Login, mActivity.MODE_PRIVATE);
         mJPushUtils = new JPushUtils(getApplicationContext());
         mJPushUtils.initJPush();
+        LakalaController.getInstance().init(mActivity);
     }
 
     public void initListener() {
@@ -193,8 +195,9 @@ public class LoginActivity extends BaseActivity {
                     httpAttendantLogin2();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
-//                    LakalaController.init(mActivity);
-//                    LakalaController.getInstance().testPrint(mActivity);
+                    if (LakalaController.getInstance().isSupport())
+                    LakalaController.getInstance().testPrint();
+                    else Log.i("lakala","拉卡拉服务无响应");
                 }
             }
         });
@@ -439,7 +442,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
-//        LakalaController.getInstance().unbindService(mActivity,LakalaController.getInstance().getServiceConnection());
+        LakalaController.getInstance().unbindService(mActivity);
         super.onDestroy();
     }
 

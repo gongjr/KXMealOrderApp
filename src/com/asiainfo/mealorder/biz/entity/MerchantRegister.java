@@ -1,6 +1,9 @@
 package com.asiainfo.mealorder.biz.entity;
 
+import com.asiainfo.mealorder.biz.bean.merchant.Role;
+
 import java.io.Serializable;
+import java.util.List;
 
 /**
  *
@@ -35,6 +38,7 @@ public class MerchantRegister implements Serializable {
 	private String childMerchantId;
 	private String roleCode;
 	private String merchantName;
+    private List<Role> roleList;
 
 	public String getStaffId() {
 		return staffId;
@@ -219,4 +223,12 @@ public class MerchantRegister implements Serializable {
 	public void setMerchantName(String merchantName) {
 		this.merchantName = merchantName;
 	}
+
+    public List<Role> getRoleList() {
+        return roleList;
+    }
+
+    public void setRoleList(List<Role> pRoleList) {
+        roleList = pRoleList;
+    }
 }

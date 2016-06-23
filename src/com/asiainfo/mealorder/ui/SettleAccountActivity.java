@@ -1,5 +1,6 @@
 package com.asiainfo.mealorder.ui;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,17 +22,23 @@ import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.http.ResultMap;
+import com.asiainfo.mealorder.biz.entity.lakala.CodePayTypeKey;
+import com.asiainfo.mealorder.biz.entity.lakala.LakalaInfo;
+import com.asiainfo.mealorder.biz.entity.lakala.TradeKey;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.biz.listener.DialogDelayListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnVisibilityListener;
+import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.biz.presenter.PrePayPresenter;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
+import com.asiainfo.mealorder.ui.PoPup.SelectLakalaPaymentDF;
 import com.asiainfo.mealorder.ui.PoPup.SelectSettlementDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
+import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.widget.TitleView;
 import com.google.gson.reflect.TypeToken;
@@ -84,6 +91,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private PayOrderListAdapter mPayOrderListAdapter;
     private MakeOrderFinishDF mMakeOrderDF;
     private SelectSettlementDF selectSettlementDF;
+    private SelectLakalaPaymentDF selectLakalaPaymentDF;
 
     /**
      * presenter主导器,隔离model与当前view层,将业务逻辑控制写在里面
@@ -262,7 +270,9 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_lkl:
-                showShortTip("本设备不支持 (拉卡拉支付)!");
+                if (LakalaController.getInstance().isSupport()){
+                    showSelectLakalaPaymentDF();
+                }else showShortTip("本设备不支持 (拉卡拉支付)!");
                 break;
             case R.id.favorable_group:
                 if (mPrePayPresenter.getMarketingList().size()>0){
@@ -310,6 +320,25 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             } else {
                 showLoadingDF("正在提交结算信息...");
                 submitOrder();
+            }
+        }
+    };
+
+    /*
+    * 卡拉卡支付,方式选择
+    * */
+    private SelectLakalaPaymentDF.OnSelectPayMentListener onSelectLakalaPaymentBackListener = new SelectLakalaPaymentDF.OnSelectPayMentListener() {
+        @Override
+        public void onSelectBack(int tag) {
+            dismissSelectLakalaPaymentDF();
+            if (tag == SelectLakalaPaymentDF.PayMent_bank) {
+
+                LakalaController.getInstance().startLakalaWithCardForResult(mActivity, LakalaInfo.LakalaInfo_Type_Card_Trade,"0.01","18512543197","订单结算测试");
+
+            } else if(tag == SelectLakalaPaymentDF.PayMent_code){
+                LakalaController.getInstance().startLakalaWithCodeForResult(mActivity, LakalaInfo.LakalaInfo_Type_Code_Trade, "0.01", "18512543197", "订单结算测试");
+
+
             }
         }
     };
@@ -379,6 +408,30 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
         }
     }
 
+    /**
+    * 显示拉卡拉支付方式选择窗口
+    * */
+    private void showSelectLakalaPaymentDF() {
+        if (selectLakalaPaymentDF == null) {
+            selectLakalaPaymentDF = new SelectLakalaPaymentDF();
+            selectLakalaPaymentDF.setOnSelectBackListener(onSelectLakalaPaymentBackListener);
+        }
+        selectLakalaPaymentDF.show(getSupportFragmentManager(), "SettleAccountActivity");
+    }
+
+    /**
+     * 隐藏拉卡拉支付方式选择窗口
+     */
+    private void dismissSelectLakalaPaymentDF() {
+        try {
+            if (selectLakalaPaymentDF != null && selectLakalaPaymentDF.isAdded()) {
+                selectLakalaPaymentDF.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_CODE) {
@@ -408,6 +461,54 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             } else if (resultCode == RESULT_CODE) {
                 showShortTip("取消操作!");
             }
+        }else if(requestCode==LakalaInfo.LakalaInfo_Type_Code_Trade||requestCode==LakalaInfo.LakalaInfo_Type_Card_Trade){
+            LakalaController.getInstance().setIsRun(true);//恢复
+            if (data != null) {
+                Bundle bundle = data.getExtras();
+                LakalaInfo lakalaInfo = new LakalaInfo(requestCode);
+                lakalaInfo.FromBundle(bundle);
+                KLog.i("info:" + lakalaInfo.showInfo());
+                LakalaController.getInstance().setIsRun(true);//恢复
+                switch (resultCode) {
+                    // 支付成功
+                    case Activity.RESULT_OK:
+                        String reasonSucess = "交易成功";
+                        if (requestCode == LakalaInfo.LakalaInfo_Type_Code_Trade) {
+                            String pay_tp = lakalaInfo.getDate(TradeKey.Pay_tp);
+                            for (CodePayTypeKey codePayTypeKey : CodePayTypeKey.values()) {
+                                if (codePayTypeKey.getValue().equals(pay_tp)) {
+                                    reasonSucess = codePayTypeKey.getTitle() + reasonSucess;
+                                    break;
+                                }
+                            }
+                        } else if (requestCode == LakalaInfo.LakalaInfo_Type_Card_Trade) {
+                            reasonSucess = "银行卡" + reasonSucess;
+                        }
+                        if (reasonSucess != null) {
+                            showShortTip(reasonSucess);
+                        }
+                        break;
+                    // 支付取消
+                    case Activity.RESULT_CANCELED:
+                        String reasonCancle = lakalaInfo.getDate(TradeKey.Reason);
+                        if (reasonCancle != null) {
+                            showShortTip(reasonCancle);
+                        }
+                        break;
+                    //交易失败
+                    case -2:
+                        String reasonFail = lakalaInfo.getDate(TradeKey.Reason);
+                        if (reasonFail != null) {
+                            showShortTip(reasonFail);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            } else {
+                showShortTip("拉卡拉支付,返回数据无效");
+            }
+
         }
     }
 

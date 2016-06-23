@@ -35,7 +35,7 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * 控制器
+ * 卡拉卡服务控制器
  * Created by gjr on 2016/4/11.
  */
 public class LakalaController {
@@ -56,36 +56,33 @@ public class LakalaController {
     /**
      *服务连接监听器
      */
-    private ServiceConnection mConnection = new ServiceConnection() {
+    private  ServiceConnection mConnection = new ServiceConnection() {
         public void onServiceConnected(ComponentName className, IBinder service) {
-            Log.i("mConnection", "connect service");
+            Log.i("mConnection", "拉卡拉 connect service");
             mService = AidlDeviceService.Stub.asInterface(service);
-
         }
 
         public void onServiceDisconnected(ComponentName className) {
-            Log.i("","disconnect service");
-            Toast.makeText(mContext, "disconnect service",
-                    Toast.LENGTH_SHORT).show();
+            Log.i("lakala","拉卡拉 disconnect service");
             mService = null;
         }
     };
     /**
-     * 拉卡拉设备服务实例
+     * 拉卡拉设备服务实例,判断设备是否支持
      */
-    private AidlDeviceService mService;
+    private  AidlDeviceService mService=null;
     /**
      * 打印机调用实例
      */
-    private AidlPrinter aidlPrinter;
+    private AidlPrinter aidlPrinter=null;
 
     /**
      * 开关,验证是否阻塞调用
      * isrun初始化后为true,处于非阻塞状态,可以调用
      */
-    private static boolean isRun = true;
+    private  boolean isRun = true;
 
-    private static Context mContext=null;
+    private  Context mContext=null;
     /**
      * 单例控制器
      */
@@ -94,8 +91,9 @@ public class LakalaController {
     /**
      * 全局初始化
      */
-    public static void init(Context ctx) {
+    public  void init(Context ctx) {
         mContext = ctx;
+        bindService();
     }
 
     public static LakalaController getInstance() {
@@ -104,12 +102,12 @@ public class LakalaController {
     }
 
 
-    public static boolean isIsRun() {
+    public  boolean isIsRun() {
         return isRun;
     }
 
-    public static void setIsRun(boolean isRun) {
-        LakalaController.isRun = isRun;
+    public  void setIsRun(boolean isRun) {
+        this.isRun = isRun;
     }
 
     /**
@@ -128,6 +126,11 @@ public class LakalaController {
         if (mContext == null) {
             resultInfo.setSucess(false);
             resultInfo.setValue("尚未初始化,无法调用");
+            return resultInfo;
+        }
+        if(mService==null){
+            resultInfo.setSucess(false);
+            resultInfo.setValue("设备不支持!");
             return resultInfo;
         }
         if (!isRun) {
@@ -190,6 +193,11 @@ public class LakalaController {
             resultInfo.setValue("尚未初始化,无法调用");
             return resultInfo;
         }
+        if(mService==null){
+            resultInfo.setSucess(false);
+            resultInfo.setValue("设备不支持!");
+            return resultInfo;
+        }
         if (!isRun) {
             resultInfo.setSucess(false);
             resultInfo.setValue("阻塞状态,不可以调用");
@@ -244,6 +252,11 @@ public class LakalaController {
         if (mContext == null) {
             resultInfo.setSucess(false);
             resultInfo.setValue("尚未初始化,无法调用");
+            return resultInfo;
+        }
+        if(mService==null){
+            resultInfo.setSucess(false);
+            resultInfo.setValue("设备不支持!");
             return resultInfo;
         }
         if (!isRun) {
@@ -341,7 +354,7 @@ public class LakalaController {
         return printListener;
     }
 
-    public void bindService(){
+    public  void bindService(){
         try {
             Intent intent = new Intent();
             intent.setAction("lkl_cloudpos_mid_service");
@@ -352,8 +365,15 @@ public class LakalaController {
         }
     }
 
-    public void unbindService(Context context,ServiceConnection connection){
-        context.unbindService(connection);
+    /**
+     * 释放服务,解除引用
+     * @param context
+     */
+    public void unbindService(Context context){
+        context.unbindService(mConnection);
+        mService=null;
+        aidlPrinter=null;
+        mContext=null;
     };
 
     public boolean initPrint(){
@@ -363,8 +383,7 @@ public class LakalaController {
             aidlPrinter=AidlPrinter.Stub.asInterface(print);
             KLog.i("rinterState:"+aidlPrinter.getPrinterState());
             aidlPrinter.setPrinterGray(Gravity.CENTER);
-            Toast.makeText(mContext, "connect service success",
-                    Toast.LENGTH_SHORT).show();
+            KLog.i("get Print IBinder success");
         } catch (RemoteException e) {
             isSucess=false;
             e.printStackTrace();
@@ -380,9 +399,6 @@ public class LakalaController {
         return aidlPrinter;
     }
 
-    public ServiceConnection getServiceConnection(){
-        return mConnection;
-    }
 
     /***
      * Android L (lollipop, API 21) introduced a new problem when trying to invoke implicit intent,
@@ -396,7 +412,7 @@ public class LakalaController {
      * @param implicitIntent - The original implicit intent
      * @return Explicit Intent created from the implicit original intent
      */
-    public static Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
+    public  Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
         // Retrieve all services that can match the given intent
         PackageManager pm = context.getPackageManager();
         List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
@@ -416,11 +432,12 @@ public class LakalaController {
         return explicitIntent;
     }
 
-    public void testPrint(Activity activity){
+    public void testPrint(){
         AidlPrinter aidlPrinter=LakalaController.getInstance().getPrinterBinder();
+        if (aidlPrinter==null)initPrint();
         if(aidlPrinter!=null){
             try {
-                List<PrintItemObj> data=new ArrayList<>();
+                List<PrintItemObj> data=new ArrayList<PrintItemObj>();
                 PrintItemObj printItemObj1=new PrintItemObj("打印测试1");
                 PrintItemObj printItemObj2=new PrintItemObj("打印测试2");
                 KLog.i("rinterState:"+aidlPrinter.getPrinterState());
@@ -432,9 +449,11 @@ public class LakalaController {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            return;
         }
-        LakalaController.getInstance().bindService();
-        LakalaController.getInstance().initPrint();
     };
+
+    public boolean isSupport(){
+        if (mService==null)return false;
+        else return true;
+    }
 }
