@@ -330,4 +330,18 @@ public class HttpController {
 
     }
 
+    /**
+     * 根据取餐号,获取订单信息
+     *
+     * @param childMerchantId 子商户ID
+     * @param mealNumber      取餐号
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void getOrderByMealNumber(String childMerchantId, String mealNumber, Response.Listener listener,
+                                     Response.ErrorListener errorListener) {
+        String param = "/appController/queryOrderInfoByMealNumber.do?childMerchantId=" + childMerchantId + "&mealNumber=" + mealNumber;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
 }
