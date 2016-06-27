@@ -9,7 +9,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
+import com.asiainfo.mealorder.biz.bean.order.CompDish;
+import com.asiainfo.mealorder.biz.bean.order.OrderGood;
 import com.asiainfo.mealorder.utils.StringUtils;
 
 import java.util.List;
@@ -21,21 +22,23 @@ import java.util.List;
 public class OrderByMealNumberAdapter extends BaseAdapter {
 
     private Context context;
-    private List<DeskOrderGoodsItem> goodsList;
+    private List<OrderGood> normalGoods;
+    private List<CompDish> compGoods;
 
-    public OrderByMealNumberAdapter(Context context, List<DeskOrderGoodsItem> goodsList) {
+    public OrderByMealNumberAdapter(Context context, List<OrderGood> normalGoods, List<CompDish> compGoods) {
         this.context = context;
-        this.goodsList = goodsList;
+        this.normalGoods = normalGoods;
+        this.compGoods= compGoods;
     }
 
     private class OrderByMealNumberViewHolder {
         private LinearLayout ll_actions;
-        private TextView tv_taste_consists;
+        private TextView tv_taste_consists, tv_dish_name,tv_dish_count, tv_dish_price;
     }
 
     @Override
     public int getCount() {
-        return goodsList.size();
+        return normalGoods.size() + compGoods.size();
     }
 
     @Override
@@ -56,43 +59,37 @@ public class OrderByMealNumberAdapter extends BaseAdapter {
             convertView = LayoutInflater.from(context).inflate(R.layout.lvitem_confirm_order_item, null);
             holder.ll_actions = (LinearLayout) convertView.findViewById(R.id.ll_actions);
             holder.tv_taste_consists = (TextView) convertView.findViewById(R.id.tv_taste_consists);
+            holder.tv_dish_name = (TextView) convertView.findViewById(R.id.tv_dish_name);
+            holder.tv_dish_count = (TextView) convertView.findViewById(R.id.tv_dish_count);
+            holder.tv_dish_price = (TextView) convertView.findViewById(R.id.tv_dish_price);
             convertView.setTag(holder);
         } else {
             holder = (OrderByMealNumberViewHolder) convertView.getTag();
         }
         holder.ll_actions.setVisibility(View.GONE);
-        DeskOrderGoodsItem deskOrderGoodsItem = goodsList.get(position);
-        if (deskOrderGoodsItem.getIsCompDish().equals("false") && deskOrderGoodsItem.getIsComp().equals("0")) {
-            if (StringUtils.isNull(deskOrderGoodsItem.getRemark())) {
+        if (position >= normalGoods.size()) {
+            CompDish compDish = compGoods.get(position - normalGoods.size());
+            List<OrderGood> compDishList = compDish.getCompGoods();
+            OrderGood mainGood = compDish.getMainGood();
+            holder.tv_dish_name.setText(mainGood.getSalesName());
+            holder.tv_dish_count.setText(mainGood.getSalesNum() + "");
+            holder.tv_dish_price.setText("¥" + mainGood.getSalesPrice());
+            String remarkStr = "配置: ";
+            for (OrderGood orderGood: compDishList) {
+                remarkStr += orderGood.getSalesName();
+            }
+            holder.tv_taste_consists.setText(remarkStr);
+        } else {
+            OrderGood orderGood = normalGoods.get(position);
+            holder.tv_dish_name.setText(orderGood.getSalesName());
+            holder.tv_dish_count.setText(orderGood.getSalesNum() + "");
+            holder.tv_dish_price.setText("¥" + orderGood.getSalesPrice());
+            if (StringUtils.isNull(orderGood.getRemark())) {
                 holder.tv_taste_consists.setVisibility(View.GONE);
             } else {
-                holder.tv_taste_consists.setText("口味:" + deskOrderGoodsItem.getRemark());
+                holder.tv_taste_consists.setText("口味: " + orderGood.getRemark());
             }
         }
         return convertView;
     }
-
-//    //判断菜品类型
-//    for (int i = 0; i < size; i++) {
-//        DeskOrderGoodsItem deskOrderGoodsItem = orderGoodsItemList.get(i); //单个菜品
-//        //判断是否是普通菜
-//        if (deskOrderGoodsItem.getIsComp().equals("0") && deskOrderGoodsItem.getIsCompDish().equals("false")) {
-//            mNormalDisheList.add(deskOrderGoodsItem);
-//        } else if (deskOrderGoodsItem.getIsComp().equals("1")) {
-//            DishesCompDeskOrderEntity dishesCompDeskOrderEntity = new DishesCompDeskOrderEntity(); //套餐菜
-//            List<DeskOrderGoodsItem> compDishList = new ArrayList<DeskOrderGoodsItem>(); //套餐子菜列表
-//            dishesCompDeskOrderEntity.setmCompMainDishes(deskOrderGoodsItem);
-//            //判断是否是套餐子菜,如果是的话判断子菜的compId是否等于主菜的saleId和子菜的instanceId是否等于主菜的instanceId
-//            for (int j = 0; j < size; j++) {
-//                DeskOrderGoodsItem compItemDish = orderGoodsItemList.get(j);
-//                if (compItemDish.getIsComp().equals("0") && compItemDish.getIsCompDish().equals("true")
-//                        && compItemDish.getCompId().equals(deskOrderGoodsItem.getSalesId())
-//                        && compItemDish.getInstanceId().equals(deskOrderGoodsItem.getInstanceId())) {
-//                    compDishList.add(compItemDish);
-//                }
-//            }
-//            dishesCompDeskOrderEntity.setCompItemDishes(compDishList);
-//            mCompDishList.add(dishesCompDeskOrderEntity);
-//        }
-//    }
 }
