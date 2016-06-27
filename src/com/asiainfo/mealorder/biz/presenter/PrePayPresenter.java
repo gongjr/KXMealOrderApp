@@ -588,4 +588,8 @@ public class PrePayPresenter {
         return mOrderMarketingList;
     }
 
+    public DeskOrder getDeskOrder(){
+        return mDeskOrder;
+    }
+
 }

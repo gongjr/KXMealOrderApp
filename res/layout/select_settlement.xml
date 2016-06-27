@@ -4,12 +4,27 @@
     android:layout_height="match_parent"
     android:padding="15dp">
 
+    <EditText
+        android:id="@+id/lkl__payprice_eidt"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="15dp"
+        android:background="@android:drawable/editbox_background_normal"
+        android:gravity="center"
+        android:hint="当前需要支付金额"
+        android:padding="15dp"
+        android:textColorHint="#9B9B9B"
+        android:textSize="@dimen/text_size_large"
+        android:layout_alignParentTop="true"
+        android:inputType="numberDecimal"/>
+
     <LinearLayout
         android:id="@+id/select_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
         android:orientation="horizontal"
+        android:layout_below="@+id/lkl__payprice_eidt"
         >
 
         <TextView

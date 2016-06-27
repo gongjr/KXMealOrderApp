@@ -91,7 +91,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private PayOrderListAdapter mPayOrderListAdapter;
     private MakeOrderFinishDF mMakeOrderDF;
     private SelectSettlementDF selectSettlementDF;
-    private SelectLakalaPaymentDF selectLakalaPaymentDF;
 
     /**
      * presenter主导器,隔离model与当前view层,将业务逻辑控制写在里面
@@ -271,7 +270,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 break;
             case R.id.account_lkl:
                 if (LakalaController.getInstance().isSupport()){
-                    showSelectLakalaPaymentDF();
+                    showSelectLakalaPaymentDF(mPrePayPresenter.getPrePrice().getCurNeedPay());
                 }else showShortTip("本设备不支持 (拉卡拉支付)!");
                 break;
             case R.id.favorable_group:
@@ -329,16 +328,11 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     * */
     private SelectLakalaPaymentDF.OnSelectPayMentListener onSelectLakalaPaymentBackListener = new SelectLakalaPaymentDF.OnSelectPayMentListener() {
         @Override
-        public void onSelectBack(int tag) {
-            dismissSelectLakalaPaymentDF();
+        public void onSelectBack(int tag,String price) {
             if (tag == SelectLakalaPaymentDF.PayMent_bank) {
-
-                LakalaController.getInstance().startLakalaWithCardForResult(mActivity, LakalaInfo.LakalaInfo_Type_Card_Trade,"0.01","18512543197","订单结算测试");
-
+                LakalaController.getInstance().startLakalaWithCardForResult(mActivity, LakalaInfo.LakalaInfo_Type_Card_Trade,price,mPrePayPresenter.getDeskOrder().getOrderId(),"筷享订单支付交易");
             } else if(tag == SelectLakalaPaymentDF.PayMent_code){
-                LakalaController.getInstance().startLakalaWithCodeForResult(mActivity, LakalaInfo.LakalaInfo_Type_Code_Trade, "0.01", "18512543197", "订单结算测试");
-
-
+                LakalaController.getInstance().startLakalaWithCodeForResult(mActivity, LakalaInfo.LakalaInfo_Type_Code_Trade,price, mPrePayPresenter.getDeskOrder().getOrderId(), "筷享订单支付交易");
             }
         }
     };
@@ -411,25 +405,10 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     /**
     * 显示拉卡拉支付方式选择窗口
     * */
-    private void showSelectLakalaPaymentDF() {
-        if (selectLakalaPaymentDF == null) {
-            selectLakalaPaymentDF = new SelectLakalaPaymentDF();
-            selectLakalaPaymentDF.setOnSelectBackListener(onSelectLakalaPaymentBackListener);
-        }
+    private void showSelectLakalaPaymentDF(String price) {
+        SelectLakalaPaymentDF selectLakalaPaymentDF = SelectLakalaPaymentDF.newInstance(price);
+        selectLakalaPaymentDF.setOnSelectBackListener(onSelectLakalaPaymentBackListener);
         selectLakalaPaymentDF.show(getSupportFragmentManager(), "SettleAccountActivity");
-    }
-
-    /**
-     * 隐藏拉卡拉支付方式选择窗口
-     */
-    private void dismissSelectLakalaPaymentDF() {
-        try {
-            if (selectLakalaPaymentDF != null && selectLakalaPaymentDF.isAdded()) {
-                selectLakalaPaymentDF.dismiss();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

@@ -6,7 +6,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
@@ -25,11 +27,28 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
     private TextView paymentBank;
     private TextView paymentCode;
     private Button sureBtn;
+    private EditText mEditText;
+    public static SelectLakalaPaymentDF selectLakalaPaymentDF;
+    private String price="0.0";
+
+    public static SelectLakalaPaymentDF newInstance(String  price){
+        if(selectLakalaPaymentDF==null){
+            selectLakalaPaymentDF=new SelectLakalaPaymentDF();
+        }
+        Bundle bundle = new Bundle();
+        bundle.putString("price", price);
+        if (selectLakalaPaymentDF.getArguments() != null) {
+            selectLakalaPaymentDF.getArguments().clear();
+        }
+        selectLakalaPaymentDF.setArguments(bundle);
+        return selectLakalaPaymentDF;
+    }
 
     @SuppressLint("InlinedApi")
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        price=getArguments().getString("price");
     }
 
     @Override
@@ -57,6 +76,8 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
         paymentBank = (TextView) view.findViewById(R.id.select_hanging_account);
         paymentCode = (TextView) view.findViewById(R.id.select_settle_account);
         sureBtn = (Button) view.findViewById(R.id.select_surebtn);
+        mEditText = (EditText) view.findViewById(R.id.lkl__payprice_eidt);
+        mEditText.setText(price);
         paymentBank.setText("银行卡");
         paymentCode.setText("扫码");
     }
@@ -75,7 +96,19 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.select_surebtn:
-                onSelectBackListener.onSelectBack(index);
+                String curPrice=mEditText.getText().toString();
+                if (curPrice.length()>0){
+                    Double lDouble=Double.parseDouble(curPrice);
+                    if (lDouble>0){
+                        dismiss();
+                        onSelectBackListener.onSelectBack(index,curPrice);
+                    }else{
+                        Toast.makeText(this.mActivity,"支付金额无效!",Toast.LENGTH_SHORT).show();
+                    }
+                }else{
+                    Toast.makeText(this.mActivity,"支付金额不能为空!",Toast.LENGTH_SHORT).show();
+                }
+
                 break;
             case R.id.select_hanging_account:
                 index = PayMent_bank;
@@ -101,6 +134,6 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
     }
 
     public interface OnSelectPayMentListener {
-        public void  onSelectBack(int tag);
+        public void  onSelectBack(int tag,String price);
     }
 }
