@@ -48,7 +48,6 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        price=getArguments().getString("price");
     }
 
     @Override
@@ -65,14 +64,8 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
         initListener();
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-        index = PayMent_bank;
-        setCurSelectBg(index);
-    }
-
     private void initView() {
+        price=getArguments().getString("price");
         paymentBank = (TextView) view.findViewById(R.id.select_hanging_account);
         paymentCode = (TextView) view.findViewById(R.id.select_settle_account);
         sureBtn = (Button) view.findViewById(R.id.select_surebtn);
@@ -80,6 +73,14 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
         mEditText.setText(price);
         paymentBank.setText("银行卡");
         paymentCode.setText("扫码");
+        index = PayMent_bank;
+        setCurSelectBg(index);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mEditText.setText(price);
     }
 
     private void initListener() {
