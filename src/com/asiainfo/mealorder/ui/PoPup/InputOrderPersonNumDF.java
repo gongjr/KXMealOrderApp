@@ -143,6 +143,7 @@ public class InputOrderPersonNumDF extends DialogFragmentBase {
                 intent.putExtra("merchantDesk", merchantDesk);
                 intent.putExtra("peopleNumber", num);
                 startActivity(intent);
+                dismiss();
             } else {
                 if (mOnFinishInputNumListener != null) {
                     dismiss();

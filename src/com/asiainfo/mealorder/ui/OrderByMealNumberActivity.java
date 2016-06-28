@@ -22,8 +22,6 @@ import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.utils.StringUtils;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -59,11 +57,6 @@ public class OrderByMealNumberActivity extends BaseActivity implements View.OnCl
     private List<OrderGood> normalGoods = new ArrayList<OrderGood>();
     private List<CompDish> compGoods = new ArrayList<CompDish>();
     private String peopleNumber;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -71,9 +64,6 @@ public class OrderByMealNumberActivity extends BaseActivity implements View.OnCl
         setContentView(R.layout.activity_order);
         initData();
         initListener();
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     private void initData() {
@@ -164,7 +154,7 @@ public class OrderByMealNumberActivity extends BaseActivity implements View.OnCl
 
     private void submitOrderByOrderId() {
         showLoadingDF("正在提交订单信息....");
-        HttpController.getInstance().submitOrderFromOrderId(peopleNumber, deskOrder.getDeskId(), deskOrder.getChildMerchantId(),
+        HttpController.getInstance().submitOrderFromOrderId(peopleNumber, getIntent().getStringExtra("deskId"), merchantRegister.getChildMerchantId(),
                 deskOrder.getOrderId(),
                 new Response.Listener<JSONObject>() {
                     @Override

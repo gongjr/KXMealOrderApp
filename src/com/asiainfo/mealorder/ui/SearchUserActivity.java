@@ -43,6 +43,7 @@ public class SearchUserActivity extends BaseActivity {
     private boolean isMeal = false;
     private MerchantDesk desk;
     private ChooseDeskOrderDF chooseDeskOrderDF;
+    private MerchantDesk mCurDesk;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,8 @@ public class SearchUserActivity extends BaseActivity {
         setTitleView();
         searchUserPresenter = new SearchUserPresenter(gson, onDialogListener, onActivityOperationListener);
         merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
-        if (getIntent().getSerializableExtra("merchantDesk") != null) {
+        mCurDesk = (MerchantDesk) getIntent().getSerializableExtra("merchantDesk");
+        if (mCurDesk != null) {
             isMeal = true;
             setTitleText();
             userNum.setHint("请输入取餐号");
@@ -249,6 +251,7 @@ public class SearchUserActivity extends BaseActivity {
         getOperation().addParameter("deskOrder", deskOrderStr);
         getOperation().addParameter("desk", desk);
         getOperation().addParameter("peopleNumber", getIntent().getStringExtra("peopleNumber"));
+        getOperation().addParameter("deskId", mCurDesk.getDeskId());
         getOperation().forward(OrderByMealNumberActivity.class);
     }
 
