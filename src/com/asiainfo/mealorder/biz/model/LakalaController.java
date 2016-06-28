@@ -26,6 +26,9 @@ import com.asiainfo.mealorder.biz.entity.lakala.TradeKey;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Tools;
 import com.lkl.cloudpos.aidl.AidlDeviceService;
+import com.lkl.cloudpos.aidl.magcard.AidlMagCard;
+import com.lkl.cloudpos.aidl.magcard.MagCardListener;
+import com.lkl.cloudpos.aidl.magcard.TrackData;
 import com.lkl.cloudpos.aidl.printer.AidlPrinter;
 import com.lkl.cloudpos.aidl.printer.AidlPrinterListener;
 import com.lkl.cloudpos.aidl.printer.PrintItemObj;
@@ -58,6 +61,8 @@ public class LakalaController {
             KLog.i("打印成功");
         }
     };
+
+
     /**
      *服务连接监听器
      */
@@ -80,6 +85,8 @@ public class LakalaController {
      * 打印机调用实例
      */
     private AidlPrinter aidlPrinter=null;
+
+    private AidlMagCard mAidlMagCard=null;
 
     /**
      * 开关,验证是否阻塞调用
@@ -388,6 +395,7 @@ public class LakalaController {
         context.unbindService(mConnection);
         mService=null;
         aidlPrinter=null;
+        mAidlMagCard=null;
         mContext=null;
     };
 
@@ -479,4 +487,100 @@ public class LakalaController {
     public void setCurLakalaPayPrice(String pCurLakalaPayPrice) {
         curLakalaPayPrice = pCurLakalaPayPrice;
     }
+
+    public boolean initMagCard(){
+        boolean isSucess=true;
+        try {
+            IBinder magCard=mService.getMagCardReader();
+            mAidlMagCard=AidlMagCard.Stub.asInterface(magCard);
+            KLog.i("磁条卡实例获取成功 mAidlMagCard:"+mAidlMagCard);
+        } catch (RemoteException e) {
+            isSucess=false;
+            e.printStackTrace();
+        }catch (Exception e){
+            isSucess=false;
+            e.printStackTrace();
+        }finally {
+            return isSucess;
+        }
+    }
+
+    public AidlMagCard getAidlMagCard() {
+        return mAidlMagCard;
+    }
+
+    public void setAidlMagCard(AidlMagCard pAidlMagCard) {
+        mAidlMagCard = pAidlMagCard;
+    }
+
+    /**
+     *读取磁条卡数据
+     */
+    public void getMagCardWithWait(int timeout){
+        AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
+        if (aidlMagCard==null)initMagCard();
+        if(aidlMagCard!=null){
+            try {
+                aidlMagCard.searchCard(timeout,magCardListener);
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    };
+
+    /**
+     * 停止磁条卡的读取状态
+     */
+    public void stopMagCardbyWait(){
+        AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
+        if(aidlMagCard!=null){
+            try {
+                aidlMagCard.stopSearch();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+        }
+    }
+
+    MagCardListener.Stub magCardListener =new MagCardListener.Stub() {
+        @Override
+        public void onTimeout() throws RemoteException {
+            KLog.i("onTimeout");
+        }
+
+        @Override
+        public void onError(int errorCode) throws RemoteException {
+            KLog.i("onError");
+        }
+
+        @Override
+        public void onCanceled() throws RemoteException {
+            KLog.i("onCanceled");
+        }
+
+        @Override
+        public void onSuccess(TrackData trackData) throws RemoteException {
+            KLog.i("Cardno:"+trackData.getCardno());
+            KLog.i("ExpiryDate:"+trackData.getExpiryDate());
+            KLog.i("FirstTrackData:"+trackData.getFirstTrackData());
+            KLog.i("SecondTrackData:"+trackData.getSecondTrackData());
+            KLog.i("ThirdTrackData:"+trackData.getThirdTrackData());
+            KLog.i("ServiceCode:"+trackData.getServiceCode());
+            KLog.i("FormatTrackData:"+trackData.getFormatTrackData());
+        }
+
+        @Override
+        public void onGetTrackFail() throws RemoteException {
+
+        }
+
+        @Override
+        public IBinder asBinder() {
+            return this;
+        }
+    };
 }

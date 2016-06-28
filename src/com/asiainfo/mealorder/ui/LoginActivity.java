@@ -16,10 +16,6 @@ import com.android.volley.Response.Listener;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.R;
-import com.asiainfo.mealorder.biz.model.LakalaController;
-import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.config.LoginUserPrefData;
-import com.asiainfo.mealorder.config.SystemPrefData;
 import com.asiainfo.mealorder.biz.entity.AppUpdate;
 import com.asiainfo.mealorder.biz.entity.DishesComp;
 import com.asiainfo.mealorder.biz.entity.DishesCompItem;
@@ -33,6 +29,10 @@ import com.asiainfo.mealorder.biz.entity.eventbus.EventMain;
 import com.asiainfo.mealorder.biz.entity.eventbus.post.DishesListEntity;
 import com.asiainfo.mealorder.biz.entity.http.PublicDishesItem;
 import com.asiainfo.mealorder.biz.entity.http.QueryAppMerchantPublicAttr;
+import com.asiainfo.mealorder.biz.model.LakalaController;
+import com.asiainfo.mealorder.config.Constants;
+import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.config.SystemPrefData;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
@@ -195,8 +195,10 @@ public class LoginActivity extends BaseActivity {
                     httpAttendantLogin2();
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
-                    if (LakalaController.getInstance().isSupport())
-                    LakalaController.getInstance().testPrint();
+                    if (LakalaController.getInstance().isSupport()){
+//                        LakalaController.getInstance().testPrint();
+                        LakalaController.getInstance().getMagCardWithWait(10000);
+                    }
                     else Log.i("lakala","拉卡拉服务无响应");
                 }
             }
