@@ -269,6 +269,14 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
                 break;
             case R.id.account_lkl:
+                if (!mPrePayPresenter.isExistPayMent(PayMent.LakalaPayMent)) {
+                    showShortTip("没有配置 (拉卡拉支付),请换一种支付方式~.~");
+                    return;
+                }
+                if (mPrePayPresenter.isExistOrderPay(PayMent.LakalaPayMent.getValue())) {
+                    showShortTip("您已使用过 (拉卡拉支付),请换一种支付方式~.~");
+                    return;
+                }
                 if (LakalaController.getInstance().isSupport()){
                     showSelectLakalaPaymentDF(mPrePayPresenter.getPrePrice().getCurNeedPay());
                 }else showShortTip("本设备不支持 (拉卡拉支付)!");
@@ -441,7 +449,6 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 showShortTip("取消操作!");
             }
         }else if(requestCode==LakalaInfo.LakalaInfo_Type_Code_Trade||requestCode==LakalaInfo.LakalaInfo_Type_Card_Trade){
-            LakalaController.getInstance().setIsRun(true);//恢复
             if (data != null) {
                 Bundle bundle = data.getExtras();
                 LakalaInfo lakalaInfo = new LakalaInfo(requestCode);
@@ -456,15 +463,19 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                             String pay_tp = lakalaInfo.getDate(TradeKey.Pay_tp);
                             for (CodePayTypeKey codePayTypeKey : CodePayTypeKey.values()) {
                                 if (codePayTypeKey.getValue().equals(pay_tp)) {
-                                    reasonSucess = codePayTypeKey.getTitle() + reasonSucess;
+                                    reasonSucess = "拉卡拉"+codePayTypeKey.getTitle() + reasonSucess;
                                     break;
                                 }
                             }
                         } else if (requestCode == LakalaInfo.LakalaInfo_Type_Card_Trade) {
-                            reasonSucess = "银行卡" + reasonSucess;
+                            reasonSucess = "拉卡拉银行卡" + reasonSucess;
                         }
                         if (reasonSucess != null) {
                             showShortTip(reasonSucess);
+                            mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.LakalaPayMent), LakalaController.getInstance().getCurLakalaPayPrice());
+                            lkl.setBackgroundResource(R.drawable.itemsel_selected);
+                            refreshPayOrderListView();
+                            refreshPrice();
                         }
                         break;
                     // 支付取消
@@ -487,7 +498,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             } else {
                 showShortTip("拉卡拉支付,返回数据无效");
             }
-
+            LakalaController.getInstance().setCurLakalaPayPrice("0.0");
+            LakalaController.getInstance().setIsRun(true);//恢复
         }
     }
 

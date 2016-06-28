@@ -75,6 +75,7 @@ public class PrePayPresenter {
         this.mPrePrice = new PrePrice(mDeskOrder.getOriginalPrice(), mDeskOrder.getNeedPay());
         this.mSubmitPayOrder = deskOrderToSubmitPayOrder(mDeskOrder);
         this.mUserModel = new UserModel();
+        isHasSingleDiscount();
     }
 
     public void submit(Response.Listener<ResultMap<SubmitPayInfo>> listener,
@@ -396,7 +397,10 @@ public class PrePayPresenter {
             payTypeList.put(PayMent.MarketCardPayMent, payType); //商场卡
         } else if (type.equals(PayMent.ComityPayMent.getValue())) {
             payTypeList.put(PayMent.ComityPayMent, payType); //礼让金额
-        } else {
+        } else if(type.equals(PayMent.LakalaPayMent.getValue())){
+            payTypeList.put(PayMent.LakalaPayMent, payType); //拉卡拉支付
+        }
+        else{
             KLog.i("支付方式不匹配,请查询");
         }
     }
@@ -514,7 +518,9 @@ public class PrePayPresenter {
      * @param listener  成功回调回调
      */
     public void removeOrderPay(OrderPay pOrderPay, Response.Listener<String> listener) {
-        if (pOrderPay.getPayType().equals(PayMent.UserPayMent.getValue())) {
+        if (pOrderPay.getPayType().equals(PayMent.LakalaPayMent.getValue())){
+            if (listener != null) listener.onResponse("拉卡拉支付无法撤销退款!");
+        }else if (pOrderPay.getPayType().equals(PayMent.UserPayMent.getValue())) {
             //(1)usermodel,会员模型中余额,积分,orderpay清除
             mUserModel.deleteUserBanlance();
             mUserModel.clearOrderPayList();
@@ -533,17 +539,19 @@ public class PrePayPresenter {
             mSubmitPayOrder.setUserId(null);
             mSubmitPayOrder.setIsThisMember(null);
             mUserModel.clearMemberData();
+            if (listener != null) listener.onResponse(Response_ok);
         } else if (pOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())) {
             //会员积分抵扣,可以直接删除
             mUserModel.deleteDeductionScoreOrderPay();
             mUserModel.deleteUserDeductionScore();
             mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
+            if (listener != null) listener.onResponse(Response_ok);
         } else {
             //现金,微信,支付宝,银联卡,直接删orderpay与price,积分
             mPrePrice.deleteCurPayPrice(pOrderPay.getPayPrice().toString());
             deleteOrderPay(pOrderPay);
+            if (listener != null) listener.onResponse(Response_ok);
         }
-        if (listener != null) listener.onResponse(Response_ok);
     }
 
     /**
@@ -590,6 +598,47 @@ public class PrePayPresenter {
 
     public DeskOrder getDeskOrder(){
         return mDeskOrder;
+    }
+
+    /**
+     * 遍历订单菜品,判断是否存在菜品单品折扣
+     */
+    public void isHasSingleDiscount(){
+        String discount="0.00";
+        //遍历当前订单所有菜品,计算所有菜的会员价折扣总和
+        if(mDeskOrder!=null&&mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0){
+            for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
+                //interferePrice单品折扣价格,已经计算过数量了
+                discount=mPrePrice.addPrice(discount,lDeskOrderGoodsItem.getInterferePrice());
+            }
+        }
+        if(Double.valueOf(discount)>0){
+            OrderMarketing lOrderMarketing=new OrderMarketing();
+            long marketingid=7777;//单品折扣优惠活动的marketdingid为7777
+            lOrderMarketing.setMarketingId(marketingid);
+            lOrderMarketing.setMarketingName("单品折扣");
+            lOrderMarketing.setTradeStaffId(merchantRegister.getStaffId());
+            lOrderMarketing.setNeedPay(Double.valueOf(discount));
+
+            long realpay=0;
+            lOrderMarketing.setRealPay(realpay);
+            lOrderMarketing.setTradeRemark("");
+            lOrderMarketing.setGrouponSn("");
+            long grouponNum=0;
+            lOrderMarketing.setGrouponNum(grouponNum);
+            long giveScoreNum=0;
+            lOrderMarketing.setGiveScoreNum(giveScoreNum);
+
+            long couponId=0;
+            lOrderMarketing.setCouponId(couponId);
+            long couponSn=0;
+            lOrderMarketing.setCouponId(couponSn);
+            long couponNum=0;
+            lOrderMarketing.setCouponNum(couponNum);
+//            "superposition": 1
+            lOrderMarketing.setMemberFavor(true);
+            mOrderMarketingList.add(lOrderMarketing);
+        }
     }
 
 }

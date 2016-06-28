@@ -16,7 +16,8 @@
         android:textColorHint="#9B9B9B"
         android:textSize="@dimen/text_size_large"
         android:layout_alignParentTop="true"
-        android:inputType="numberDecimal"/>
+        android:inputType="numberDecimal"
+        android:visibility="gone"/>
 
     <LinearLayout
         android:id="@+id/select_layout"

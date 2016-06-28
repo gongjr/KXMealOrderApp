@@ -20,7 +20,8 @@ public enum PayMent {
     ScoreDikbPayMent("9","会员积分"),
     OddChangePayMent("10","找零"),
     MarketCardPayMent("94","商场卡"),
-    ComityPayMent("999999","礼让金额");
+    ComityPayMent("999999","礼让金额"),
+    LakalaPayMent("888888","拉卡拉支付");
 
     /**
      * 判断关键字

@@ -2,6 +2,8 @@ package com.asiainfo.mealorder.ui.PoPup;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.Selection;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -70,6 +72,7 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
         paymentCode = (TextView) view.findViewById(R.id.select_settle_account);
         sureBtn = (Button) view.findViewById(R.id.select_surebtn);
         mEditText = (EditText) view.findViewById(R.id.lkl__payprice_eidt);
+        mEditText.setVisibility(View.VISIBLE);
         mEditText.setText(price);
         paymentBank.setText("银行卡");
         paymentCode.setText("扫码");
@@ -81,6 +84,8 @@ public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.On
     public void onResume() {
         super.onResume();
         mEditText.setText(price);
+        Editable editable = mEditText.getText();
+        Selection.setSelection(editable, editable.length());//光标置尾
     }
 
     private void initListener() {

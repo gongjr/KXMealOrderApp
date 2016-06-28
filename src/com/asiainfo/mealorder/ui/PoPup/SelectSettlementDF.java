@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
@@ -25,6 +26,7 @@ public class SelectSettlementDF  extends DialogFragmentBase implements View.OnCl
     private TextView hangingAccount;
     private TextView settleAccount;
     private Button sureBtn;
+    private EditText mEditText;
 
     @SuppressLint("InlinedApi")
     @Override
@@ -57,6 +59,8 @@ public class SelectSettlementDF  extends DialogFragmentBase implements View.OnCl
         hangingAccount = (TextView) view.findViewById(R.id.select_hanging_account);
         settleAccount = (TextView) view.findViewById(R.id.select_settle_account);
         sureBtn = (Button) view.findViewById(R.id.select_surebtn);
+        mEditText = (EditText) view.findViewById(R.id.lkl__payprice_eidt);
+        mEditText.setVisibility(View.GONE);
     }
 
     private void initListener() {

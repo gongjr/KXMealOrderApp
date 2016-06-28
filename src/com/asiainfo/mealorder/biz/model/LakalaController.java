@@ -39,6 +39,11 @@ import java.util.List;
  * Created by gjr on 2016/4/11.
  */
 public class LakalaController {
+
+    /**
+     * 当前正在请求的拉卡拉支付的金额
+     */
+    private String curLakalaPayPrice="0.0";
     /**
      * 接口都是在子线程中执行,需要返回到主线程处理交互
      */
@@ -139,6 +144,7 @@ public class LakalaController {
             return resultInfo;
         }
         try {
+            curLakalaPayPrice=price;
             ComponentName component =
                     new ComponentName("com.lkl.cloudpos.payment", "com.lkl.cloudpos.payment.activity.MainMenuActivity");
             Intent intent = new Intent();
@@ -161,12 +167,14 @@ public class LakalaController {
         } catch (ActivityNotFoundException e) {
             KLog.i("拉卡拉支付组件没有找到");
             setIsRun(true);//恢复
+            curLakalaPayPrice="0.0";
             resultInfo.setSucess(false);
             resultInfo.setValue("拉卡拉支付组件没有找到");
             e.printStackTrace();
         } catch (Exception e) {
             KLog.i("发生未知数据异常,调用失败");
             setIsRun(true);//恢复
+            curLakalaPayPrice="0.0";
             resultInfo.setSucess(false);
             resultInfo.setValue("发生未知数据异常,调用失败");
             e.printStackTrace();
@@ -204,6 +212,7 @@ public class LakalaController {
             return resultInfo;
         }
         try {
+            curLakalaPayPrice=price;
             ComponentName component =
                     new ComponentName("com.lkl.cloudpos.payment", "com.lkl.cloudpos.payment.activity.MainMenuActivity");
             Intent intent = new Intent();
@@ -215,7 +224,7 @@ public class LakalaController {
             lakalaInfo.setDate(TradeKey.Pay_tp, StartPayTypeKey.Card.getValue());
             lakalaInfo.setDate(TradeKey.Appid, Tools.getPackageName(mActivity));
             lakalaInfo.setDate(TradeKey.Time_stamp, "" + new Date().getTime());
-            lakalaInfo.setDate(TradeKey.Amt, price);
+            lakalaInfo.setDate(TradeKey.Amt, curLakalaPayPrice);
             lakalaInfo.setDate(TradeKey.Order_no, orderid);
             lakalaInfo.setDate(TradeKey.Order_info, Order_info);
             intent.putExtras(lakalaInfo.ToBundle());
@@ -226,12 +235,14 @@ public class LakalaController {
         } catch (ActivityNotFoundException e) {
             KLog.i("拉卡拉支付组件没有找到");
             setIsRun(true);//恢复
+            curLakalaPayPrice="0.0";
             resultInfo.setSucess(false);
             resultInfo.setValue("拉卡拉支付组件没有找到");
             e.printStackTrace();
         } catch (Exception e) {
             KLog.i("发生未知数据异常,调用失败");
             setIsRun(true);//恢复
+            curLakalaPayPrice="0.0";
             resultInfo.setSucess(false);
             resultInfo.setValue("发生未知数据异常,调用失败");
             e.printStackTrace();
@@ -265,6 +276,7 @@ public class LakalaController {
             return resultInfo;
         }
         try {
+            curLakalaPayPrice=lakalaInfo.getDate(TradeKey.Amt);
             ComponentName component =
                     new ComponentName("com.lkl.cloudpos.payment", "com.lkl.cloudpos.payment.activity.MainMenuActivity");
             Intent intent = new Intent();
@@ -277,12 +289,14 @@ public class LakalaController {
         } catch (ActivityNotFoundException e) {
             KLog.i("拉卡拉支付组件没有找到");
             setIsRun(true);//恢复
+            curLakalaPayPrice="0.0";
             resultInfo.setSucess(false);
             resultInfo.setValue("拉卡拉支付组件没有找到");
             e.printStackTrace();
         } catch (Exception e) {
             KLog.i("发生未知数据异常,调用失败");
             setIsRun(true);//恢复
+            curLakalaPayPrice="0.0";
             resultInfo.setSucess(false);
             resultInfo.setValue("发生未知数据异常,调用失败");
             e.printStackTrace();
@@ -304,7 +318,6 @@ public class LakalaController {
             LakalaInfo lakalaInfo = new LakalaInfo(requestCode);
             lakalaInfo.FromBundle(bundle);
             KLog.i("info:" + lakalaInfo.showInfo());
-            LakalaController.getInstance().setIsRun(true);//恢复
             switch (resultCode) {
                 // 支付成功
                 case Activity.RESULT_OK:
@@ -344,6 +357,8 @@ public class LakalaController {
         } else {
             showShortTip("返回数据为空");
         }
+        LakalaController.getInstance().setIsRun(true);//恢复
+        curLakalaPayPrice="0.0";
     }
 
     private void showShortTip(String value) {
@@ -455,5 +470,13 @@ public class LakalaController {
     public boolean isSupport(){
         if (mService==null)return false;
         else return true;
+    }
+
+    public String getCurLakalaPayPrice() {
+        return curLakalaPayPrice;
+    }
+
+    public void setCurLakalaPayPrice(String pCurLakalaPayPrice) {
+        curLakalaPayPrice = pCurLakalaPayPrice;
     }
 }
