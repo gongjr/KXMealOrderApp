@@ -25,7 +25,10 @@
     <dimen name="Dip_20">20dip</dimen>
     <dimen name="Dip_25">25dip</dimen>
     <dimen name="Dip_30">30dip</dimen>
-    <dimen name="Dip_35">30dp</dimen>
-    <dimen name="Dip_40">40dp</dimen>
+    <dimen name="Dip_35">30dip</dimen>
+    <dimen name="Dip_40">40dip</dimen>
+    <dimen name="Dip_50">50dip</dimen>
+    <dimen name="Dip_60">60dip</dimen>
+    <dimen name="Dip_70">70dip</dimen>
 
 </resources>

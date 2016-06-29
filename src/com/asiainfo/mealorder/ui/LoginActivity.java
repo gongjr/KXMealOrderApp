@@ -196,8 +196,7 @@ public class LoginActivity extends BaseActivity {
                 } else {
                     showShortTip("请输入正确的用户名或密码!");
                     if (LakalaController.getInstance().isSupport()){
-//                        LakalaController.getInstance().testPrint();
-                        LakalaController.getInstance().getMagCardWithWait(10000);
+                        LakalaController.getInstance().testPrint();
                     }
                     else Log.i("lakala","拉卡拉服务无响应");
                 }

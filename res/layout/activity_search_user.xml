@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:orientation="vertical"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:orientation="vertical"
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:background="@color/numkey_bg"
-              style="@style/activity_root_style">
+              style="@style/activity_root_style"
+              tools:context=".ui.SearchUserActivity">
 
     <com.asiainfo.mealorder.widget.TitleView
         android:id="@+id/code_title"
@@ -19,21 +21,48 @@
         android:layout_below="@+id/code_title"/>
 
 
-    <EditText
-        android:id="@+id/user_num"
+    <RelativeLayout
+        android:id="@+id/user_num_group"
         android:layout_width="match_parent"
         android:layout_height="50dip"
-        android:inputType="numberDecimal"
-        android:layout_below="@+id/title_line"
         android:layout_marginTop="20dip"
         android:layout_marginLeft="18dip"
         android:layout_marginRight="18dip"
-        android:hint="输入会员卡号"
+        android:orientation="horizontal"
+        android:layout_below="@+id/title_line"
+        android:background="@anim/bg_edittext_user_group"
+        >
+
+
+    <EditText
+        android:id="@+id/user_num"
+        android:layout_width="match_parent"
+        android:layout_height="48dip"
+        android:inputType="numberDecimal"
+        android:hint="输入会员信息"
         android:gravity="center"
         android:textColorHint="@color/numkey_user_edit_hint_"
         android:textSize="@dimen/text_size_xlarge"
-        android:background="@anim/bg_edittext_user"/>
+        android:layout_marginTop="1dip"
+        android:layout_marginLeft="1dip"
+        android:layout_marginBottom="1dip"
+        android:paddingLeft="@dimen/Dip_5"
+        android:paddingRight="@dimen/Dip_5"
+        android:background="@anim/bg_edittext_user"
+        android:layout_alignParentTop="true"
+        android:layout_toLeftOf="@+id/read_membercard"
+        />
 
+        <Button
+            android:id="@+id/read_membercard"
+            android:layout_width="@dimen/Dip_60"
+            android:layout_height="@dimen/Dip_40"
+            android:layout_alignParentRight="true"
+            android:background="@anim/selector_btn_membercard_read"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="@dimen/Dip_5"/>
+
+    </RelativeLayout>
     <include
         android:id="@+id/num_keyboard"
         android:layout_width="fill_parent"

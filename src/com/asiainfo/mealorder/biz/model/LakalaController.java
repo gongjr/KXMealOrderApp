@@ -516,12 +516,12 @@ public class LakalaController {
     /**
      *读取磁条卡数据
      */
-    public void getMagCardWithWait(int timeout){
+    public void getMagCardWithWait(int timeout,MagCardListener pMagCardListener){
         AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
         if (aidlMagCard==null)initMagCard();
         if(aidlMagCard!=null){
             try {
-                aidlMagCard.searchCard(timeout,magCardListener);
+                aidlMagCard.searchCard(timeout,pMagCardListener);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }catch (Exception e){

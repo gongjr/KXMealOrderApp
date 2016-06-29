@@ -1,7 +1,10 @@
 package com.asiainfo.mealorder.ui;
 
 import android.os.Bundle;
+import android.os.IBinder;
+import android.os.RemoteException;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.asiainfo.mealorder.AppApplication;
@@ -10,12 +13,16 @@ import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.listener.OnDialogListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
+import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.biz.presenter.SearchUserPresenter;
 import com.asiainfo.mealorder.ui.PoPup.ChooseMemberCardDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
+import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.widget.NumKeyboardView;
 import com.asiainfo.mealorder.widget.TitleView;
+import com.lkl.cloudpos.aidl.magcard.MagCardListener;
+import com.lkl.cloudpos.aidl.magcard.TrackData;
 
 import java.util.List;
 
@@ -30,6 +37,8 @@ public class SearchUserActivity extends BaseActivity {
     private TitleView titleView;
     @InjectView(R.id.user_num)
     private EditText userNum;
+    @InjectView(R.id.read_membercard)
+    private Button readMembercard;
     @InjectView(R.id.num_keyboard)
     private View num_keyboard;
     private NumKeyboardView mNumKeyboardView;
@@ -43,6 +52,7 @@ public class SearchUserActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
         userNum.setFocusable(false);
+        initListener();
         setTitleView();
         searchUserPresenter = new SearchUserPresenter(gson, onDialogListener, onActivityOperationListener);
         merchantRegister=(MerchantRegister)BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
@@ -202,6 +212,56 @@ public class SearchUserActivity extends BaseActivity {
         @Override
         public void selectCard(List<MemberCard> memberCardList) {
             selectMemberCard(memberCardList);
+        }
+    };
+
+    public void initListener(){
+        readMembercard.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (LakalaController.getInstance().isSupport()){
+                    LakalaController.getInstance().getMagCardWithWait(10000,magCardListener);
+                }
+                else showShortTip("设备不支持刷卡");
+            }
+        });
+    }
+
+    MagCardListener.Stub magCardListener =new MagCardListener.Stub() {
+        @Override
+        public void onTimeout() throws RemoteException {
+            KLog.i("onTimeout");
+        }
+
+        @Override
+        public void onError(int errorCode) throws RemoteException {
+            KLog.i("onError");
+        }
+
+        @Override
+        public void onCanceled() throws RemoteException {
+            KLog.i("onCanceled");
+        }
+
+        @Override
+        public void onSuccess(TrackData trackData) throws RemoteException {
+            KLog.i("Cardno:"+trackData.getCardno());
+            KLog.i("ExpiryDate:"+trackData.getExpiryDate());
+            KLog.i("FirstTrackData:"+trackData.getFirstTrackData());
+            KLog.i("SecondTrackData:"+trackData.getSecondTrackData());
+            KLog.i("ThirdTrackData:"+trackData.getThirdTrackData());
+            KLog.i("ServiceCode:"+trackData.getServiceCode());
+            KLog.i("FormatTrackData:"+trackData.getFormatTrackData());
+        }
+
+        @Override
+        public void onGetTrackFail() throws RemoteException {
+
+        }
+
+        @Override
+        public IBinder asBinder() {
+            return this;
         }
     };
 
