@@ -56,7 +56,7 @@
         <Button
             android:id="@+id/read_membercard"
             android:layout_width="@dimen/Dip_60"
-            android:layout_height="@dimen/Dip_40"
+            android:layout_height="@dimen/Dip_36"
             android:layout_alignParentRight="true"
             android:background="@anim/selector_btn_membercard_read"
             android:layout_centerVertical="true"

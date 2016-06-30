@@ -489,6 +489,7 @@ public class LakalaController {
     }
 
     public boolean initMagCard(){
+        if (mAidlMagCard==null){
         boolean isSucess=true;
         try {
             IBinder magCard=mService.getMagCardReader();
@@ -502,6 +503,10 @@ public class LakalaController {
             e.printStackTrace();
         }finally {
             return isSucess;
+        }
+        }else{
+            KLog.i("已存在磁条卡实例 mAidlMagCard:"+mAidlMagCard);
+            return true;
         }
     }
 
@@ -518,7 +523,6 @@ public class LakalaController {
      */
     public void getMagCardWithWait(int timeout,MagCardListener pMagCardListener){
         AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
-        if (aidlMagCard==null)initMagCard();
         if(aidlMagCard!=null){
             try {
                 aidlMagCard.searchCard(timeout,pMagCardListener);
@@ -538,6 +542,7 @@ public class LakalaController {
         if(aidlMagCard!=null){
             try {
                 aidlMagCard.stopSearch();
+                KLog.i("取消寻卡,触发cancle");
             } catch (RemoteException e) {
                 e.printStackTrace();
             }catch (Exception e){

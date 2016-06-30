@@ -16,10 +16,12 @@ import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.biz.presenter.SearchUserPresenter;
 import com.asiainfo.mealorder.ui.PoPup.ChooseMemberCardDF;
+import com.asiainfo.mealorder.ui.PoPup.CountDownLoadingDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.widget.NumKeyboardView;
+import com.asiainfo.mealorder.widget.TimeTextView;
 import com.asiainfo.mealorder.widget.TitleView;
 import com.lkl.cloudpos.aidl.magcard.MagCardListener;
 import com.lkl.cloudpos.aidl.magcard.TrackData;
@@ -27,6 +29,10 @@ import com.lkl.cloudpos.aidl.magcard.TrackData;
 import java.util.List;
 
 import roboguice.inject.InjectView;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * Created by gjr on 2016/5/9 10:24.
@@ -43,14 +49,18 @@ public class SearchUserActivity extends BaseActivity {
     private View num_keyboard;
     private NumKeyboardView mNumKeyboardView;
     private MakeOrderFinishDF mMakeOrderDF;
+    private CountDownLoadingDF mCountDownLoadingDF;
     private SearchUserPresenter searchUserPresenter;
     private AppApplication BaseApp;
     private MerchantRegister merchantRegister;
+    private int TimeOut=10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
+        if (LakalaController.getInstance().isSupport())
+        LakalaController.getInstance().initMagCard();
         userNum.setFocusable(false);
         initListener();
         setTitleView();
@@ -141,6 +151,43 @@ public class SearchUserActivity extends BaseActivity {
         }
     }
 
+    /**
+     * 倒计时提示框
+     */
+    private void showCountDownLoadingDF(String info,int timeout) {
+        try {
+            if (mCountDownLoadingDF == null) {
+                mCountDownLoadingDF = new CountDownLoadingDF();
+            }
+            mCountDownLoadingDF.setNoticeText(info,timeout,mOnTimeOutListener);
+            mCountDownLoadingDF.show(getSupportFragmentManager(), "countdown");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    TimeTextView.OnTimeOutListener mOnTimeOutListener=new TimeTextView.OnTimeOutListener() {
+        @Override
+        public void onTimeOut() {
+            dismissCountDownLoadingDF();
+            showShortTip("读卡取消!");
+            if (LakalaController.getInstance().isSupport()){
+                LakalaController.getInstance().stopMagCardbyWait();
+            }else KLog.i("拉卡拉设备不支持!");
+        }
+    };
+
+    public void dismissCountDownLoadingDF() {
+        try {
+            if (mCountDownLoadingDF != null && mCountDownLoadingDF.isAdded()) {
+                mCountDownLoadingDF.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     /*
     * 显示提示信息
     * */
@@ -219,10 +266,14 @@ public class SearchUserActivity extends BaseActivity {
         readMembercard.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (LakalaController.getInstance().isSupport()){
-                    LakalaController.getInstance().getMagCardWithWait(10000,magCardListener);
+                if (!LakalaController.getInstance().isSupport()){
+                    showShortTip("设备不支持刷卡");
+                }else if(LakalaController.getInstance().getAidlMagCard()==null){
+                    showShortTip("设备不支持刷卡");
+                }else{
+                    showCountDownLoadingDF("正在读取磁条卡~~",TimeOut+1);
+                    LakalaController.getInstance().getMagCardWithWait(TimeOut*1000,magCardListener);
                 }
-                else showShortTip("设备不支持刷卡");
             }
         });
     }
@@ -230,28 +281,122 @@ public class SearchUserActivity extends BaseActivity {
     MagCardListener.Stub magCardListener =new MagCardListener.Stub() {
         @Override
         public void onTimeout() throws RemoteException {
-            KLog.i("onTimeout");
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext("读卡超时!");
+                    subscriber.onCompleted();
+                }
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onCompleted() {
+                            dismissCountDownLoadingDF();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(String t) {
+                            showShortTip(t);
+
+                        }
+                    });
         }
 
         @Override
         public void onError(int errorCode) throws RemoteException {
-            KLog.i("onError");
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext("读卡发生错误!");
+                    subscriber.onCompleted();
+                }
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onCompleted() {
+                            dismissCountDownLoadingDF();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(String t) {
+                            showShortTip(t);
+
+                        }
+                    });
         }
 
         @Override
         public void onCanceled() throws RemoteException {
-            KLog.i("onCanceled");
+            KLog.i("取消读卡!");
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext("取消读卡!");
+                    subscriber.onCompleted();
+                }
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onCompleted() {
+                            dismissCountDownLoadingDF();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(String t) {
+                            showShortTip(t);
+
+                        }
+                    });
         }
 
         @Override
-        public void onSuccess(TrackData trackData) throws RemoteException {
-            KLog.i("Cardno:"+trackData.getCardno());
-            KLog.i("ExpiryDate:"+trackData.getExpiryDate());
-            KLog.i("FirstTrackData:"+trackData.getFirstTrackData());
-            KLog.i("SecondTrackData:"+trackData.getSecondTrackData());
-            KLog.i("ThirdTrackData:"+trackData.getThirdTrackData());
-            KLog.i("ServiceCode:"+trackData.getServiceCode());
-            KLog.i("FormatTrackData:"+trackData.getFormatTrackData());
+        public void onSuccess(final TrackData trackData) throws RemoteException {
+            Observable.create(new Observable.OnSubscribe<TrackData>() {
+                @Override
+                public void call(Subscriber<? super TrackData> subscriber) {
+                    subscriber.onNext(trackData);
+                    subscriber.onCompleted();
+                }
+            })
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<TrackData>() {
+                        @Override
+                        public void onCompleted() {
+                            dismissCountDownLoadingDF();
+                            showShortTip("读卡成功!");
+                            if (userNum.getText().toString().length()>0){
+                            showLoadingDF("正在查询会员信息");
+                            searchUserPresenter.getOnHttpResponseListener().onHttpResponse(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
+                                    userNum.getText().toString());
+                            }
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(TrackData pData) {
+                            if (pData.getCardno().length() > 0)
+                                userNum.setText(pData.getCardno());
+                        }
+                    });
         }
 
         @Override

@@ -106,5 +106,9 @@
         <item name="@android:windowExitAnimation">@anim/disappear</item>
     </style>
 
+    <declare-styleable name="TimeTextView">
+
+    </declare-styleable>
+
 
 </resources>

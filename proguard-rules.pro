@@ -129,3 +129,5 @@
 #而OkHttp的底层也使用该库作为支持,部分不会用到的类引用了,跳过检查
 -dontwarn okio.**
 
+#-dontwarn com.jakewharton.rxbinding
+
