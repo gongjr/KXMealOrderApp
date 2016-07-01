@@ -1,5 +1,7 @@
 package com.asiainfo.mealorder.biz.entity;
 
+import com.asiainfo.mealorder.biz.bean.merchant.FunctionCode;
+import com.asiainfo.mealorder.biz.bean.merchant.FunctionRole;
 import com.asiainfo.mealorder.biz.bean.merchant.Role;
 
 import java.io.Serializable;
@@ -39,8 +41,17 @@ public class MerchantRegister implements Serializable {
 	private String roleCode;
 	private String merchantName;
     private List<Role> roleList;
+    private List<FunctionRole> functionRoleList;
 
-	public String getStaffId() {
+    public List<FunctionRole> getFunctionRoleList() {
+        return functionRoleList;
+    }
+
+    public void setFunctionRoleList(List<FunctionRole> pFunctionRoleList) {
+        functionRoleList = pFunctionRoleList;
+    }
+
+    public String getStaffId() {
 		return staffId;
 	}
 
@@ -230,5 +241,22 @@ public class MerchantRegister implements Serializable {
 
     public void setRoleList(List<Role> pRoleList) {
         roleList = pRoleList;
+    }
+
+    /**
+     * 功能权限验证,如果权限列表为空,则无视,不为空判断是否存在对应权限
+     * @param pFunctionCode
+     * @return
+     */
+    public Boolean isFunctionCode(FunctionCode pFunctionCode){
+        if (functionRoleList!=null&&functionRoleList.size()>0){
+            for (FunctionRole lFunctionRole:functionRoleList){
+                if (lFunctionRole.getFunctionCode().equals(pFunctionCode.getValue())){
+                    return true;
+                }
+            }
+            return false;
+        }else return true;
+
     }
 }

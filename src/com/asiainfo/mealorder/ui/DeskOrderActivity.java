@@ -23,6 +23,7 @@ import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.DeskOrderAdapter;
+import com.asiainfo.mealorder.biz.bean.merchant.FunctionCode;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
@@ -192,11 +193,16 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                 } else {
                     switch (index) {
                         case 0:
-                            if (mNormalDisheList.size() + mCompDishList.size() > 1) {
-                                VolleyupdateOrderInfo2(position);
-                            } else {
-                                Toast.makeText(mActivity, "无法删除，请取消订单!", Toast.LENGTH_SHORT).show();
+                            if (merchantRegister.isFunctionCode(FunctionCode.OrderGoodsDelete)){
+                                if (mNormalDisheList.size() + mCompDishList.size() > 1) {
+                                    VolleyupdateOrderInfo2(position);
+                                } else {
+                                    Toast.makeText(mActivity, "无法删除，请取消订单!", Toast.LENGTH_SHORT).show();
+                                }
+                            }else{
+                                showShortTip("本工号没有配置"+FunctionCode.OrderGoodsDelete.getTitle()+"权限!");
                             }
+
                             break;
                         case 1:
                             VolleyHurryOrder2(position);
@@ -294,10 +300,14 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.order_paybtn:
                 if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_NORMAL.getValue())) {
-                    Intent intent = new Intent(this, SettleAccountActivity.class);
-                    String deskOrder=gson.toJson(mDeskOrder);
-                    intent.putExtra("deskOrder",deskOrder);
-                    startActivity(intent);
+                    if (merchantRegister.isFunctionCode(FunctionCode.OrderSellete)){
+                        Intent intent = new Intent(this, SettleAccountActivity.class);
+                        String deskOrder=gson.toJson(mDeskOrder);
+                        intent.putExtra("deskOrder",deskOrder);
+                        startActivity(intent);
+                    }else{
+                        showShortTip("本工号没有配置"+FunctionCode.OrderSellete.getTitle()+"权限!");
+                    }
                 } else if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_HOLD.getValue())){
                     showShortTip("菜品没有通知后厨无法结算");
                 } else{
@@ -791,4 +801,6 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
             lDeskOrderGoodsItem.setSalesState("1");
         }
     }
+
+
 }
