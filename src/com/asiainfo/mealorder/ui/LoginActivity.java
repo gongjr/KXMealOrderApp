@@ -443,6 +443,7 @@ public class LoginActivity extends BaseActivity {
     @Override
     public void onDestroy() {
         EventBus.getDefault().unregister(this);
+        if(LakalaController.getInstance().isSupport())
         LakalaController.getInstance().unbindService(mActivity);
         super.onDestroy();
     }

@@ -19,8 +19,10 @@ dependencies {
     compile files('libs/xstream-1.4.7.jar')
     compile files('libs/android-async-http-1.4.5.jar')
     compile 'com.squareup.okhttp:okhttp:2.7.5'
-    compile 'io.reactivex:rxandroid:1.1.0'
-    compile 'io.reactivex:rxjava:1.1.0'
+    compile 'io.reactivex:rxandroid:1.2.1'
+    compile 'io.reactivex:rxjava:1.1.6'
+    // And ProGuard rules for RxJava!
+    compile 'com.artemzin.rxjava:proguard-rules:1.1.6.0'
 }
 
 android {
