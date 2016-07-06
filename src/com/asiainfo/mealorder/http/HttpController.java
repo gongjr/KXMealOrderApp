@@ -48,7 +48,7 @@ public class HttpController {
     /**
      * 使用地址
      */
-    public static final String HOST = Address_tst;
+    public static final String HOST = Address_localtest;
 
     /**
      * AppKey 服务器约定app更新key字段
@@ -325,6 +325,24 @@ public class HttpController {
         String param = "/appController/queryMembercard.do?merchantId=" + merchantId + "&childMerchantId=" + childMerchantId
                 + "&memberMsg=" + memberMsg;
 
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+
+    }
+
+    /**
+     * 获取会员卡信息
+     *
+     * @param merchantId      会员所属商户ID
+     * @param userId          会员id
+     * @param password        验证消费密码
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void getCheckUserPwd(String merchantId, String userId, String password, Response.Listener listener,
+                              Response.ErrorListener errorListener) {
+        String param = "/appController/checkUserPwd.do?merchantId=" + merchantId + "&userId=" + userId
+                + "&password=" + password;
         JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
 

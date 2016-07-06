@@ -16,8 +16,8 @@ import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
 
 /**
- * @author skynight(skynight@dingtalk.com)
- * @creatTime 16/6/6 上午10:19
+ * @author gjr
+ * @deprecated 拉卡拉支付选择
  */
 public class SelectLakalaPaymentDF extends DialogFragmentBase implements View.OnClickListener {
 

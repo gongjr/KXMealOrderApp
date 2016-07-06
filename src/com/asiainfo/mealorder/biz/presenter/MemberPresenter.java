@@ -1,9 +1,11 @@
 package com.asiainfo.mealorder.biz.presenter;
 
+import com.android.volley.Response;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
 import com.asiainfo.mealorder.biz.model.UserModel;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.ui.MemberActivity;
 
 import java.util.List;
@@ -43,5 +45,18 @@ public class MemberPresenter {
 
     public Double getScorePriceFormScore(String scoreNum){
         return mUserModel.getScorePriceFormScore(scoreNum);
+    }
+
+    /**
+     * 验证会员
+     * @param merchantId
+     * @param userId
+     * @param password
+     * @param listener
+     * @param errorListener
+     */
+    public void CheckUserPwd(String merchantId, String userId, String password, Response.Listener listener,
+                             Response.ErrorListener errorListener){
+        HttpController.getInstance().getCheckUserPwd(merchantId,userId,password,listener,errorListener);
     }
 }

@@ -10,6 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.MemberRecyclerAdapter;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
@@ -19,10 +21,14 @@ import com.asiainfo.mealorder.biz.listener.OnChooseCardListener;
 import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.presenter.MemberPresenter;
+import com.asiainfo.mealorder.ui.PoPup.CheckUserPwdDF;
 import com.asiainfo.mealorder.ui.PoPup.ChooseCardLevelDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.widget.SpaceItemDecoration;
 import com.asiainfo.mealorder.widget.TitleView;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.List;
 
@@ -122,11 +128,15 @@ public class MemberActivity extends BaseActivity {
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            getOperation().addParameter("memberCard", memberCard);
-            getOperation().addParameter("balance", balanceCheckBox.isChecked());
-            getOperation().addParameter("score", scoreCheckBox.isChecked());
-            getOperation().addParameter("discount", currentDiscount);
-            getOperation().forward(SettleAccountActivity.class);
+            if (memberCard.getIsNeedPwd().equals("1")){
+                showCheckUserPwdDF();
+            }else{
+                getOperation().addParameter("memberCard", memberCard);
+                getOperation().addParameter("balance", balanceCheckBox.isChecked());
+                getOperation().addParameter("score", scoreCheckBox.isChecked());
+                getOperation().addParameter("discount", currentDiscount);
+                getOperation().forward(SettleAccountActivity.class);
+            }
         }
     };
 
@@ -254,6 +264,46 @@ public class MemberActivity extends BaseActivity {
                 }
                 payPrice.setText(Html.fromHtml("<font>需支付:  ¥</font><font color='#D0021B'>" + needPayValue + "</font>"));
             }
+        }
+    };
+
+    /**
+     * 显示拉卡拉支付方式选择窗口
+     * */
+    private void showCheckUserPwdDF() {
+        CheckUserPwdDF lCheckUserPwdDF = CheckUserPwdDF.newInstance();
+        lCheckUserPwdDF.setOnCheckUserPwdListener(mOnCheckUserPwdListener);
+        lCheckUserPwdDF.show(getSupportFragmentManager(), "CheckUserPwdDF");
+    }
+
+    CheckUserPwdDF.OnCheckUserPwdListener mOnCheckUserPwdListener=new CheckUserPwdDF.OnCheckUserPwdListener() {
+        @Override
+        public void onSelectBack(String pwd) {
+            memberPresenter.CheckUserPwd(memberCard.getMerchantId(),memberCard.getUserId(),pwd,new Response.Listener<JSONObject>() {
+                @Override
+                public void onResponse(JSONObject response) {
+                    try {
+                        if(response.getString("status").equals("1")){
+                        showShortTip(response.getString("info"));
+                        getOperation().addParameter("memberCard", memberCard);
+                        getOperation().addParameter("balance", balanceCheckBox.isChecked());
+                        getOperation().addParameter("score", scoreCheckBox.isChecked());
+                        getOperation().addParameter("discount", currentDiscount);
+                        getOperation().forward(SettleAccountActivity.class);
+                    }else{
+                            showShortTip(response.getString("info"));
+                        }
+                    }catch (JSONException e){
+                        showShortTip("密码验证失败!");
+                        e.printStackTrace();
+                    }
+                }
+            },new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    showShortTip("网络或服务器异常,请重试!");
+                }
+            });
         }
     };
 }
