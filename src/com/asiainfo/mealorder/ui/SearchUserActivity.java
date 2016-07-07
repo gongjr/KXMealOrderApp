@@ -104,7 +104,7 @@ public class SearchUserActivity extends BaseActivity {
     private void setTitleText() {
         desk = (MerchantDesk) getIntent().getSerializableExtra("merchantDesk");
         String peopleNum = getIntent().getStringExtra("peopleNumber");
-        titleView.setCenterTxt(desk.getDeskName() + "[" + peopleNum + "]");
+        titleView.setCenterTxt(desk.getDeskName() + "[" + peopleNum + "人]");
     }
 
 //    /*

@@ -73,17 +73,29 @@ public class OrderByMealNumberAdapter extends BaseAdapter {
             OrderGood mainGood = compDish.getMainGood();
             holder.tv_dish_name.setText(mainGood.getSalesName());
             holder.tv_dish_count.setText(mainGood.getSalesNum() + "");
-            holder.tv_dish_price.setText("¥" + mainGood.getSalesPrice());
+            String price = StringUtils.int2Str(mainGood.getSalesPrice());
+            String subStr = price.substring(price.length() - 2, price.length());
+            if (subStr.equals("00")) {
+                holder.tv_dish_price.setText("¥" + mainGood.getSalesPrice()/100);
+            } else {
+                holder.tv_dish_price.setText("¥" + ((double)mainGood.getSalesPrice())/100);
+            }
             String remarkStr = "配置: ";
             for (OrderGood orderGood: compDishList) {
-                remarkStr += orderGood.getSalesName();
+                remarkStr += orderGood.getSalesName() + " ";
             }
             holder.tv_taste_consists.setText(remarkStr);
         } else {
             OrderGood orderGood = normalGoods.get(position);
             holder.tv_dish_name.setText(orderGood.getSalesName());
             holder.tv_dish_count.setText(orderGood.getSalesNum() + "");
-            holder.tv_dish_price.setText("¥" + orderGood.getSalesPrice());
+            String price = StringUtils.int2Str(orderGood.getSalesPrice());
+            String subStr = price.substring(price.length() - 2, price.length());
+            if (subStr.equals("00")) {
+                holder.tv_dish_price.setText("¥" + orderGood.getSalesPrice()/100);
+            } else {
+                holder.tv_dish_price.setText("¥" + ((double)orderGood.getSalesPrice())/100);
+            }
             if (StringUtils.isNull(orderGood.getRemark())) {
                 holder.tv_taste_consists.setVisibility(View.GONE);
             } else {

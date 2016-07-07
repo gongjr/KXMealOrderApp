@@ -72,7 +72,7 @@ public class OrderByMealNumberActivity extends BaseActivity implements View.OnCl
         merchantRegister = (MerchantRegister) BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
         desk = (MerchantDesk) getIntent().getSerializableExtra("desk");
         peopleNumber = getIntent().getStringExtra("peopleNumber");
-        centerTxt.setText(desk.getDeskName() + "[" + peopleNumber + "]");
+        centerTxt.setText(desk.getDeskName() + "[" + peopleNumber + "人]");
         String price = deskOrder.getOriginalPrice();
         totalMoney.setText("总价" + StringUtils.str2Double(price) / 100 + "元");
         getOrderById();
