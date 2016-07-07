@@ -7,6 +7,7 @@ package com.asiainfo.mealorder.biz.entity.volley;
 public class SubmitPayResult {
     String info;
     int status;
+    String ewUrlString;
 
     public String getInfo() {
         return info;
@@ -22,5 +23,13 @@ public class SubmitPayResult {
 
     public void setStatus(int pStatus) {
         status = pStatus;
+    }
+
+    public String getEwUrlString() {
+        return ewUrlString;
+    }
+
+    public void setEwUrlString(String pEwUrlString) {
+        ewUrlString = pEwUrlString;
     }
 }

@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.ui.base;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -10,6 +11,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -40,7 +42,10 @@ public class MakeOrderFinishDF extends DialogFragment{
 	private ProgressBar prog_progBar;
 	private FragmentActivity mActivity;
 	private LoginUserPrefData mLoginUserPrefData;
-	
+    private ImageView mImageView;
+    private RelativeLayout mRelativeLayout;
+    private TextView mTextView;
+
 	@SuppressLint("InlinedApi")
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -83,6 +88,9 @@ public class MakeOrderFinishDF extends DialogFragment{
 		rl_globalView = (RelativeLayout)mView.findViewById(R.id.rl_global);
 		ll_contentView = (LinearLayout)mView.findViewById(R.id.ll_content);
 		btn_navToDesk = (Button)mView.findViewById(R.id.btn_nav_to_desk);
+        mImageView = (ImageView)mView.findViewById(R.id.need_pay_code);
+        mRelativeLayout = (RelativeLayout)mView.findViewById(R.id.need_pay_group);
+        mTextView = (TextView)mView.findViewById(R.id.need_type_title);
 		btn_navToDesk.setClickable(false);
 		btn_navToDesk.setEnabled(false);
 	}
@@ -112,6 +120,8 @@ public class MakeOrderFinishDF extends DialogFragment{
 		contentTxt = txt;
 		mContextView.setText(txt);
 		prog_progBar.setVisibility(View.GONE);
+        mRelativeLayout.setVisibility(View.GONE);
+        mTextView.setVisibility(View.GONE);
 		btn_navToDesk.setClickable(true);
 		btn_navToDesk.setEnabled(true);
         if(type==0){
@@ -131,6 +141,36 @@ public class MakeOrderFinishDF extends DialogFragment{
             });
         }
 	}
+
+    public void showNoticeText(String txt,int type,Bitmap url){
+        contentTxt = txt;
+        mContextView.setText(txt);
+        prog_progBar.setVisibility(View.GONE);
+        if (url!=null){
+            mRelativeLayout.setVisibility(View.VISIBLE);
+            mTextView.setVisibility(View.VISIBLE);
+            mImageView.setImageBitmap(url);
+        }
+
+        btn_navToDesk.setClickable(true);
+        btn_navToDesk.setEnabled(true);
+        if(type==0){
+            btn_navToDesk.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                }
+            });
+        }else{
+            btn_navToDesk.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dismiss();
+                    backToDeskPage();
+                }
+            });
+        }
+    }
 	
 	/**
 	 * 返回桌台页面
@@ -148,6 +188,8 @@ public class MakeOrderFinishDF extends DialogFragment{
         KLog.i("mContextView:" + mContextView + "txt:" + txt);
         mContextView.setText(txt);
         prog_progBar.setVisibility(View.GONE);
+        mRelativeLayout.setVisibility(View.GONE);
+        mTextView.setVisibility(View.GONE);
         btn_navToDesk.setClickable(true);
         btn_navToDesk.setEnabled(true);
         btn_navToDesk.setOnClickListener(new OnClickListener() {

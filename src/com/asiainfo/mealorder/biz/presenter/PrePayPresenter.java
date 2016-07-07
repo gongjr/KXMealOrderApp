@@ -9,14 +9,12 @@ import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
 import com.asiainfo.mealorder.biz.bean.settleaccount.RedPackageReceive;
-import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayOrder;
 import com.asiainfo.mealorder.biz.bean.settleaccount.UserCoupon;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
-import com.asiainfo.mealorder.biz.entity.http.ResultMap;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.biz.model.PrePrice;
 import com.asiainfo.mealorder.biz.model.UserModel;
@@ -78,7 +76,7 @@ public class PrePayPresenter {
         isHasSingleDiscount();
     }
 
-    public void submit(Response.Listener<ResultMap<SubmitPayInfo>> listener,
+    public void submit(Response.Listener<SubmitPayResult> listener,
                        Response.ErrorListener errorListener) {
         Map<String, String> postParams = new HashMap<String, String>();
         String orderData = gson.toJson(getLastSubmitPayOrder());

@@ -37,12 +37,42 @@
             android:visibility="visible"/>
         
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/need_pay_group"
+        android:layout_width="250dip"
+        android:layout_height="250dip"
+        android:layout_below="@+id/ll_content"
+        android:background="@drawable/settle_pay_code_bg"
+        android:layout_marginTop="@dimen/Dip_20"
+        android:visibility="gone"
+        android:layout_centerHorizontal="true">
+
+        <ImageView
+            android:id="@+id/need_pay_code"
+            android:layout_width="200dip"
+            android:layout_height="200dip"
+            android:layout_centerInParent="true"
+            />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/need_type_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="支付宝或微信扫码支付结账"
+        android:layout_below="@+id/need_pay_group"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="@dimen/Dip_10"
+        android:layout_gravity="center_horizontal"
+        android:textSize="16sp"
+        android:visibility="gone"/>
     
     <Button
         android:id="@+id/btn_nav_to_desk"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/ll_content"
+        android:layout_below="@+id/need_type_title"
         android:layout_centerHorizontal="true"
         android:layout_marginLeft="20dip"
         android:layout_marginRight="20dip"

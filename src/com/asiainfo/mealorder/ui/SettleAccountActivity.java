@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.ui;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,10 +19,8 @@ import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayMent;
 import com.asiainfo.mealorder.biz.bean.settleaccount.PayType;
-import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
-import com.asiainfo.mealorder.biz.entity.http.ResultMap;
 import com.asiainfo.mealorder.biz.entity.lakala.CodePayTypeKey;
 import com.asiainfo.mealorder.biz.entity.lakala.LakalaInfo;
 import com.asiainfo.mealorder.biz.entity.lakala.TradeKey;
@@ -40,6 +39,7 @@ import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
+import com.asiainfo.mealorder.utils.ToolPicture;
 import com.asiainfo.mealorder.widget.TitleView;
 import com.google.gson.reflect.TypeToken;
 
@@ -370,6 +370,16 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     }
 
     /**
+     * @param info
+     * @param type 0无事件,1返回桌台
+     */
+    private void showNotice(String info, int type,Bitmap url) {
+        if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
+            mMakeOrderDF.showNoticeText(info, type, url);
+        }
+    }
+
+    /**
      * @param info                 提示信息
      * @param pDialogDelayListener 点击相应事件
      */
@@ -507,18 +517,28 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     * 订单结算
     * */
     private void submitOrder() {
-        mPrePayPresenter.submit(new Response.Listener<ResultMap<SubmitPayInfo>>() {
+        mPrePayPresenter.submit(new Response.Listener<SubmitPayResult>() {
             @Override
-            public void onResponse(ResultMap<SubmitPayInfo> response) {
-                if (response.getErrcode().equals("0")) {
-                    SubmitPayInfo lSubmitPayResult = response.getData();
-                    showShortTip(lSubmitPayResult.getInfo().getInfo());
-                    if (lSubmitPayResult.getInfo().getStatus() == 1) {
-                        updateNotice(lSubmitPayResult.getInfo().getInfo(), 1);
-                    } else updateNotice(lSubmitPayResult.getInfo().getInfo(), 0);
-                } else {
-                    showShortTip(response.getMsg());
-                    updateNotice(response.getMsg(), 0);
+            public void onResponse(SubmitPayResult response) {
+                if (response.getStatus()==1) {
+                    if (response.getEwUrlString().length()>0){
+                        Bitmap bitmap=null;
+                        try {
+                            bitmap= ToolPicture.makeQRImage(response.getEwUrlString(), 400, 400);
+                        }catch (Exception e){
+                            showShortTip("二维码生成有误!");
+                            e.printStackTrace();
+                        }finally {
+                            if (bitmap==null)
+                            updateNotice("提交结账信息成功", 1);
+                            else showNotice("提交结账信息成功", 1,bitmap);
+                        }
+                    }else{
+                        updateNotice("提交结账信息成功", 1);
+                    }
+                }else{
+                    showShortTip(response.getInfo());
+                    updateNotice(response.getInfo(), 0);
                 }
             }
         }, new Response.ErrorListener() {

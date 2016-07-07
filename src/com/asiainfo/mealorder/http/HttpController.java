@@ -4,17 +4,13 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
-import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
-import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.biz.entity.http.HurryOrderResult;
-import com.asiainfo.mealorder.biz.entity.http.ResultMap;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitOrderId;
+import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.biz.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.biz.entity.volley.appPrintDeskOrderInfoResultData;
-import com.google.gson.reflect.TypeToken;
+import com.asiainfo.mealorder.config.Constants;
 
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -48,7 +44,7 @@ public class HttpController {
     /**
      * 使用地址
      */
-    public static final String HOST = Address_localtest;
+    public static final String HOST = Address_debug;
 
     /**
      * AppKey 服务器约定app更新key字段
@@ -91,12 +87,11 @@ public class HttpController {
      * @param listener      响应监听器
      * @param errorListener 异常监听器
      */
-    public void postSubmitPay(final Map<String, String> postParams, Response.Listener<ResultMap<SubmitPayInfo>> listener,
+    public void postSubmitPay(final Map<String, String> postParams, Response.Listener<SubmitPayResult> listener,
                               Response.ErrorListener errorListener) {
         String param = "/appController/submitPay.do";
-        Type type = new TypeToken<ResultMap<SubmitPayInfo>>() {}.getType();
-        ResultMapRequest<ResultMap<SubmitPayInfo>> ResultMapRequest = new ResultMapRequest<ResultMap<SubmitPayInfo>>(
-                Request.Method.POST, HOST + param, postParams, type, listener, errorListener);
+        ResultMapRequest<SubmitPayResult> ResultMapRequest = new ResultMapRequest<SubmitPayResult>(
+                Request.Method.POST, HOST + param, postParams, SubmitPayResult.class, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
 
