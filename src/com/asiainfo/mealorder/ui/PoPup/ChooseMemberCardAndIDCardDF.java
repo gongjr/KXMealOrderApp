@@ -87,6 +87,11 @@ public class ChooseMemberCardAndIDCardDF extends DialogFragmentBase {
         adapter = new IDCardAndMemberCardAdapter(getActivity(), psptTypeList, memberLevelList, currentPosition);
         adapter.setIsID(isId);
         listView.setAdapter(adapter);
+        if (isId) {
+            titleName.setText("证件类型");
+        } else {
+            titleName.setText("会员类型");
+        }
     }
 
     private void initListener() {
