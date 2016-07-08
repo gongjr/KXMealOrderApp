@@ -5,6 +5,7 @@ import android.os.IBinder;
 import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
@@ -15,6 +16,8 @@ import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.entity.MemberLevel;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.PsptType;
+import com.asiainfo.mealorder.biz.entity.http.ResultMap;
+import com.asiainfo.mealorder.biz.listener.OnChooseFinishListener;
 import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.http.HttpController;
@@ -34,7 +37,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import roboguice.inject.InjectView;
 import rx.Observable;
@@ -60,10 +65,14 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private EditText passwordEdit;
     @InjectView(R.id.add_con_password_edit)
     private EditText conPasswordEdit;
+    @InjectView(R.id.add_idCard_edit)
+    private EditText idCardEdit;
     @InjectView(R.id.add_idCard_txt)
     private TextView idCardTxt;
     @InjectView(R.id.add_member_type_txt)
     private TextView memberTypeTxt;
+    @InjectView(R.id.add_member_btn)
+    private Button memberBtn;
 
 
     private CountDownLoadingDF mCountDownLoadingDF;
@@ -98,26 +107,64 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-//            if (StringUtils.isNull(nameEdit.getText().toString())) {
-//                showShortTip("姓名不能为空");
-//                return;
-//            }
-            if (StringUtils.isNull(phoneEdit.getText().toString())) {
+            String name = nameEdit.getText().toString();
+            String phone = phoneEdit.getText().toString();
+            String cardCode = idCardEdit.getText().toString();
+            String memberCode = memberEdit.getText().toString();
+            String password = passwordEdit.getText().toString();
+            String confPassword = conPasswordEdit.getText().toString();
+
+            if (StringUtils.isNull(phone)) {
                 showShortTip("手机号不能为空");
                 return;
             }
-            if (StringUtils.isNull(passwordEdit.getText().toString())) {
+            if (StringUtils.isNull(password)) {
                 showShortTip("密码不能为空");
                 return;
             }
-            if (StringUtils.isNull(conPasswordEdit.getText().toString())) {
+            if (StringUtils.isNull(confPassword)) {
                 showShortTip("请再次确认密码");
                 return;
             }
-            if (!conPasswordEdit.getText().toString().equals(passwordEdit.getText().toString())) {
+            if (!password.equals(confPassword)) {
                 showShortTip("两次密码输入不同");
                 return;
             }
+
+            showLoadingDF("正在提交会员信息....");
+            Map<String, String> param = new HashMap<String, String>();
+            param.put("childMerchantId", merchantRegister.getChildMerchantId());
+            param.put("merchantId", merchantRegister.getMerchantId());
+            param.put("staffId", merchantRegister.getStaffId());
+            param.put("memberLevel", memberLevelList.get(leverIndex).getLevel() + "");
+            param.put("userName", name);
+            param.put("phone", phone);
+            param.put("icid", memberCode);
+            param.put("memberPwd", password);
+            if (!StringUtils.isNull(cardCode)) {
+                param.put("psptId", cardCode);
+                param.put("psptType", idCardTxt.getText().toString());
+            }
+
+            HttpController.getInstance().postAddMember(param,
+                    new Response.Listener<ResultMap<MemberLevel>>() {
+                        @Override
+                        public void onResponse(ResultMap<MemberLevel> response) {
+                            if (response.getErrcode().equals("0")) {
+                                dismissLoadingDF();
+                                showShortTip("新增会员成功");
+                                finish();
+                            } else {
+                                updateNotice("新增会员失败: " + response.getMsg(), 0);
+                            }
+                        }
+                    }, new Response.ErrorListener() {
+                        @Override
+                        public void onErrorResponse(VolleyError error) {
+                            dismissLoadingDF();
+                            showShortTip("新增会员失败: " + error.getMessage());
+                        }
+                    });
         }
     };
 
@@ -131,6 +178,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private void initListener() {
         idCardTxt.setOnClickListener(this);
         memberTypeTxt.setOnClickListener(this);
+        memberBtn.setOnClickListener(this);
     }
 
     private void getMemberLevelAndPsptType() {
@@ -361,10 +409,15 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             case R.id.add_idCard_txt:
                 showIDCardAndMemberCard();
                 chooseMemberCardAndIDCardDF.setCurrentPosition(psptIndex);
+                chooseMemberCardAndIDCardDF.setIsId(true);
                 break;
             case R.id.add_member_type_txt:
                 showIDCardAndMemberCard();
                 chooseMemberCardAndIDCardDF.setCurrentPosition(leverIndex);
+                chooseMemberCardAndIDCardDF.setIsId(false);
+                break;
+            case R.id.add_member_btn:
+                lkl();
                 break;
         }
     }
@@ -374,7 +427,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     * */
     private void showIDCardAndMemberCard() {
         if (chooseMemberCardAndIDCardDF == null) {
-            chooseMemberCardAndIDCardDF = ChooseMemberCardAndIDCardDF.newInstence(psptTypeList, memberLevelList);
+            chooseMemberCardAndIDCardDF = ChooseMemberCardAndIDCardDF.newInstence(psptTypeList, memberLevelList, onChooseFinishListener);
         }
         chooseMemberCardAndIDCardDF.show(getSupportFragmentManager(), "AddMemberActivity");
     }
@@ -423,4 +476,18 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             e.printStackTrace();
         }
     }
+
+    private OnChooseFinishListener onChooseFinishListener = new OnChooseFinishListener() {
+        @Override
+        public void onChooseFinishListener(int position, boolean b) {
+            dismissIDCardAndMemberCard();
+            if (b) {
+                idCardTxt.setText(psptTypeList.get(position).getKeyName());
+                psptIndex = position;
+            } else {
+                memberTypeTxt.setText(memberLevelList.get(position).getLevelName());
+                leverIndex = position;
+            }
+        }
+    };
 }

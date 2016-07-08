@@ -2,7 +2,6 @@ package com.asiainfo.mealorder.ui.PoPup;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +14,7 @@ import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.IDCardAndMemberCardAdapter;
 import com.asiainfo.mealorder.biz.entity.MemberLevel;
 import com.asiainfo.mealorder.biz.entity.PsptType;
+import com.asiainfo.mealorder.biz.listener.OnChooseFinishListener;
 import com.asiainfo.mealorder.ui.base.DialogFragmentBase;
 
 import java.io.Serializable;
@@ -33,6 +33,8 @@ public class ChooseMemberCardAndIDCardDF extends DialogFragmentBase {
     private List<MemberLevel> memberLevelList;
     private int currentPosition = 0;
     private IDCardAndMemberCardAdapter adapter;
+    private boolean isId = true;
+    private OnChooseFinishListener onChooseFinishListener;
 
     @InjectView(R.id.tv_properties_name)
     private TextView titleName;
@@ -43,7 +45,8 @@ public class ChooseMemberCardAndIDCardDF extends DialogFragmentBase {
     @InjectView(R.id.btn_ensure)
     private Button ensureBtn;
 
-    public static ChooseMemberCardAndIDCardDF newInstence(List<PsptType> psptTypeList, List<MemberLevel> memberLevelList) {
+    public static ChooseMemberCardAndIDCardDF newInstence(List<PsptType> psptTypeList, List<MemberLevel> memberLevelList,
+                                                          OnChooseFinishListener onChooseFinishListener) {
         ChooseMemberCardAndIDCardDF chooseMemberCardAndIDCardDF = new ChooseMemberCardAndIDCardDF();
         Bundle bundle = new Bundle();
         bundle.putSerializable("pspTypeList", (Serializable) psptTypeList);
@@ -52,6 +55,7 @@ public class ChooseMemberCardAndIDCardDF extends DialogFragmentBase {
             chooseMemberCardAndIDCardDF.getArguments().clear();
         }
         chooseMemberCardAndIDCardDF.setArguments(bundle);
+        chooseMemberCardAndIDCardDF.setOnChooseFinishListener(onChooseFinishListener);
         return chooseMemberCardAndIDCardDF;
     }
 
@@ -80,9 +84,8 @@ public class ChooseMemberCardAndIDCardDF extends DialogFragmentBase {
     }
 
     private void initData() {
-        if (adapter == null) {
-            adapter = new IDCardAndMemberCardAdapter(getActivity(), psptTypeList, currentPosition);
-        }
+        adapter = new IDCardAndMemberCardAdapter(getActivity(), psptTypeList, memberLevelList, currentPosition);
+        adapter.setIsID(isId);
         listView.setAdapter(adapter);
     }
 
@@ -93,23 +96,24 @@ public class ChooseMemberCardAndIDCardDF extends DialogFragmentBase {
                 dismiss();
             }
         });
+        ensureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int position = adapter.getCurrentPosition();
+                onChooseFinishListener.onChooseFinishListener(position, isId);
+            }
+        });
     }
-
-//    public void setPsptTypeList(List<PsptType> psptTypeList) {
-//        this.psptTypeList = psptTypeList;
-//    }
-//
-//    public void setMemberLevelList(List<MemberLevel> memberLevelList) {
-//        this.memberLevelList = memberLevelList;
-//    }
 
     public void setCurrentPosition (int position) {
         this.currentPosition = position;
     }
 
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        Log.d("111111111", "=================");
+    public void setOnChooseFinishListener(OnChooseFinishListener onChooseFinishListener) {
+        this.onChooseFinishListener = onChooseFinishListener;
+    }
+
+    public void setIsId(boolean b) {
+        isId = b;
     }
 }

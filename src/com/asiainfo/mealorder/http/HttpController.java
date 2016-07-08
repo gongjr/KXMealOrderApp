@@ -354,8 +354,9 @@ public class HttpController {
     public void postAddMember(final Map<String, String> postParams, Response.Listener<ResultMap<MemberLevel>> listener,
                               Response.ErrorListener errorListener) {
         String param = "http://192.168.1.105:8080/tacos/appController/saveUserMemberInfo.do";
+        Type type = new TypeToken<ResultMap<MemberLevel>>() {}.getType();
         ResultMapRequest<ResultMap<MemberLevel>> ResultMapRequest = new ResultMapRequest<ResultMap<MemberLevel>>(
-                Request.Method.POST, param, postParams, MemberLevel.class, listener, errorListener);
+                Request.Method.POST, param, postParams, type, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
 }

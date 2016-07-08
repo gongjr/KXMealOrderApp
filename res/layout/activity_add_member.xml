@@ -136,7 +136,7 @@
                 android:text="身份证"
                 android:gravity="center|right"
                 android:textSize="@dimen/text_size_middle"
-                android:paddingRight="15dp"/>
+                android:paddingRight="10dp"/>
 
             <ImageView
                 android:layout_width="wrap_content"
@@ -253,6 +253,7 @@
             />
 
         <Button
+            android:id="@+id/add_member_btn"
             android:layout_width="0dp"
             android:layout_height="45dp"
             android:layout_weight="1"
@@ -295,6 +296,7 @@
             android:textSize="@dimen/text_size_small"
             android:singleLine="true"
             android:hint="请输入密码(必填)"
+            android:password="true"
             />
     </LinearLayout>
 
@@ -333,6 +335,7 @@
             android:textSize="@dimen/text_size_small"
             android:singleLine="true"
             android:hint="请确认密码(必填)"
+            android:password="true"
             />
     </LinearLayout>
 

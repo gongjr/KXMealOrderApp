@@ -7,8 +7,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.asiainfo.mealorder.R;
+import com.asiainfo.mealorder.biz.entity.MemberLevel;
 import com.asiainfo.mealorder.biz.entity.PsptType;
 
 import java.util.List;
@@ -21,12 +23,15 @@ public class IDCardAndMemberCardAdapter extends BaseAdapter {
 
     private Context context;
     private List<PsptType> psptTypeList;
+    private List<MemberLevel> memberLevelList;
     private int currentPosition;
+    private boolean isId = true;
 
-    public IDCardAndMemberCardAdapter(Context context, List<PsptType>psptTypeList, int currentPosition) {
+    public IDCardAndMemberCardAdapter(Context context, List<PsptType>psptTypeList, List<MemberLevel> memberLevelList, int currentPosition) {
         this.context = context;
         this.psptTypeList = psptTypeList;
         this.currentPosition = currentPosition;
+        this.memberLevelList = memberLevelList;
     }
 
     private class AddMemberViewHolder {
@@ -36,7 +41,11 @@ public class IDCardAndMemberCardAdapter extends BaseAdapter {
 
     @Override
     public int getCount() {
-        return psptTypeList.size();
+        if (isId) {
+            return psptTypeList.size();
+        } else {
+            return memberLevelList.size();
+        }
     }
 
     @Override
@@ -61,23 +70,42 @@ public class IDCardAndMemberCardAdapter extends BaseAdapter {
         } else {
             holder = (AddMemberViewHolder) convertView.getTag();
         }
-        PsptType psptType = psptTypeList.get(position);
-        holder.name.setText(psptType.getKeyName());
+        if (isId) {
+            PsptType psptType = psptTypeList.get(position);
+            holder.name.setText(psptType.getKeyName());
+        } else {
+            MemberLevel memberLevel = memberLevelList.get(position);
+            holder.name.setText(memberLevel.getLevelName());
+        }
+
         if (currentPosition == position) {
             holder.checkBox.setChecked(true);
         } else {
             holder.checkBox.setChecked(false);
         }
 
+        final AddMemberViewHolder finalHolder = holder;
         holder.checkBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentPosition = position;
+                if (!finalHolder.checkBox.isChecked()) {
+                    Toast.makeText(context, "已经选中不能取消", Toast.LENGTH_SHORT).show();
+                } else {
+                    currentPosition = position;
+                }
                 notifyDataSetChanged();
             }
         });
         return convertView;
     }
 
+    public int getCurrentPosition() {
+        return currentPosition;
+    }
+
+    public void setIsID(boolean b) {
+        this.isId = b;
+        notifyDataSetChanged();
+    }
 
 }
