@@ -5,6 +5,7 @@ import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.biz.bean.settleaccount.SubmitPayInfo;
+import com.asiainfo.mealorder.biz.entity.MemberLevel;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.biz.entity.http.HurryOrderResult;
@@ -330,4 +331,31 @@ public class HttpController {
 
     }
 
+    /**
+     * 获取会员等级和证件类型
+     *
+     * @param merchantId      商户ID
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void getMemberLevelAndPsptType(String merchantId, Response.Listener listener, Response.ErrorListener errorListener) {
+        String param = "http://192.168.1.105:8080/tacos/appController/queryUserMemberLevelsAndPsptType.do?merchantId=" + merchantId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 新增会员
+     *
+     * @param postParams      post参数
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void postAddMember(final Map<String, String> postParams, Response.Listener<ResultMap<MemberLevel>> listener,
+                              Response.ErrorListener errorListener) {
+        String param = "http://192.168.1.105:8080/tacos/appController/saveUserMemberInfo.do";
+        ResultMapRequest<ResultMap<MemberLevel>> ResultMapRequest = new ResultMapRequest<ResultMap<MemberLevel>>(
+                Request.Method.POST, param, postParams, MemberLevel.class, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
 }
