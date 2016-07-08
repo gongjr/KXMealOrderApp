@@ -27,6 +27,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.ChooseDeskAdapter;
+import com.asiainfo.mealorder.biz.entity.http.HttpDeskOrder;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.SystemPrefData;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
@@ -764,8 +765,14 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase{
                             if (data.getString("msg").equals("ok")) {
                                 String info = data.getJSONObject("data").getString("info");
                                 Gson gson = new Gson();
-                                mDeskOrderList = gson.fromJson(info, new TypeToken<List<DeskOrder>>() {
-                                }.getType());
+                                List<HttpDeskOrder> lHttpDeskOrders=null;
+                                lHttpDeskOrders = gson.fromJson(info, new TypeToken<List<HttpDeskOrder>>(){}.getType());
+                                mDeskOrderList=new ArrayList<DeskOrder>();
+                                if (lHttpDeskOrders!=null&&lHttpDeskOrders.size()>0){
+                                    for (HttpDeskOrder lHttpDeskOrder:lHttpDeskOrders){
+                                        mDeskOrderList.add(lHttpDeskOrder.ToDeskOrder());
+                                    }
+                                }
                                 Log.d(TAG, "mDeskOrderList.size(): " + mDeskOrderList.size());
                                 if (mDeskOrderList == null || mDeskOrderList.size() == 0) {
                                     openNewDeskInputPersonNumDialog();

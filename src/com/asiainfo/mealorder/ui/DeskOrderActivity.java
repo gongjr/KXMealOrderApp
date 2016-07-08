@@ -452,7 +452,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                             }
 
                             mDeskOrder.setOriginalPrice(Arith.d2str(getNewPrice(mDeskOrder.getOriginalPrice(), deskOrderGoodsItemm.getSalesPrice())));//删菜成功后更新本地桌子订单价格
-                            int favorablePrice = Integer.valueOf(deskOrderGoodsItemm.getSalesPrice()) - Integer.valueOf(deskOrderGoodsItemm.getInterferePrice()) - Integer.valueOf(deskOrderGoodsItemm.getDiscountPrice())-Integer.valueOf(deskOrderGoodsItemm.getMarketingPrice());
+                            Double favorablePrice = Double.valueOf(deskOrderGoodsItemm.getSalesPrice()) - Double.valueOf(deskOrderGoodsItemm.getInterferePrice()) - Double.valueOf(deskOrderGoodsItemm.getDiscountPrice())-Double.valueOf(deskOrderGoodsItemm.getMarketingPrice());
                             mDeskOrder.setNeedPay(Arith.d2str(getNewPrice(mDeskOrder.getNeedPay(), String.valueOf(favorablePrice))));
 
                             int i = 0;

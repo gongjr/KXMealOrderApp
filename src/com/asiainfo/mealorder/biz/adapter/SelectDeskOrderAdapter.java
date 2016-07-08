@@ -12,6 +12,8 @@ import android.widget.TextView;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
+import com.asiainfo.mealorder.utils.Arith;
+import com.asiainfo.mealorder.utils.StringUtils;
 
 import java.util.ArrayList;
 
@@ -54,8 +56,10 @@ public class SelectDeskOrderAdapter  extends BaseAdapter{
 		} else {
 			viewHolder.tv_deskOrderPrice.setText(deskOrder.getNeedPay());
 			viewHolder.tv_deskOrderPay.setText(deskOrder.getOriginalPrice());
-			int preferential = Math.abs(Integer.valueOf(deskOrder.getOriginalPrice()) - Integer.valueOf(deskOrder.getNeedPay()));
-			viewHolder.tv_deskOrderPreferential.setText(String.valueOf(preferential));
+            Double oldprice = StringUtils.str2Double(deskOrder.getOriginalPrice());
+            Double ordergoodsprice = StringUtils.str2Double(deskOrder.getNeedPay());
+            Double newprice = Arith.sub(oldprice, ordergoodsprice);
+			viewHolder.tv_deskOrderPreferential.setText(Arith.d2str(newprice));
 		}
 		viewHolder.tv_deskOrderNo.setText(deskOrder.getOrderId());
 		viewHolder.tv_orderPersonNum.setText(deskOrder.getPersonNum()+"人");

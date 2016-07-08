@@ -10,9 +10,7 @@ import android.widget.TextView;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.helper.DishesCompDeskOrderEntity;
-import com.asiainfo.mealorder.utils.StringUtils;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 /**
@@ -76,12 +74,9 @@ public class DeskOrderAdapter extends BaseAdapter {
             deskOrderGoodsItemList = mCompDishList.get(position - mNormalDishList.size()).getCompItemDishes();
         }
 
-        DecimalFormat df = new DecimalFormat("######0.0");
-        Double salePrice = StringUtils.str2Double(deskOrderGoodsItem.getSalesPrice());
-
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
         holder.dishCount.setText(deskOrderGoodsItem.getSalesNum());
-        holder.dishPrice.setText(df.format(salePrice));
+        holder.dishPrice.setText(deskOrderGoodsItem.getSalesPrice());
         holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/份");
         isDishHasRemark(holder, deskOrderGoodsItem);
         isCompDishHasRemark(holder,deskOrderGoodsItemList);
