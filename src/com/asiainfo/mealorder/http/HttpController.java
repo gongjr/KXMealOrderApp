@@ -339,8 +339,8 @@ public class HttpController {
      * @param errorListener   异常监听器
      */
     public void getMemberLevelAndPsptType(String merchantId, Response.Listener listener, Response.ErrorListener errorListener) {
-        String param = "http://192.168.1.105:8080/tacos/appController/queryUserMemberLevelsAndPsptType.do?merchantId=" + merchantId;
-        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(param, null, listener, errorListener);
+        String param = "/appController/queryUserMemberLevelsAndPsptType.do?merchantId=" + merchantId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
 
@@ -353,10 +353,10 @@ public class HttpController {
      */
     public void postAddMember(final Map<String, String> postParams, Response.Listener<ResultMap<MemberLevel>> listener,
                               Response.ErrorListener errorListener) {
-        String param = "http://192.168.1.105:8080/tacos/appController/saveUserMemberInfo.do";
+        String param = "/appController/saveUserMemberInfo.do";
         Type type = new TypeToken<ResultMap<MemberLevel>>() {}.getType();
         ResultMapRequest<ResultMap<MemberLevel>> ResultMapRequest = new ResultMapRequest<ResultMap<MemberLevel>>(
-                Request.Method.POST, param, postParams, type, listener, errorListener);
+                Request.Method.POST, HOST + param, postParams, type, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
 }
