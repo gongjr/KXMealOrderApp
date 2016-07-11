@@ -17,7 +17,7 @@
         android:id="@+id/title_centertxt"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="#b94152"
+        android:textColor="@color/dark_red"
         android:textSize="@dimen/text_size_large"
         android:text="结算"
         android:layout_centerInParent="true"/>
@@ -30,7 +30,7 @@
         android:text="完成"
         android:layout_alignParentRight="true"
         android:layout_centerVertical="true"
-        android:textColor="#b94152"
+        android:textColor="@color/dark_red"
         android:textSize="@dimen/text_size_large"
         android:layout_marginRight="5dp"/>
 

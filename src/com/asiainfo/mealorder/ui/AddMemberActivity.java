@@ -3,6 +3,9 @@ package com.asiainfo.mealorder.ui;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.os.RemoteException;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ForegroundColorSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -73,6 +76,12 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private TextView memberTypeTxt;
     @InjectView(R.id.add_member_btn)
     private Button memberBtn;
+    @InjectView(R.id.add_phone_txt)
+    private TextView phoneTxt;
+    @InjectView(R.id.add_password_txt)
+    private TextView passwordTxt;
+    @InjectView(R.id.add_con_password_txt)
+    private TextView conPasswordTxt;
 
 
     private CountDownLoadingDF mCountDownLoadingDF;
@@ -90,6 +99,9 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_add_member);
+        if (LakalaController.getInstance().isSupport()) {
+            LakalaController.getInstance().initMagCard();
+        }
         setTitleView();
         initData();
         initListener();
@@ -173,6 +185,9 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
         merchantRegister = (MerchantRegister) BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
         showLoadingDF("正在查询会员卡和证件信息....");
         getMemberLevelAndPsptType();
+        setTextColor(phoneTxt);
+        setTextColor(passwordTxt);
+        setTextColor(conPasswordTxt);
     }
 
     private void initListener() {
@@ -386,7 +401,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                         @Override
                         public void onNext(TrackData pData) {
                             if (pData.getCardno().length() > 0) {
-
+                                memberEdit.setText(pData.getCardno());
                             }
                         }
                     });
@@ -490,4 +505,12 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             }
         }
     };
+
+    private void setTextColor(TextView v) {
+        String str = v.getText().toString();
+        SpannableStringBuilder style=new SpannableStringBuilder(str);
+        ForegroundColorSpan redSpan = new ForegroundColorSpan(getResources().getColor(R.color.dark_red));
+        style.setSpan(redSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        v.setText(style);
+    }
 }
