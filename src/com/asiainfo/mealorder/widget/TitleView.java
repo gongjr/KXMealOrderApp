@@ -48,6 +48,31 @@ public class TitleView extends RelativeLayout implements View.OnClickListener {
     }
 
     /*
+    * 是否显示标题栏左边控件
+    * */
+    public void isLeftBtnVisible(boolean b) {
+        if (b) {
+            leftBtn.setVisibility(VISIBLE);
+        } else {
+            leftBtn.setVisibility(INVISIBLE);
+        }
+    }
+
+    /*
+    * 设置中间控件字体大小
+    * */
+    public void setCenterTxtSize(float s) {
+        centerTxt.setTextSize(s);
+    }
+
+    /*
+    * 设置右边控件字体大小
+    * */
+    public void setRightTxtSize(float s) {
+        rightBtn.setTextSize(s);
+    }
+
+    /*
     * 设置标题右边控件内容
     * */
     public void setRightTxt(String s) {

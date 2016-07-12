@@ -111,6 +111,12 @@
             android:screenOrientation="portrait">
         </activity>
         <activity
+            android:name="com.asiainfo.mealorder.ui.AddMemberActivity"
+            android:label="@string/app_name"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
             android:name="com.asiainfo.mealorder.ui.LocalOrderActivity"
             android:label="@string/app_name"
             android:launchMode="singleTop"

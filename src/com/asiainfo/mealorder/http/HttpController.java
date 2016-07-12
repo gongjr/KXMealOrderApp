@@ -4,13 +4,17 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.asiainfo.mealorder.biz.entity.MemberLevel;
 import com.asiainfo.mealorder.biz.entity.http.HurryOrderResult;
+import com.asiainfo.mealorder.biz.entity.http.ResultMap;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitOrderId;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
 import com.asiainfo.mealorder.biz.entity.volley.UpdateOrderInfoResultData;
 import com.asiainfo.mealorder.biz.entity.volley.appPrintDeskOrderInfoResultData;
 import com.asiainfo.mealorder.config.Constants;
+import com.google.gson.reflect.TypeToken;
 
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -103,7 +107,7 @@ public class HttpController {
      * @param errorListener 异常监听器
      */
     public void postSubmitHangUpOrder(final Map<String, String> postParams, Response.Listener<SubmitPayResult> listener,
-                              Response.ErrorListener errorListener) {
+                                      Response.ErrorListener errorListener) {
         String param = "/appController/submitHangUpOrder.do";
         ResultMapRequest<SubmitPayResult> ResultMapRequest = new ResultMapRequest<SubmitPayResult>(
                 Request.Method.POST, HOST + param, postParams, SubmitPayResult.class, listener, errorListener);
@@ -328,14 +332,14 @@ public class HttpController {
     /**
      * 获取会员卡信息
      *
-     * @param merchantId      会员所属商户ID
-     * @param userId          会员id
-     * @param password        验证消费密码
-     * @param listener        响应监听器
-     * @param errorListener   异常监听器
+     * @param merchantId    会员所属商户ID
+     * @param userId        会员id
+     * @param password      验证消费密码
+     * @param listener      响应监听器
+     * @param errorListener 异常监听器
      */
     public void getCheckUserPwd(String merchantId, String userId, String password, Response.Listener listener,
-                              Response.ErrorListener errorListener) {
+                                Response.ErrorListener errorListener) {
         String param = "/appController/checkUserPwd.do?merchantId=" + merchantId + "&userId=" + userId
                 + "&password=" + password;
         JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
@@ -343,4 +347,33 @@ public class HttpController {
 
     }
 
+    /**
+     * 获取会员等级和证件类型
+     *
+     * @param merchantId    商户ID
+     * @param listener      响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getMemberLevelAndPsptType(String merchantId, Response.Listener listener, Response.ErrorListener errorListener) {
+        String param = "/appController/queryUserMemberLevelsAndPsptType.do?merchantId=" + merchantId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 新增会员
+     *
+     * @param postParams    post参数
+     * @param listener      响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void postAddMember(final Map<String, String> postParams, Response.Listener<ResultMap<MemberLevel>> listener,
+                              Response.ErrorListener errorListener) {
+        String param = "/appController/saveUserMemberInfo.do";
+        Type type = new TypeToken<ResultMap<MemberLevel>>() {
+        }.getType();
+        ResultMapRequest<ResultMap<MemberLevel>> ResultMapRequest = new ResultMapRequest<ResultMap<MemberLevel>>(
+                Request.Method.POST, HOST + param, postParams, type, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
 }

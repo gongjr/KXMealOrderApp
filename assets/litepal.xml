@@ -2,7 +2,7 @@
 <litepal>  
     <dbname value="kxmealorderdb" ></dbname>  
   
-    <version value="23" ></version>
+    <version value="24" ></version>
   
     <list>  
         <mapping class="com.asiainfo.mealorder.biz.entity.MerchantDesk"></mapping>
