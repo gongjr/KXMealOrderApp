@@ -10,3 +10,4 @@ build/
 *.class
 bin/
 gen/
+gradle/
