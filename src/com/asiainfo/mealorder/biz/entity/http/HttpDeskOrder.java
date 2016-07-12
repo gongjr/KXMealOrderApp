@@ -2,7 +2,6 @@ package com.asiainfo.mealorder.biz.entity.http;
 
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
-import com.asiainfo.mealorder.biz.model.PriceUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -461,10 +460,14 @@ public class HttpDeskOrder {
         lDeskOrder.setPersonNum(personNum);
         lDeskOrder.setDesk(desk);
         lDeskOrder.setUserName(userName);
-        if (needPay!=null)
+        /*if (needPay!=null)
             lDeskOrder.setNeedPay(PriceUtil.longToStrDiv100(needPay));
         if (originalPrice!=null)
-            lDeskOrder.setOriginalPrice(PriceUtil.longToStrDiv100(originalPrice));
+            lDeskOrder.setOriginalPrice(PriceUtil.longToStrDiv100(originalPrice));*/
+
+            lDeskOrder.setNeedPay(needPay.toString());
+            lDeskOrder.setOriginalPrice(originalPrice.toString());
+
         if (orderGoods!=null&&orderGoods.size()>0){
             List<DeskOrderGoodsItem> lDeskOrderGoodsItems=new ArrayList<>();
             for (HttpDeskOrderGoodsItem lHttpDeskOrderGoodsItem:orderGoods){
