@@ -110,7 +110,10 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
     private QuickAction quickAction;
     private static final int ID_refresh = 1;
     private static final int ID_localOrder = 2;
+<<<<<<< HEAD
     private static final int ID_addMember = 4;
+=======
+>>>>>>> origin/debug-yao
     private static final int ID_exit = 3;
     private List<MerchantDishesType> mDishTypeDataList;
     private List<MerchantDishes> mAllDishesDataList;
@@ -157,7 +160,10 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
         ActionItem refreshDishesItem = new ActionItem(ID_refresh, "刷新菜单", ic_actionitem_refresh);
         ActionItem exitItem = new ActionItem(ID_exit, "退出登录", ic_actionitem_exit);
         ActionItem localOrder = new ActionItem(ID_localOrder, "本地订单", ic_actionitem_order);
+<<<<<<< HEAD
         ActionItem addMember = new ActionItem(ID_addMember, "新增会员", ic_actionitem_member);
+=======
+>>>>>>> origin/debug-yao
         localOrder.setSticky(true);
         refreshDishesItem.setSticky(true);
         exitItem.setSticky(true);
@@ -562,6 +568,10 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
     private void openNewDeskInputPersonNumDialog() {
         try {
             InputOrderPersonNumDF mInputOrderPersonNumDF = InputOrderPersonNumDF.newInstance();
+<<<<<<< HEAD
+=======
+            mInputOrderPersonNumDF.setMerchantDesk(mCurDesk);
+>>>>>>> origin/debug-yao
             mInputOrderPersonNumDF.setOnFinishInputNumListener(new OnFinishInputNumListener() {
                 @Override
                 public void onInputNumCallBack(int personNum) {

@@ -5,6 +5,7 @@ import android.util.Log;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
+import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.listener.OnDialogListener;
 import com.asiainfo.mealorder.biz.listener.OnHttpResponseListener;
 import com.asiainfo.mealorder.http.HttpController;
@@ -15,6 +16,7 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -64,30 +66,59 @@ public class SearchUserPresenter {
                                 if (mMemberCardList.size() == 0) {
                                     onActivityOperationListener.showShortTip("会员卡信息为空,请确认!");
                                 } else if (mMemberCardList != null && mMemberCardList.size() == 1) {
-//                                    searchUserActivity.startMemberActivity(mMemberCardList.get(0));
                                     onActivityOperationListener.startAnotherActivity(mMemberCardList.get(0));
                                 } else {
-//                                    searchUserActivity.selectMemberCard(mMemberCardList);
                                     onActivityOperationListener.selectCard(mMemberCardList);
                                 }
                             } else {
-//                                searchUserActivity.updateNotice(response.getString("info"), 0);
                                 onDialogListener.updateDialogNotice(response.getString("info"), 0);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
-//                            searchUserActivity.updateNotice("Json解析失败", 0);
                             onDialogListener.updateDialogNotice("Json解析失败", 0);
                         }
                     }
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-//                        searchUserActivity.dismissLoadingDF();
                         onDialogListener.dismissDialog();
-//                        searchUserActivity.showTip("获取失败: " + error.getMessage());
                         onActivityOperationListener.showShortTip("获取失败: " + error.getMessage());
                     }
                 });
+    }
+
+    public void getOrderByMealNum(String childMerchantId, String mealNum) {
+        HttpController.getInstance().getOrderByMealNumber(childMerchantId, mealNum,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "getOrderByMealNum: " + response.toString());
+                        try {
+                            if (response.getString("errcode").equals("0")) {
+                                onDialogListener.dismissDialog();
+                                String str = response.getJSONObject("data").getString("info");
+                                if (str == null) {
+                                    onDialogListener.updateDialogNotice("该取餐号没有订单=.=!!", 0);
+                                    return;
+                                }
+                                List<DeskOrder> deskOrderList = gson.fromJson(str, new TypeToken<ArrayList<DeskOrder>>() {}.getType());
+                                onActivityOperationListener.sendDeskOrderList(deskOrderList);
+                            } else {
+                                onDialogListener.updateDialogNotice("该取餐号没有订单=.=!!", 0);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            onDialogListener.updateDialogNotice("json解析失败", 0);
+                        }
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        onDialogListener.dismissDialog();
+                        onActivityOperationListener.showShortTip("获取失败: " + error.getMessage());
+                    }
+                });
+
     }
 }

@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/activity_root_style"
+    android:background="#eeeeee">
+
+    <RelativeLayout
+        android:id="@+id/om_title_layout"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentTop="true"
+        android:background="@color/white">
+
+        <Button
+            android:id="@+id/om_back_btn"
+            android:layout_width="40dip"
+            android:layout_height="40dip"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="5dip"
+            android:background="@anim/arrow_to_left_btn_bg" />
+
+        <TextView
+            android:id="@+id/om_center_text"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerInParent="true"
+            android:gravity="center"
+            android:text="确认订单"
+            android:textColor="#b94152"
+            android:textSize="@dimen/text_size_large" />
+
+        <!--<TextView-->
+            <!--android:id="@+id/om_right_text"-->
+            <!--android:layout_width="wrap_content"-->
+            <!--android:layout_height="match_parent"-->
+            <!--android:layout_alignParentRight="true"-->
+            <!--android:layout_marginRight="10dip"-->
+            <!--android:gravity="center"-->
+            <!--android:text="A21桌"-->
+            <!--android:textColor="#b94152"-->
+            <!--android:textSize="@dimen/text_size_middle" />-->
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0.5dip"
+            android:layout_alignParentBottom="true"
+            android:background="#C5C5C5" />
+    </RelativeLayout>
+
+    <ListView
+        android:id="@+id/om_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/om_title_layout"
+        android:layout_above="@+id/om_underline"
+        android:background="@android:color/white"
+        android:layout_marginTop="10dp"
+        android:scrollbars="none">
+
+    </ListView>
+
+    <TextView
+        android:id="@+id/om_underline"
+        android:layout_width="match_parent"
+        android:layout_height="0.5dip"
+        android:background="#c1c1c1"
+        android:layout_above="@+id/om_settle_layout"/>
+
+    <RelativeLayout
+        android:id="@+id/om_settle_layout"
+        android:layout_width="match_parent"
+        android:layout_height="40dip"
+        android:layout_above="@+id/om_sure_btn"
+        android:background="@android:color/white"
+        android:layout_marginBottom="10dp">
+
+        <TextView
+            android:id="@+id/om_total_count"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_toLeftOf="@+id/om_v_line"
+            android:gravity="center"
+            android:text="共4个菜"
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_small" />
+
+        <TextView
+            android:id="@+id/om_v_line"
+            android:layout_width="1dip"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:layout_marginBottom="10dip"
+            android:layout_marginLeft="5dip"
+            android:layout_marginRight="5dip"
+            android:layout_marginTop="10dip"
+            android:layout_toLeftOf="@+id/om_total_money"
+            android:background="#cdcdcd" />
+
+        <TextView
+            android:id="@+id/om_total_money"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="20dip"
+            android:gravity="center"
+            android:text="总价239元"
+            android:textColor="@color/cl_text_grey_2"
+            android:textSize="@dimen/text_size_small" />
+    </RelativeLayout>
+
+    <Button
+        android:id="@+id/om_sure_btn"
+        android:layout_width="match_parent"
+        android:layout_height="45dip"
+        android:layout_marginBottom="20dip"
+        android:layout_marginLeft="10dip"
+        android:layout_marginRight="10dip"
+        android:layout_marginTop="5dip"
+        android:background="@anim/choose_end_btn_bg"
+        android:button="@null"
+        android:gravity="center"
+        android:text="确认下单"
+        android:textColor="@color/white"
+        android:layout_alignParentBottom="true" />
+
+
+</RelativeLayout>

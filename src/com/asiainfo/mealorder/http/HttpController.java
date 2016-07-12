@@ -48,7 +48,7 @@ public class HttpController {
     /**
      * 使用地址
      */
-    public static final String HOST = Address_debug;
+    public static final String HOST = Address_tst;
 
     /**
      * AppKey 服务器约定app更新key字段
@@ -361,6 +361,38 @@ public class HttpController {
     }
 
     /**
+     * 根据取餐号,获取订单信息
+     *
+     * @param childMerchantId 子商户ID
+     * @param mealNumber      取餐号
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void getOrderByMealNumber(String childMerchantId, String mealNumber, Response.Listener listener,
+                                     Response.ErrorListener errorListener) {
+        String param = "/appController/queryOrderInfoByMealNumber.do?childMerchantId=" + childMerchantId + "&mealNumber=" + mealNumber;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 根据订单号,获取订单信息
+     *
+     * @param orderId         订单Id
+     * @param merchantId      商户Id
+     * @param childMerchantId 子商户Id
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void getOrderById(String orderId, String merchantId, String childMerchantId,
+                             Response.Listener listener, Response.ErrorListener errorListener) {
+        String param = "/appController/queryOrderInfoByOrderId.do?orderId=" + orderId + "&merchantId=" + merchantId
+                + "&childMerchantId=" + childMerchantId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
      * 新增会员
      *
      * @param postParams    post参数
@@ -374,6 +406,25 @@ public class HttpController {
         }.getType();
         ResultMapRequest<ResultMap<MemberLevel>> ResultMapRequest = new ResultMapRequest<ResultMap<MemberLevel>>(
                 Request.Method.POST, HOST + param, postParams, type, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 根据订单号, 获取订单信息
+     *
+     * @param personNumber    用餐人数
+     * @param deskId          桌号Id
+     * @param childMerchantId 子商户Id
+     * @param orderId         订单号
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void submitOrderFromOrderId(String personNumber, String deskId, String
+            childMerchantId, String orderId,
+                                       Response.Listener listener, Response.ErrorListener errorListener) {
+        String param = "/appController/submitOrderFromOrderId.do?personNumber=" + personNumber + "&deskId=" + deskId
+                + "&childMerchantId=" + childMerchantId + "&orderId=" + orderId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
 }

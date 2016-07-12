@@ -150,7 +150,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                                 updateNotice("获取支付方式配置失败,无法结算!", getPayMentResultmListener);
                             }
                         } catch (JSONException e) {
-                            updateNotice("查询支付方式配置失败,无法结算!", getPayMentResultmListener);
+                            updateNotice("查询支付方式O配置失败,无法结算!", getPayMentResultmListener);
                             e.printStackTrace();
                         }
                     }
