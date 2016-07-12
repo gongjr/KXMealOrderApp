@@ -78,6 +78,7 @@ public class SearchUserActivity extends BaseActivity {
             isMeal = true;
             setTitleText();
             userNum.setHint("请输入取餐号");
+            readMembercard.setVisibility(View.GONE);
         }
         initKeyboardView();
     }
