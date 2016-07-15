@@ -25,6 +25,7 @@ import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.DeskOrderAdapter;
 import com.asiainfo.mealorder.biz.bean.merchant.FunctionCode;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
+import com.asiainfo.mealorder.biz.model.PriceUtil;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
@@ -428,7 +429,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
         mOrderdelete.setOrderGoods(orderGoods);
         mOrderdelete.setTradeStsffId(mLoginUserPrefData.getStaffId());
         mOrderdelete.setOriginalPrice(Arith.d2str(newprice));
-        mOrderdelete.setAllGoodsNum(Integer.valueOf(mDeskOrder.getAllGoodsNum()) - orderGoodsItem.getSalesNum());
+        mOrderdelete.setAllGoodsNum(PriceUtil.subPrice(mDeskOrder.getAllGoodsNum(),orderGoodsItem.getSalesNum()));
 
         Map<String, String> paramList = new HashMap<String, String>();
         Gson gson = new Gson();
@@ -455,18 +456,18 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                             Double favorablePrice = Double.valueOf(deskOrderGoodsItemm.getSalesPrice()) - Double.valueOf(deskOrderGoodsItemm.getInterferePrice()) - Double.valueOf(deskOrderGoodsItemm.getDiscountPrice())-Double.valueOf(deskOrderGoodsItemm.getMarketingPrice());
                             mDeskOrder.setNeedPay(Arith.d2str(getNewPrice(mDeskOrder.getNeedPay(), String.valueOf(favorablePrice))));
 
-                            int i = 0;
+                            Double i = 0.0;
                             if (compDishesList != null && compDishesList.size() > 0) {
-                                int numSum = 0;
-                                numSum += Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
+                                Double numSum = 0.0;
+                                numSum += Double.valueOf(deskOrderGoodsItemm.getSalesNum());
                                 for (DeskOrderGoodsItem childDeskOrderGoodsItem : compDishesList) {
-                                    numSum += Integer.valueOf(childDeskOrderGoodsItem.getSalesNum());
+                                    numSum += Double.valueOf(childDeskOrderGoodsItem.getSalesNum());
                                 }
-                                i = Integer.valueOf(mDeskOrder.getAllGoodsNum()) - numSum;
+                                i = Double.valueOf(mDeskOrder.getAllGoodsNum()) - numSum;
                             } else {
-                                i = Integer.valueOf(mDeskOrder.getAllGoodsNum()) - Integer.valueOf(deskOrderGoodsItemm.getSalesNum());
+                                i = Double.valueOf(mDeskOrder.getAllGoodsNum()) - Double.valueOf(deskOrderGoodsItemm.getSalesNum());
                             }
-                            mDeskOrder.setAllGoodsNum(i + "");//删菜成功后更新本地桌子订单菜品数量
+                            mDeskOrder.setAllGoodsNum(Arith.d2str(i));//删菜成功后更新本地桌子订单菜品数量
                             if (position < mNormalDisheList.size()) {
                                 mNormalDisheList.remove(position);
                             } else if (position >= mNormalDisheList.size() && mCompDishList != null) {
@@ -641,7 +642,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
         orderGoodsItem.setOrderId(deskOrderGoodsItemm.getOrderId());
         orderGoodsItem.setSalesId(deskOrderGoodsItemm.getSalesId());
         orderGoodsItem.setSalesName(deskOrderGoodsItemm.getSalesName());
-        orderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItemm.getSalesNum()));
+        orderGoodsItem.setSalesNum(deskOrderGoodsItemm.getSalesNum());
         orderGoodsItem.setSalesPrice(deskOrderGoodsItemm.getSalesPrice());
         List<String> remark = new ArrayList<String>();
         remark.add(deskOrderGoodsItemm.getRemark());
@@ -676,7 +677,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
             hurryOrderGoodsItem.setRemark("");
         }
         hurryOrderGoodsItem.setSalesName(deskOrderGoodsItem.getSalesName());
-        hurryOrderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItem.getSalesNum()));
+        hurryOrderGoodsItem.setSalesNum(deskOrderGoodsItem.getSalesNum());
         return hurryOrderGoodsItem;
     }
 

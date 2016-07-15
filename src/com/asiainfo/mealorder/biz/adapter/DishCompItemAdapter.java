@@ -485,7 +485,7 @@ public class DishCompItemAdapter extends BaseAdapter {
             goodsItem.setRemark(mRemarkList);
             goodsItem.setSalesId(mDishesCompItem.getDishesId());
             goodsItem.setSalesName(mDishesCompItem.getDishesName());
-            goodsItem.setSalesNum(Integer.valueOf(mDishesCompItem.getDishesNum()));
+            goodsItem.setSalesNum(mDishesCompItem.getDishesNum());
             goodsItem.setSalesPrice("0");
             goodsItem.setSalesState("1");  //0稍后下单  1立即下单
             goodsItem.setIsCompDish("" + true); //套餐菜固定为true
@@ -564,7 +564,7 @@ public class DishCompItemAdapter extends BaseAdapter {
                 goodsItem.setRemark(getDefPropertyChoice(compItem));
                 goodsItem.setSalesId(compItem.getDishesId());
                 goodsItem.setSalesName(compItem.getDishesName());
-                goodsItem.setSalesNum(Integer.valueOf(compItem.getDishesNum()));
+                goodsItem.setSalesNum(compItem.getDishesNum());
                 goodsItem.setSalesPrice("0");
                 goodsItem.setSalesState("1");  //0稍后下单  1立即下单
                 goodsItem.setIsCompDish("" + true);  //套餐菜固定为true

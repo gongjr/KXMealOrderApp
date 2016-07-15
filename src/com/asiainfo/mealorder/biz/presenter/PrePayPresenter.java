@@ -236,7 +236,7 @@ public class PrePayPresenter {
         orderGoodsItem.setOrderId(deskOrderGoodsItemm.getOrderId());
         orderGoodsItem.setSalesId(deskOrderGoodsItemm.getSalesId());
         orderGoodsItem.setSalesName(deskOrderGoodsItemm.getSalesName());
-        orderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItemm.getSalesNum()));
+        orderGoodsItem.setSalesNum(deskOrderGoodsItemm.getSalesNum());
         orderGoodsItem.setSalesPrice(deskOrderGoodsItemm.getSalesPrice());
         List<String> remark = new ArrayList<String>();
         if (deskOrderGoodsItemm.getRemark() != null && deskOrderGoodsItemm.getRemark().length() > 0)

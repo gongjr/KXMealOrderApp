@@ -566,7 +566,7 @@ public class SelectCommonDishesAdapter extends Adapter<SelectCommonDishesAdapter
         	
         	if(gitc!=null && ditc!=null && gitc.equals(ditc) 
         			&& gidid!=null && didid!=null && gidid.equals(didid) ){
-        		count  = count + goodsItem.getSalesNum();
+        		count  = count + StringUtils.str2Int(goodsItem.getSalesNum());
         	}
 		}
 		

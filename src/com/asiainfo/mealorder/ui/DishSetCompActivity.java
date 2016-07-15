@@ -333,7 +333,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
             goodsItem.setRemark(remarkList);
             goodsItem.setSalesId(mMerchantDishes.getDishesId());
             goodsItem.setSalesName(mMerchantDishes.getDishesName());
-            goodsItem.setSalesNum(1);
+            goodsItem.setSalesNum("1");
             goodsItem.setSalesPrice(mMerchantDishes.getDishesPrice());
             goodsItem.setSalesState("1");  //0稍后下单  1立即下单
             goodsItem.setIsCompDish("" + false); //固定填false

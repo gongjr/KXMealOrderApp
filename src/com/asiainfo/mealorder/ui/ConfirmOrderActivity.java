@@ -289,15 +289,15 @@ public class ConfirmOrderActivity extends BaseActivity{
 				Logger.d(TAG, "普通菜细项");
 			} break;
 			case Constants.ORDER_DISHES_ACTION_TYPE_ADD:{//数量加
-				int count = item.getSalesNum()+1;
-				item.setSalesNum(count);
+				int count = StringUtils.str2Int(item.getSalesNum())+1;
+				item.setSalesNum(count+"");
                 item.setSalesPrice(Arith.d2str(count*StringUtils.str2Double(item.getDishesPrice())));
                 mNormalDishDataList.set(position, item);
 			} break;
 			case Constants.ORDER_DISHES_ACTION_TYPE_MINUS:{//数量减
-				int count = item.getSalesNum()-1;
+				int count = StringUtils.str2Int(item.getSalesNum())-1;
 				if(count>0){
-					item.setSalesNum(count);
+					item.setSalesNum(count+"");
                     item.setSalesPrice(Arith.d2str(count*StringUtils.str2Double(item.getDishesPrice())));
 					mNormalDishDataList.set(position, item);
 				}else{
@@ -324,34 +324,34 @@ public class ConfirmOrderActivity extends BaseActivity{
 					Logger.d(TAG, "套餐菜细项");
 				} break;
 				case Constants.ORDER_DISHES_ACTION_TYPE_ADD:{//数量加
-                    int oldCount=mainDishes.getSalesNum();
+                    int oldCount=StringUtils.str2Int(mainDishes.getSalesNum());
 					int count = oldCount+1;
-					mainDishes.setSalesNum(count);
+					mainDishes.setSalesNum(count+"");
 					mainDishes.setSalesPrice(Arith.d2str(count*StringUtils.str2Double(mainDishes.getDishesPrice()))+"");
 					dishesCompEntity.setmCompMainDishes(mainDishes);
 					for(int m=0; m<compDishesItemList.size(); m++){
 						OrderGoodsItem mOrderGoodsItem = compDishesItemList.get(m);
-                        int oldNum=mOrderGoodsItem.getSalesNum();
+                        int oldNum=StringUtils.str2Int(mOrderGoodsItem.getSalesNum());
                         int ratio=oldNum/oldCount;
-						mOrderGoodsItem.setSalesNum(count*ratio);
+						mOrderGoodsItem.setSalesNum(count*ratio+"");
 						compDishesItemList.set(m, mOrderGoodsItem);
 					}
 					dishesCompEntity.setCompItemDishes(compDishesItemList);
 					mDishesCompDataList.set(pos, dishesCompEntity);
 				} break;
 				case Constants.ORDER_DISHES_ACTION_TYPE_MINUS:{//数量减
-                    int oldCount=mainDishes.getSalesNum();
+                    int oldCount=StringUtils.str2Int(mainDishes.getSalesNum());
 					int count = oldCount-1;
 					if(count>0){
-						mainDishes.setSalesNum(count);
+						mainDishes.setSalesNum(count+"");
 						mainDishes.setSalesPrice(Arith.d2str(count*StringUtils.str2Double(mainDishes.getDishesPrice()))+"");
 						dishesCompEntity.setmCompMainDishes(mainDishes);
 						for(int m=0; m<compDishesItemList.size(); m++){
 							OrderGoodsItem mOrderGoodsItem = compDishesItemList.get(m);
-                            int oldNum=mOrderGoodsItem.getSalesNum();
+                            int oldNum=StringUtils.str2Int(mOrderGoodsItem.getSalesNum());
                             int radio=oldNum/oldCount;
 							int cnt = radio*count;
-							mOrderGoodsItem.setSalesNum(cnt);
+							mOrderGoodsItem.setSalesNum(cnt+"");
 							compDishesItemList.set(m, mOrderGoodsItem);
 						}
 						dishesCompEntity.setCompItemDishes(compDishesItemList);
@@ -416,7 +416,7 @@ public class ConfirmOrderActivity extends BaseActivity{
         	
         	if(gitc!=null && ditc!=null && gitc.equals(ditc) 
         			&& gidid!=null && didid!=null && gidid.equals(didid) ){
-        		goodsItem.setSalesNum(selectedCount);
+        		goodsItem.setSalesNum(selectedCount+"");
         		goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
         		List<String> remarkList = updateOrderGoodsRemarkTypeObj(mDishesPropertyChoice);
         		goodsItem.setRemark(remarkList); //全量更新
@@ -451,7 +451,7 @@ public class ConfirmOrderActivity extends BaseActivity{
 			goodsItem.setRemark(remarkList);
 			goodsItem.setSalesId(dishesItem.getDishesId());
 			goodsItem.setSalesName(dishesItem.getDishesName());
-			goodsItem.setSalesNum(selectedCount);
+			goodsItem.setSalesNum(selectedCount+"");
 			goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
 			goodsItem.setSalesState("1");  //0稍后下单  1立即下单
 			Boolean isComp = false;
@@ -481,7 +481,7 @@ public class ConfirmOrderActivity extends BaseActivity{
         String didid = dishesItem.getDishesId();
         if(gitc!=null && ditc!=null && gitc.equals(ditc)
                 && gidid!=null && didid!=null && gidid.equals(didid) ){
-            goodsItem.setSalesNum(selectedCount);
+            goodsItem.setSalesNum(selectedCount+"");
             goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
             //分标签组更新
             List<String> remarkList = updateOrderGoodsRemarkTypeObj2(mDishesPropertyChoice);
@@ -539,7 +539,7 @@ public class ConfirmOrderActivity extends BaseActivity{
         String didid = dishesItem.getDishesId();
         if(gitc!=null && ditc!=null && gitc.equals(ditc)
                 && gidid!=null && didid!=null && gidid.equals(didid) ){
-            goodsItem.setSalesNum(selectedCount);
+            goodsItem.setSalesNum(selectedCount+"");
             dishesItem.setDishesPrice("" + priceRatio);
             goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
             //分标签组更新
@@ -622,7 +622,7 @@ public class ConfirmOrderActivity extends BaseActivity{
 		//普通菜
 		for(int i=0; i<mNormalDishDataList.size(); i++){
 			OrderGoodsItem goodsItem = mNormalDishDataList.get(i);
-			countSum += goodsItem.getSalesNum();
+			countSum += StringUtils.str2Int(goodsItem.getSalesNum());
             Log.i("TAG","salesprice:"+goodsItem.getSalesPrice());
 			priceSum += StringUtils.str2Double(goodsItem.getSalesPrice());
             Log.i("TAG","priceSum:"+priceSum);
@@ -632,7 +632,7 @@ public class ConfirmOrderActivity extends BaseActivity{
 		if(mDishesCompDataList!=null && mDishesCompDataList.size()>0){
 			for(int m=0; m<mDishesCompDataList.size(); m++){
 				OrderGoodsItem mainCompDishes = mDishesCompDataList.get(m).getmCompMainDishes();
-				countSum += mainCompDishes.getSalesNum();
+				countSum += StringUtils.str2Int(mainCompDishes.getSalesNum());
 				priceSum += StringUtils.str2Double(mainCompDishes.getSalesPrice());
 			}
 		}

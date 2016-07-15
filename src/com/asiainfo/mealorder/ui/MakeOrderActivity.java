@@ -301,7 +301,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
         	 */
         	if(gitc!=null && ditc!=null && gitc.equals(ditc) 
         			&& gidid!=null && didid!=null && gidid.equals(didid) && !hasProp){
-        		goodsItem.setSalesNum(selectedCount);
+        		goodsItem.setSalesNum(selectedCount+"");
         		goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(goodsItem.getDishesPrice())));
         		List<String> remarkList = updateOrderGoodsRemarkTypeObj(mDishesPropertyChoice);
         		goodsItem.setRemark(remarkList); //全量更新
@@ -335,7 +335,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 			goodsItem.setRemark(remarkList);
 			goodsItem.setSalesId(dishesItem.getDishesId());
 			goodsItem.setSalesName(dishesItem.getDishesName());
-			goodsItem.setSalesNum(selectedCount);
+			goodsItem.setSalesNum(selectedCount+"");
 			goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
 			goodsItem.setSalesState("1");  //0稍后下单  1立即下单
 			Boolean isComp = false;
@@ -364,7 +364,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 				String dTypeCode = dishType.getDishesTypeCode();
 				String gTypeCode = goodsItem.getDishesTypeCode();
 				if(dTypeCode!=null && gTypeCode!=null && dTypeCode.equals(gTypeCode)){
-					selectedNum = selectedNum + goodsItem.getSalesNum();
+					selectedNum = selectedNum + Integer.valueOf(goodsItem.getSalesNum());
 				}
 			}
 			dishType.setDishesNum(selectedNum+"");
@@ -581,7 +581,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
      * 不修改的order部分,取原值传回
 	 */
 	private void preparePushedOrderInfo(Boolean isFirst, DeskOrder mPushedDeskOrder){
-		mOrderSubmit.setAllGoodsNum(StringUtils.str2Int(mPushedDeskOrder.getAllGoodsNum())); /**商品数量**/   
+		mOrderSubmit.setAllGoodsNum(mPushedDeskOrder.getAllGoodsNum()); /**商品数量**/
 		mOrderSubmit.setChildMerchantId(StringUtils.str2Long(childMerchantId)); /**子商户id**/  
 		mOrderSubmit.setCreateTime(mPushedDeskOrder.getStrCreateTime()); /**订单创建时间**/
 		mOrderSubmit.setDeskId(mCurDesk.getDeskId());
@@ -617,7 +617,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	 * 填充订单概要信息，准备下单,相关字段设初始值
 	 */
 	public void prepareNewOrderSummaryInfo(Boolean isCalDeskOrderPrice){
-		mOrderSubmit.setAllGoodsNum(getOrderSubmitAllGoodsNum()); /**商品数量**/   
+		mOrderSubmit.setAllGoodsNum(getOrderSubmitAllGoodsNum()+""); /**商品数量**/
 		mOrderSubmit.setChildMerchantId(StringUtils.str2Long(childMerchantId)); /**子商户id**/  
 		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 		mOrderSubmit.setDeskId(mCurDesk.getDeskId());
@@ -652,7 +652,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
      * 不修改的order部分,取原值传回
 	 */
 	private void prepareDeskCurOrderSummaryInfo(){
-		mOrderSubmit.setAllGoodsNum(getOrderSubmitAllGoodsNum()); /**商品数量**/   
+		mOrderSubmit.setAllGoodsNum(getOrderSubmitAllGoodsNum()+""); /**商品数量**/
 		mOrderSubmit.setChildMerchantId(StringUtils.str2Long(childMerchantId)); /**子商户id**/  
 //		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 		mOrderSubmit.setCreateTime(mDeskOrder.getStrCreateTime()); /**订单创建时间**/
@@ -689,7 +689,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		int num = 0;
 		for(int i=0; i<orderGoodsList.size(); i++){
 			OrderGoodsItem goodsItem = orderGoodsList.get(i);
-			num = num + goodsItem.getSalesNum();
+			num = num + Integer.valueOf(goodsItem.getSalesNum());
 		}
 		if(orderCompGoodsList!=null && orderCompGoodsList.size()>0){
 			num = num + orderCompGoodsList.size();
@@ -772,8 +772,8 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 				goodsItem.setOrderId("");
 				goodsItem.setSalesId(deskGoodsItem.getSalesId());
 				goodsItem.setSalesName(deskGoodsItem.getSalesName());
-				goodsItem.setSalesNum(StringUtils.str2Int(deskGoodsItem.getSalesNum()));
-				goodsItem.setSalesPrice(""+Arith.d2str(goodsItem.getSalesNum()*StringUtils.str2Double(goodsItem.getDishesPrice())));
+				goodsItem.setSalesNum(deskGoodsItem.getSalesNum());
+				goodsItem.setSalesPrice(""+Arith.d2str(StringUtils.str2Int(goodsItem.getSalesNum())*StringUtils.str2Double(goodsItem.getDishesPrice())));
 				goodsItem.setSalesState("1");  //0稍后下单  1立即下单
 				Boolean isComp = false;
 				if(deskGoodsItem.getIsComp()!=null && deskGoodsItem.getIsComp().equals("1")){ isComp=true; }

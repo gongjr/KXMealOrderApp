@@ -781,7 +781,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
                 mOrderdelete.setOrderGoods(orderGoods);
                 mOrderdelete.setTradeStsffId(mLoginUserPrefData.getStaffId());
                 mOrderdelete.setOriginalPrice(Arith.d2str(newprice));
-                mOrderdelete.setAllGoodsNum(Integer.valueOf(mDeskOrder.getAllGoodsNum()) - orderGoodsItem.getSalesNum());
+                int num=Integer.valueOf(mDeskOrder.getAllGoodsNum()) - Integer.valueOf(orderGoodsItem.getSalesNum());
+                mOrderdelete.setAllGoodsNum(num+"");
 
                 Map<String, String> paramList = new HashMap<String, String>();
                 Gson gson = new Gson();
@@ -859,7 +860,8 @@ public class ViewOrderDishesActivity extends BaseActivity {
         mOrderdelete.setOrderGoods(orderGoods);
         mOrderdelete.setTradeStsffId(mLoginUserPrefData.getStaffId());
         mOrderdelete.setOriginalPrice(Arith.d2str(newprice));
-        mOrderdelete.setAllGoodsNum(Integer.valueOf(mDeskOrder.getAllGoodsNum()) - orderGoodsItem.getSalesNum());
+        int num=Integer.valueOf(mDeskOrder.getAllGoodsNum()) - Integer.valueOf(orderGoodsItem.getSalesNum());
+        mOrderdelete.setAllGoodsNum(num+"");
 
         Map<String, String> paramList = new HashMap<String, String>();
         Gson gson = new Gson();
@@ -1142,7 +1144,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
         orderGoodsItem.setOrderId(deskOrderGoodsItemm.getOrderId());
         orderGoodsItem.setSalesId(deskOrderGoodsItemm.getSalesId());
         orderGoodsItem.setSalesName(deskOrderGoodsItemm.getSalesName());
-        orderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItemm.getSalesNum()));
+        orderGoodsItem.setSalesNum(deskOrderGoodsItemm.getSalesNum());
         orderGoodsItem.setSalesPrice(deskOrderGoodsItemm.getSalesPrice());
         List<String> remark = new ArrayList<String>();
         remark.add(deskOrderGoodsItemm.getRemark());
@@ -1359,7 +1361,7 @@ public class ViewOrderDishesActivity extends BaseActivity {
             hurryOrderGoodsItem.setRemark("");
         }
         hurryOrderGoodsItem.setSalesName(deskOrderGoodsItem.getSalesName());
-        hurryOrderGoodsItem.setSalesNum(Integer.valueOf(deskOrderGoodsItem.getSalesNum()));
+        hurryOrderGoodsItem.setSalesNum(deskOrderGoodsItem.getSalesNum());
         return hurryOrderGoodsItem;
     }
 
