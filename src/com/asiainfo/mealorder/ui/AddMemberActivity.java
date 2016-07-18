@@ -422,14 +422,18 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_idCard_txt:
-                showIDCardAndMemberCard();
-                chooseMemberCardAndIDCardDF.setCurrentPosition(psptIndex);
-                chooseMemberCardAndIDCardDF.setIsId(true);
+                if(psptTypeList!=null&&psptTypeList.size()>0){
+                    showIDCardAndMemberCard();
+                    chooseMemberCardAndIDCardDF.setCurrentPosition(psptIndex);
+                    chooseMemberCardAndIDCardDF.setIsId(true);
+                }else showShortTip("没有证件类型可选择");
                 break;
             case R.id.add_member_type_txt:
-                showIDCardAndMemberCard();
-                chooseMemberCardAndIDCardDF.setCurrentPosition(leverIndex);
-                chooseMemberCardAndIDCardDF.setIsId(false);
+                if(memberLevelList!=null&&memberLevelList.size()>=0){
+                    showIDCardAndMemberCard();
+                    chooseMemberCardAndIDCardDF.setCurrentPosition(leverIndex);
+                    chooseMemberCardAndIDCardDF.setIsId(false);
+                }else showShortTip("没有会员类型可选择");
                 break;
             case R.id.add_member_btn:
                 lkl();

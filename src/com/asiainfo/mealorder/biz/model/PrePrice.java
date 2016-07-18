@@ -3,8 +3,6 @@ package com.asiainfo.mealorder.biz.model;
 import com.asiainfo.mealorder.utils.Arith;
 import com.asiainfo.mealorder.utils.StringUtils;
 
-import java.text.DecimalFormat;
-
 /**
  * 约定价格计算规则,只能内部操作,外部获取
  * 由于各处价格为字符串,需要统一处理保留2位,加减也是精确运算
@@ -15,56 +13,55 @@ public class PrePrice {
     /**
      * 消费金额
      */
-    private String orderPrice="0.00";
+    private String orderPrice="0";
     /**
      * 应收金额
      */
-    private String shouldPay="0.00";
+    private String shouldPay="0";
     /**
      * 订单初始的应收金额,不随折扣而改变,留存记录
      */
-    private String initShouldPay="0.00";
+    private String initShouldPay="0";
     /**
      * 已付金额
      */
-    private String currentPay="0.00";
+    private String currentPay="0";
     /**
      * 优惠金额
      */
-    private String favourablePrice="0.00";
+    private String favourablePrice="0";
     /**
      * 找零金额
      */
-    private String oddChange="0.00";
+    private String oddChange="0";
     /**
      * 当前还需支付金额
      */
-    private String curNeedPay="0.00";
-    DecimalFormat df   = new DecimalFormat("######0.00");
+    private String curNeedPay="0";
 
     public PrePrice(String orderPrice, String pShouldPay){
-        this.orderPrice=df.format(Double.valueOf(orderPrice));
-        this.shouldPay=df.format(Double.valueOf(pShouldPay));
+        this.orderPrice=Arith.d2str(Double.valueOf(orderPrice));
+        this.shouldPay=Arith.d2str(Double.valueOf(pShouldPay));
         this.initShouldPay=shouldPay;
         this.favourablePrice=subPrice(orderPrice, shouldPay);
-        this.currentPay="0.00";
+        this.currentPay="0";
         this.curNeedPay=shouldPay;
-        this.oddChange="0.00";
+        this.oddChange="0";
     }
 
     public String subPrice(String price1, String price2) {
         Double onePrice = StringUtils.str2Double(price1);
         Double twoPrice = StringUtils.str2Double(price2);
         Double newprice = Arith.sub(onePrice, twoPrice);
-        if (newprice<0)return"0.00";//负数返回0.00
-        return df.format(newprice);
+        if (newprice<0)return"0";//负数返回0.00
+        return Arith.d2str(newprice);
     }
 
     public String addPrice(String price1, String price2) {
         Double onePrice = StringUtils.str2Double(price1);
         Double twoPrice = StringUtils.str2Double(price2);
         Double newprice = Arith.add(onePrice, twoPrice);
-        return df.format(newprice);
+        return Arith.d2str(newprice);
     }
 
     public String getOddChange() {
@@ -137,7 +134,7 @@ public class PrePrice {
     }
 
     public String formatPrice(Double price){
-        return df.format(price);
+        return Arith.d2str(price);
     }
 
 }
