@@ -37,6 +37,7 @@ public class HttpDeskOrderGoodsItem {
 	private String hasRemaining;
     private String isCompDish;
     private String compId;
+    private String dishesUnit;
 
     private Long marketingPrice;
     private Long discountPrice;
@@ -288,6 +289,14 @@ public class HttpDeskOrderGoodsItem {
 		this.remark = remark;
 	}
 
+    public String getDishesUnit() {
+        return dishesUnit;
+    }
+
+    public void setDishesUnit(String pDishesUnit) {
+        dishesUnit = pDishesUnit;
+    }
+
     public DeskOrderGoodsItem ToDeskOrderGoodsItem(){
         DeskOrderGoodsItem lDeskOrderGoodsItem=new DeskOrderGoodsItem();
         if (marketingPrice!=null)
@@ -334,6 +343,7 @@ public class HttpDeskOrderGoodsItem {
         lDeskOrderGoodsItem.setHasRemaining(hasRemaining);
         lDeskOrderGoodsItem.setIsCompDish(isCompDish);
         lDeskOrderGoodsItem.setCompId(compId);
+        lDeskOrderGoodsItem.setDishesUnit(dishesUnit);
         return lDeskOrderGoodsItem;
     }
 }

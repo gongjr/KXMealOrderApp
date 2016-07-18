@@ -49,6 +49,15 @@ public class DeskOrderGoodsItem implements Serializable {
 	private String hasRemaining;
 	private String marketingPrice;
     private String isCompDish;
+    private String dishesUnit;
+
+    public String getDishesUnit() {
+        return dishesUnit;
+    }
+
+    public void setDishesUnit(String pDishesUnit) {
+        dishesUnit = pDishesUnit;
+    }
 
     public String getCompId() {
         return compId;
