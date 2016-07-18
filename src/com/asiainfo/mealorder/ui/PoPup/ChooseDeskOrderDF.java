@@ -204,7 +204,7 @@ public class ChooseDeskOrderDF extends DialogFragmentBase{
         }else if(DESK_ORDER_ACTION_TYPE == Constants.DESK_ORDER_ACTION_TYPE_NOTIFY_KITCHEN){
 			btn_ensure.setText("查看订单");
 		}else{
-			btn_ensure.setText("加菜");
+			btn_ensure.setText("确定");
 		}
 	} 
 	
