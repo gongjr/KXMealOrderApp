@@ -1,5 +1,8 @@
 package com.asiainfo.mealorder.http;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+
 import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
@@ -24,42 +27,83 @@ import java.util.Map;
  * 2015年6月17日
  */
 public class HttpController {
+    /**
+     * 默认服务器配置,程序初始化确认的地址,恢复的初始状态
+     */
+    public static final AddressState init=AddressState.tst;
+    /**
+     * 当前服务器环境值,如果配置,保有最新选择
+     */
+    public static AddressState Address=init;
 
     /**
-     * 生产验证环境
+     * 使用地址内容
      */
-    public static final String Address_debug = "http://115.29.35.199:29890/tacos";
-
-    /**
-     * 生产环境
-     */
-    public static final String Address_release = "http://115.29.35.199:27890/tacos";
-
-    /**
-     * 测试环境
-     */
-    public static final String Address_tst = "http://139.129.35.66:30080/tacos";
-
-    /**
-     * 本地主机调试环境
-     */
-    public static final String Address_localtest = "http://192.168.1.131:8080/tacosonline";
-
-    /**
-     * 使用地址
-     */
-    public static final String HOST = Address_tst;
+    public static  String HOST = Address.getKey();
 
     /**
      * AppKey 服务器约定app更新key字段
      */
     public static final String AppKey = "com.asiainfo.mealorder.KXMealOrderApp";
 
+    public final String sharedPreferenceAddressKey="Address";
+
     public static HttpController httpController;
 
     public static HttpController getInstance() {
         if (httpController == null) httpController = new HttpController();
         return httpController;
+    }
+
+    public boolean toInitAddress(Context mContext) {
+        Boolean isInit=false;
+        if (Address.getValue().equals(init.getValue()))isInit=true;
+        setAddress(init);
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(AppKey, mContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.clear().apply();
+        return isInit;
+    }
+
+    public Boolean isInit(){
+        if (Address.getValue().equals(init.getValue()))return true;
+        return false;
+    }
+
+    public AddressState getAddress() {
+        return Address;
+    }
+
+    public  void setAddress(AddressState pAddress) {
+        Address = pAddress;
+        HOST = Address.getKey();
+    }
+
+    /**
+     * 保存当前服务器环境到配置文件
+     */
+    public void saveAddress(Context mContext,AddressState pAddress){
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(AppKey, mContext.MODE_PRIVATE);
+        SharedPreferences.Editor editor = mSharedPreferences.edit();
+        editor.putString(sharedPreferenceAddressKey, pAddress.getValue());
+        editor.apply();
+    }
+
+    /**
+     * 初始化获取,没有配置的情况下,默认配置环境
+     * 静态参数保存服务器地址,下次升级后,还是读取本地配置的环境,而不是服务器默认设置的连接环境
+     * @param mContext
+     * @return
+     */
+    public void initAddress(Context mContext){
+        SharedPreferences mSharedPreferences = mContext.getSharedPreferences(AppKey, mContext.MODE_PRIVATE);
+        String addressKey = mSharedPreferences.getString(sharedPreferenceAddressKey, Address.getValue());
+        for(AddressState lAddressState:AddressState.values()){
+            if (addressKey.equals(lAddressState.getValue())){
+                setAddress(lAddressState);
+                break;
+            }
+        }
     }
 
     /**

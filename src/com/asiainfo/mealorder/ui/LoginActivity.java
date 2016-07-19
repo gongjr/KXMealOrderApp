@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.android.volley.Response.ErrorListener;
 import com.android.volley.Response.Listener;
@@ -32,9 +33,11 @@ import com.asiainfo.mealorder.biz.entity.http.QueryAppMerchantPublicAttr;
 import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.config.SysEnv;
 import com.asiainfo.mealorder.config.SystemPrefData;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
+import com.asiainfo.mealorder.ui.PoPup.CheckUserPwdDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.HttpDialogLogin;
 import com.asiainfo.mealorder.utils.JPushUtils;
@@ -70,6 +73,8 @@ public class LoginActivity extends BaseActivity {
     private Button btn_login;
     @InjectView(R.id.remember_password_check)
     private CheckBox remember_password;
+    @InjectView(R.id.sys_name)
+    private TextView sys_name;
     private LoginUserPrefData mLoginUserPrefData;
     private HttpDialogLogin mHttpDialogLogin;
     private JPushUtils mJPushUtils;
@@ -209,6 +214,13 @@ public class LoginActivity extends BaseActivity {
                 edit.putBoolean(Constants.Preferences_Login_IsCheck, b);
                 if (!b) edit.clear();
                 edit.apply();
+            }
+        });
+        sys_name.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                showCheckUserPwdDF();
+                return false;
             }
         });
     }
@@ -562,4 +574,25 @@ public class LoginActivity extends BaseActivity {
             }
         });
     }
+
+    /**
+     * 显示系统密码验证窗口
+     * */
+    private void showCheckUserPwdDF() {
+        CheckUserPwdDF lCheckUserPwdDF = CheckUserPwdDF.newInstance();
+        lCheckUserPwdDF.setOnCheckUserPwdListener(mOnCheckUserPwdListener);
+        lCheckUserPwdDF.show(getSupportFragmentManager(), "CheckSysPwdDF");
+    }
+
+    CheckUserPwdDF.OnCheckUserPwdListener mOnCheckUserPwdListener=new CheckUserPwdDF.OnCheckUserPwdListener() {
+        @Override
+        public void onSelectBack(String pwd) {
+            if (pwd.equals(SysEnv.SystemActivityPwd)){
+                showShortTip("系统密码正确!");
+                getOperation().forward(SystemActivity.class);
+            }else{
+                showShortTip("系统管理员密码不正确!");
+            }
+        }
+    };
 }

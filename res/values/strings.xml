@@ -61,5 +61,6 @@
     <item name="tag_three" type="id"></item>
     <item name="tag_four" type="id"></item>
     <item name="tag_five" type="id"></item>
-    
+
+    <string name="system_server_toinit">恢复默认</string>
 </resources>
