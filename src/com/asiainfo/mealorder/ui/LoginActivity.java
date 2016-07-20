@@ -28,6 +28,7 @@ import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.eventbus.EventBackground;
 import com.asiainfo.mealorder.biz.entity.eventbus.EventMain;
 import com.asiainfo.mealorder.biz.entity.eventbus.post.DishesListEntity;
+import com.asiainfo.mealorder.biz.entity.http.HttpMerchantDishes;
 import com.asiainfo.mealorder.biz.entity.http.PublicDishesItem;
 import com.asiainfo.mealorder.biz.entity.http.QueryAppMerchantPublicAttr;
 import com.asiainfo.mealorder.biz.model.LakalaController;
@@ -79,7 +80,7 @@ public class LoginActivity extends BaseActivity {
     private HttpDialogLogin mHttpDialogLogin;
     private JPushUtils mJPushUtils;
     private List<MerchantDishesType> mDishTypeDataList;
-    private List<MerchantDishes> mAllDishesDataList;
+    private List<MerchantDishes> mAllDishesDataList=new ArrayList<>();
     private SharedPreferences login;
     private String userName;
     private String passwd;
@@ -532,8 +533,12 @@ public class LoginActivity extends BaseActivity {
                         mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
                         }.getType());
                         Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
-                        mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
+
+                        List<HttpMerchantDishes> lHttpMerchantDisheses = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<HttpMerchantDishes>>() {
                         }.getType());
+                        for (HttpMerchantDishes lHttpMerchantDishes:lHttpMerchantDisheses){
+                            mAllDishesDataList.add(lHttpMerchantDishes.HttpMerchantDishesToMerchantDishes());
+                        }
                         Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
 
                         if(datainfo.has("attrs")){

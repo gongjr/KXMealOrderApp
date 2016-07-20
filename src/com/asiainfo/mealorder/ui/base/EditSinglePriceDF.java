@@ -81,8 +81,8 @@ public class EditSinglePriceDF extends DialogFragmentBase {
 
     public void initData() {
         single_dishes_name.setText(mMerchantDishes.getDishesName());
-        final int price = Integer.valueOf(mMerchantDishes.getDishesPrice());
-        single_dishes_old_price.setText(price + "/份");
+        final Double price = Double.valueOf(mMerchantDishes.getDishesPrice());
+        single_dishes_old_price.setText(mMerchantDishes.getDishesPrice() + "/份");
         curPrice = 0.0;
         TextWatcher ratioWatcher = new TextWatcher() {
             @Override

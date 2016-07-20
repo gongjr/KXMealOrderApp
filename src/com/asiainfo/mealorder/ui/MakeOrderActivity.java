@@ -230,6 +230,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 			curDishesType = (MerchantDishesType)mDishTypeAdapter.getItem(position);
 			mAllDishesDataList = sqliteGetAllMerchantDishesData(curDishesType.getDishesTypeCode());
 			mSelectCommonDishesAdapter.onRefresh(mAllDishesDataList, orderGoodsList, false);
+            rcyv_dishesInfo.scrollToPosition(0);
 		}
 	};
 	
