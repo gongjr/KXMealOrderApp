@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.biz.entity.http;
 
 import com.asiainfo.mealorder.biz.entity.DishesProperty;
 import com.asiainfo.mealorder.biz.entity.MerchantDishes;
+import com.asiainfo.mealorder.biz.model.PriceUtil;
 
 import java.util.List;
 
@@ -281,16 +282,16 @@ public class HttpMerchantDishes{
         lMerchantDishes.setIsZdzk(isZdzk);
         lMerchantDishes.setJianPin(jianPin);
         lMerchantDishes.setDishesCode(dishesCode);
-       /* if (dishesPrice!=null)
+        if (dishesPrice!=null)
             lMerchantDishes.setDishesPrice(PriceUtil.longToStrDiv100(dishesPrice));
         if (memberPrice!=null)
             lMerchantDishes.setMemberPrice(PriceUtil.longToStrDiv100(memberPrice));
         if (dishesOldPrice!=null)
             lMerchantDishes.setDishesOldPrice(PriceUtil.longToStrDiv100(dishesOldPrice));
-*/
-        if (dishesPrice!=null)lMerchantDishes.setDishesPrice(dishesPrice.toString());
+
+        /*if (dishesPrice!=null)lMerchantDishes.setDishesPrice(dishesPrice.toString());
         if (memberPrice!=null)lMerchantDishes.setMemberPrice(memberPrice.toString());
-        if (dishesOldPrice!=null)lMerchantDishes.setDishesOldPrice(dishesOldPrice.toString());
+        if (dishesOldPrice!=null)lMerchantDishes.setDishesOldPrice(dishesOldPrice.toString());*/
         
         return lMerchantDishes;
     }
