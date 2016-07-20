@@ -16,6 +16,7 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.DishCompItemAdapter;
 import com.asiainfo.mealorder.biz.adapter.DishTypeAdapter;
+import com.asiainfo.mealorder.biz.entity.http.HttpDishesComp;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.biz.entity.DishesComp;
@@ -332,6 +333,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
             List<String> remarkList = new ArrayList<String>();
             goodsItem.setRemark(remarkList);
             goodsItem.setSalesId(mMerchantDishes.getDishesId());
+            goodsItem.setDishesUnit(mMerchantDishes.getDishesUnit());
             goodsItem.setSalesName(mMerchantDishes.getDishesName());
             goodsItem.setSalesNum("1");
             goodsItem.setSalesPrice(mMerchantDishes.getDishesPrice());
@@ -455,18 +457,17 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
                                 String dataStr = data.getString("compDishesTypeList");
                                 if (dataStr != null) {
                                     Gson gson = new Gson();
-                                    List<DishesComp> mDishesCompList = gson.fromJson(dataStr, new TypeToken<List<DishesComp>>() {
+                                    List<HttpDishesComp> hDishesCompList = gson.fromJson(dataStr, new TypeToken<List<HttpDishesComp>>() {
                                     }.getType());
-                                    //Log.d(TAG, "mDishCompsPartionDataList size: " + mDishesCompList.size());
                                     dismissCommonDialog();
-                                    getDishesCompData(mDishesCompList);
-                                    if (mDishesCompList != null) {
-                                        for (int i = 0; i < mDishesCompList.size(); i++) {
-                                            DishesComp dishesComp = mDishesCompList.get(i);
+                                    if (hDishesCompList != null) {
+                                        List<DishesComp> mDishesCompList =new ArrayList<DishesComp>();
+                                        for (int i = 0; i < hDishesCompList.size(); i++) {
+                                            DishesComp dishesComp = hDishesCompList.get(i).toDishesComp();
                                             dishesComp.setDishesId(dishesId);
-                                            mDishesCompList.set(i, dishesComp);
+                                            mDishesCompList.add(dishesComp);
                                         }
-
+                                        getDishesCompData(mDishesCompList);
                                         DataSupport.saveAll(mDishesCompList);
                                         for (int i = 0; i < mDishesCompList.size(); i++) {
                                             DishesComp dishesComp = mDishesCompList.get(i);

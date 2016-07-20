@@ -192,7 +192,11 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
 		
 		holder.tv_dishName.setText(goodItem.getSalesName());
 		holder.tv_dishPrice.setText("￥"+goodItem.getSalesPrice());
-		holder.tv_dishCount.setText(goodItem.getSalesNum()+"份");
+        if (goodItem.getDishesUnit()!=null&&goodItem.getDishesUnit().length()>0){
+            holder.tv_dishCount.setText(goodItem.getSalesNum()+" "+goodItem.getDishesUnit());
+        }else{
+            holder.tv_dishCount.setText(goodItem.getSalesNum()+"份");
+        }
 		
 		//初始化隐藏数量操作区
 		//属性项目的布局

@@ -210,7 +210,8 @@ public class MakeOrderActivityBase extends BaseActivity{
 				int idx_DishesDiscnt = mCursor.getColumnIndex("dishesdiscnt");
 				int idx_IsShow = mCursor.getColumnIndex("isshow");
 				int idx_IsZdzk = mCursor.getColumnIndex("iszdzk");
-				
+				int idx_DishesUnit = mCursor.getColumnIndex("dishesunit");
+
 				if(idx_DishesUrl!=-1)
 				mMerchantDishes.setDishesUrl(mCursor.getString(idx_DishesUrl));
 				if(idx_DishesOldPrice!=-1)
@@ -253,6 +254,8 @@ public class MakeOrderActivityBase extends BaseActivity{
 				mMerchantDishes.setIsShow(mCursor.getString(idx_IsShow));
 				if(idx_IsZdzk!=-1)
 				mMerchantDishes.setIsZdzk(mCursor.getString(idx_IsZdzk));
+                if(idx_DishesUnit!=-1)
+				mMerchantDishes.setDishesUnit(mCursor.getString(idx_DishesUnit));
 				
 				//解析菜品属性
 				List<DishesProperty> mDishesPropertyList = sqliteGetDishesPropertyDataByDishesId(mMerchantDishes.getDishesId());
@@ -496,7 +499,8 @@ public class MakeOrderActivityBase extends BaseActivity{
 				int idx_DishesDiscnt = mCursor.getColumnIndex("dishesdiscnt");
 				int idx_IsShow = mCursor.getColumnIndex("isshow");
 				int idx_IsZdzk = mCursor.getColumnIndex("iszdzk");
-				
+				int idx_dishesUnit = mCursor.getColumnIndex("dishesunit");
+
 				if(idx_DishesUrl!=-1)
 				mMerchantDishes.setDishesUrl(mCursor.getString(idx_DishesUrl));
 				if(idx_DishesOldPrice!=-1)
@@ -539,6 +543,8 @@ public class MakeOrderActivityBase extends BaseActivity{
 				mMerchantDishes.setIsShow(mCursor.getString(idx_IsShow));
 				if(idx_IsZdzk!=-1)
 				mMerchantDishes.setIsZdzk(mCursor.getString(idx_IsZdzk));
+                if(idx_dishesUnit!=-1)
+				mMerchantDishes.setDishesUnit(mCursor.getString(idx_dishesUnit));
 				
 				//解析菜品属性
 				List<DishesProperty> mDishesPropertyList = sqliteGetDishesPropertyDataByDishesId(mMerchantDishes.getDishesId());

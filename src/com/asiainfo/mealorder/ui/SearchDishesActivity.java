@@ -275,7 +275,7 @@ public class SearchDishesActivity extends BaseActivity{
             goodsItem.setInstanceId(""+System.currentTimeMillis());
             goodsItem.setInterferePrice("0");
             goodsItem.setOrderId("");
-
+            goodsItem.setDishesUnit(dishesItem.getDishesUnit());
             List<String> remarkList = updateOrderGoodsRemarkTypeObj(mDishesPropertyChoice);
             goodsItem.setRemark(remarkList);
             goodsItem.setSalesId(dishesItem.getDishesId());

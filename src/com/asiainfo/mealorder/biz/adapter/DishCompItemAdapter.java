@@ -560,6 +560,7 @@ public class DishCompItemAdapter extends BaseAdapter {
                 goodsItem.setInstanceId("" + System.currentTimeMillis());
                 goodsItem.setInterferePrice("0");
                 goodsItem.setOrderId("");
+                goodsItem.setDishesUnit(compItem.getDishesUnit());
                 //获取默认的属性值
                 goodsItem.setRemark(getDefPropertyChoice(compItem));
                 goodsItem.setSalesId(compItem.getDishesId());

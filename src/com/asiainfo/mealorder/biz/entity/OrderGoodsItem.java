@@ -38,6 +38,15 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
     private String discountPrice; //折扣掉的价格
     private String marketingPrice; //营销掉的价格
     private String createTime;
+    private String dishesUnit;
+
+    public String getDishesUnit() {
+        return dishesUnit;
+    }
+
+    public void setDishesUnit(String pDishesUnit) {
+        dishesUnit = pDishesUnit;
+    }
 
     public String getCreateTime() {
         return createTime;

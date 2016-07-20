@@ -60,6 +60,22 @@ public class MerchantDishes extends DataSupport implements Serializable{
      *菜品名称首字母简拼
      */
     private String jianPin;
+    /**
+     * 菜品计量单位
+     */
+    private String dishesUnit;
+    /**
+     * 菜品编码
+     */
+    private String dishesCode;
+
+    public String getDishesUnit() {
+        return dishesUnit;
+    }
+
+    public void setDishesUnit(String pDishesUnit) {
+        dishesUnit = pDishesUnit;
+    }
 
     public String getDishesCode() {
         return dishesCode;
@@ -68,11 +84,6 @@ public class MerchantDishes extends DataSupport implements Serializable{
     public void setDishesCode(String dishesCode) {
         this.dishesCode = dishesCode;
     }
-
-    /**
-     * 菜品编码
-     */
-    private String dishesCode;
 	
 	public String getDishesId() {
 		return dishesId;

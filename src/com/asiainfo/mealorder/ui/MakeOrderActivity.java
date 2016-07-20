@@ -43,6 +43,7 @@ import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.base.EnsureDialogFragmentBase;
 import com.asiainfo.mealorder.ui.base.MakeOrderActivityBase;
 import com.asiainfo.mealorder.utils.Arith;
+import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -331,7 +332,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 			goodsItem.setInstanceId(""+System.currentTimeMillis());
 			goodsItem.setInterferePrice("0");
 			goodsItem.setOrderId("");
-			
+            goodsItem.setDishesUnit(dishesItem.getDishesUnit());
 			List<String> remarkList = updateOrderGoodsRemarkTypeObj(mDishesPropertyChoice);
 			goodsItem.setRemark(remarkList);
 			goodsItem.setSalesId(dishesItem.getDishesId());

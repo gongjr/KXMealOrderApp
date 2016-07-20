@@ -55,9 +55,6 @@ public class HttpMerchantDishes{
 	private Long memberPrice;
     /**是否参与整单折扣**/
 	private String isZdzk;
-
-
-
     /**
      *菜品名称首字母简拼
      */
@@ -66,6 +63,18 @@ public class HttpMerchantDishes{
      * 菜品编码
      */
     private String dishesCode;
+    /**
+     * 菜品计量单位
+     */
+    private String dishesUnit;
+
+    public String getDishesUnit() {
+        return dishesUnit;
+    }
+
+    public void setDishesUnit(String pDishesUnit) {
+        dishesUnit = pDishesUnit;
+    }
 
     public String getDishesCode() {
         return dishesCode;
@@ -282,6 +291,7 @@ public class HttpMerchantDishes{
         lMerchantDishes.setIsZdzk(isZdzk);
         lMerchantDishes.setJianPin(jianPin);
         lMerchantDishes.setDishesCode(dishesCode);
+        lMerchantDishes.setDishesUnit(dishesUnit);
         if (dishesPrice!=null)
             lMerchantDishes.setDishesPrice(PriceUtil.longToStrDiv100(dishesPrice));
         if (memberPrice!=null)

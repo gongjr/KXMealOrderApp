@@ -1,8 +1,9 @@
-package com.asiainfo.mealorder.biz.entity;
+package com.asiainfo.mealorder.biz.entity.http;
 
-import org.litepal.crud.DataSupport;
+import com.asiainfo.mealorder.biz.entity.DishesCompItem;
+import com.asiainfo.mealorder.biz.entity.DishesProperty;
+import com.asiainfo.mealorder.biz.model.PriceUtil;
 
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -11,9 +12,8 @@ import java.util.List;
  * 
  *         套餐菜子项
  */
-public class DishesCompItem extends DataSupport implements Serializable{
-	
-	private static final long serialVersionUID = 1L;
+public class HttpDishesCompItem {
+
 	/**是否打折**/
 	private String isZdzk;
 	/**菜ID**/
@@ -25,16 +25,16 @@ public class DishesCompItem extends DataSupport implements Serializable{
 	/**菜数量**/
 	private String dishesNum;
 	/**原价**/
-	private String dishesPrice;
+	private Long dishesPrice;
 	private String exportId;
 	/**会员价**/
-	private String memberPrice;
+	private Long memberPrice;
 	/**菜名**/
 	private String dishesName;
 	/**菜品编码**/
 	private String dishesTypeCode;
     /**菜品计量单位**/
-    private String dishesUnit;
+	private String dishesUnit;
 	/**菜属性集合**/
 	private List<DishesProperty> dishesItemTypelist;
 
@@ -86,11 +86,11 @@ public class DishesCompItem extends DataSupport implements Serializable{
 		this.dishesNum = dishesNum;
 	}
 
-	public String getDishesPrice() {
+	public Long getDishesPrice() {
 		return dishesPrice;
 	}
 
-	public void setDishesPrice(String dishesPrice) {
+	public void setDishesPrice(Long dishesPrice) {
 		this.dishesPrice = dishesPrice;
 	}
 
@@ -102,11 +102,11 @@ public class DishesCompItem extends DataSupport implements Serializable{
 		this.exportId = exportId;
 	}
 
-	public String getMemberPrice() {
+	public Long getMemberPrice() {
 		return memberPrice;
 	}
 
-	public void setMemberPrice(String memberPrice) {
+	public void setMemberPrice(Long memberPrice) {
 		this.memberPrice = memberPrice;
 	}
 
@@ -134,8 +134,27 @@ public class DishesCompItem extends DataSupport implements Serializable{
 		this.dishesItemTypelist = dishesItemTypelist;
 	}
 
-    public long getId(){
-        return  getBaseObjId();
+    public DishesCompItem toDishesCompItem(){
+        DishesCompItem lDishesComp = new DishesCompItem();
+        lDishesComp.setIsZdzk(isZdzk);
+        lDishesComp.setDishesId(dishesId);
+        lDishesComp.setIsComp(isComp);
+        lDishesComp.setDishesCode(dishesCode);
+        lDishesComp.setDishesNum(dishesNum);
+        lDishesComp.setExportId(exportId);
+        lDishesComp.setDishesName(dishesName);
+        lDishesComp.setDishesTypeCode(dishesTypeCode);
+        lDishesComp.setDishesUnit(dishesUnit);
+        lDishesComp.setDishesItemTypelist(dishesItemTypelist);
+
+        if (dishesPrice!=null)
+            lDishesComp.setDishesPrice(PriceUtil.longToStrDiv100(dishesPrice));
+        if (memberPrice!=null)
+            lDishesComp.setMemberPrice(PriceUtil.longToStrDiv100(memberPrice));
+/*
+        lDishesComp.setDishesPrice(dishesPrice.toString());
+        lDishesComp.setMemberPrice(memberPrice.toString());*/
+        return lDishesComp;
     }
 
 }
