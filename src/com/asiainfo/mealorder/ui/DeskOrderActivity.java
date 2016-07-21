@@ -660,6 +660,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
         orderGoodsItem.setMemberPrice(deskOrderGoodsItemm.getMemberPrice());
         orderGoodsItem.setIsCompDish(deskOrderGoodsItemm.getIsCompDish());
         orderGoodsItem.setCompId(deskOrderGoodsItemm.getCompId());
+        orderGoodsItem.setDishesUnit(deskOrderGoodsItemm.getDishesUnit());
         orderGoodsItem.setAction("0");
         return orderGoodsItem;
     }
