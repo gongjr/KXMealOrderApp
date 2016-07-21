@@ -88,7 +88,7 @@ public class InputOrderPersonNumDF extends DialogFragmentBase {
         initView();
         initData();
         initListener();
-        mHandler.sendEmptyMessageDelayed(SHOW_IM, 15);
+//        mHandler.sendEmptyMessageDelayed(SHOW_IM, 15);
     }
 
     public void initView() {
@@ -101,7 +101,12 @@ public class InputOrderPersonNumDF extends DialogFragmentBase {
 
     public void initData() {
         edit_inputPersonNum.setFocusable(true);
+        edit_inputPersonNum.setFocusableInTouchMode(true);
         edit_inputPersonNum.requestFocus();
+        edit_inputPersonNum.findFocus();
+        InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
+
     }
 
     public void initListener() {

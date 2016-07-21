@@ -173,10 +173,10 @@ public class LoginActivity extends BaseActivity {
             edit_username.setText(Login_userinfo);
             String Login_password=login.getString(Constants.Preferences_Login_PassWord,"");
             edit_password.setText("");
-//            edit_password.setFocusable(true);
-//            edit_password.setFocusableInTouchMode(true);
-//            edit_password.requestFocus();
-//            edit_password.findFocus();
+            edit_password.setFocusable(true);
+            edit_password.setFocusableInTouchMode(true);
+            edit_password.requestFocus();
+            edit_password.findFocus();
 //            InputMethodManager imm = (InputMethodManager)mActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
 //            imm.toggleSoftInput(0, InputMethodManager.HIDE_IMPLICIT_ONLY);
 //            imm.toggleSoftInput(0, InputMethodManager.HIDE_NOT_ALWAYS);
