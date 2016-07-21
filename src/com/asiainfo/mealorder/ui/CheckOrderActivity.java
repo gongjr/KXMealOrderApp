@@ -15,6 +15,7 @@ import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.OrderSubmit;
 import com.asiainfo.mealorder.biz.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
+import com.asiainfo.mealorder.utils.Arith;
 import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.reflect.TypeToken;
 
@@ -94,13 +95,13 @@ public class CheckOrderActivity extends BaseActivity {
 
     private void fillViews() {
         List<OrderGoodsItem> orderGoodsItemList = mOrderSubmit.getOrderGoods();
-        int price = 0;
+        Double price = 0.0;
         for (OrderGoodsItem orderGoodsItem: orderGoodsItemList) {
-            price += Integer.valueOf(orderGoodsItem.getSalesPrice());
+            price += Double.valueOf(orderGoodsItem.getSalesPrice());
         }
 
         for (DishesCompSelectionEntity dishesCompSelectionEntity: mOrderCompList) {
-            price += Integer.valueOf(dishesCompSelectionEntity.getmCompMainDishes().getSalesPrice());
+            price += Double.valueOf(dishesCompSelectionEntity.getmCompMainDishes().getSalesPrice());
         }
 
         if (getIntent().getStringExtra("type").equals("local")) {
@@ -111,6 +112,6 @@ public class CheckOrderActivity extends BaseActivity {
 
         dishesCount.setText("共" + mOrderSubmit.getAllGoodsNum() + "个");
         waiterInfo.setText("服务员: " + mOrderSubmit.getTradeStsffId());
-        dishePrice.setText("合计: " + price + " 元");
+        dishePrice.setText("合计: " + Arith.d2str(price) + " 元");
     }
 }

@@ -248,8 +248,8 @@ public class SearchDishesActivity extends BaseActivity{
              */
             if(gitc!=null && ditc!=null && gitc.equals(ditc)
                     && gidid!=null && didid!=null && gidid.equals(didid) && !hasProp){
-                int sum=selectedCount+goodsItem.getSalesNum();
-                goodsItem.setSalesNum(sum);
+                int sum=selectedCount+StringUtils.str2Int(goodsItem.getSalesNum());
+                goodsItem.setSalesNum(sum+"");
                 goodsItem.setSalesPrice(""+ Arith.d2str(sum* StringUtils.str2Double(goodsItem.getDishesPrice())));
                 List<String> remarkList = updateOrderGoodsRemarkTypeObj(mDishesPropertyChoice);
                 goodsItem.setRemark(remarkList);
@@ -280,7 +280,7 @@ public class SearchDishesActivity extends BaseActivity{
             goodsItem.setRemark(remarkList);
             goodsItem.setSalesId(dishesItem.getDishesId());
             goodsItem.setSalesName(dishesItem.getDishesName());
-            goodsItem.setSalesNum(selectedCount);
+            goodsItem.setSalesNum(selectedCount+"");
             goodsItem.setSalesPrice(""+Arith.d2str(selectedCount*StringUtils.str2Double(dishesItem.getDishesPrice())));
             goodsItem.setSalesState("1");  //0稍后下单  1立即下单
             Boolean isComp = false;
@@ -392,7 +392,7 @@ public class SearchDishesActivity extends BaseActivity{
         int num = 0;
         for(int i=0; i<mNormalDishDataList.size(); i++){
             OrderGoodsItem goodsItem = mNormalDishDataList.get(i);
-            num = num + goodsItem.getSalesNum();
+            num = num + StringUtils.str2Int(goodsItem.getSalesNum());
         }
         if(mDishesCompDataList!=null && mDishesCompDataList.size()>0){
             num = num + mDishesCompDataList.size();

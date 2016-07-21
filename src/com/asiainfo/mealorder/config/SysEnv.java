@@ -1,10 +1,5 @@
 package com.asiainfo.mealorder.config;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.List;
-
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -21,6 +16,11 @@ import android.view.WindowManager;
 
 import com.asiainfo.mealorder.AppApplication;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.List;
+
 
 /**
  * 运行环境信息
@@ -28,6 +28,14 @@ import com.asiainfo.mealorder.AppApplication;
  */
 public final class SysEnv {
 
+    /**
+     * 进入系统信息界面的密码
+     * **/
+    public static final String SystemActivityPwd = "66123";
+    /**
+     * 更改环境密码
+     * **/
+    public static final String ChangeServerAddressPwd = "9876543210";
 	/***Log输出标识**/
 	private static final String TAG = SysEnv.class.getSimpleName();
 	

@@ -10,7 +10,7 @@ public class HurryOrderGoodsItem {
 
     private String salesName;
     private String  remark;
-    private int salesNum;
+    private String salesNum;
     private int exportId;
 
     public String getSalesName() {
@@ -29,11 +29,11 @@ public class HurryOrderGoodsItem {
         this.remark = remark;
     }
 
-    public int getSalesNum() {
+    public String getSalesNum() {
         return salesNum;
     }
 
-    public void setSalesNum(int salesNum) {
+    public void setSalesNum(String salesNum) {
         this.salesNum = salesNum;
     }
 

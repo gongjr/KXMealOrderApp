@@ -28,7 +28,7 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	private List<String> remark;
 	private String salesId;
 	private String salesName;
-	private int salesNum;
+	private String salesNum;//先Sting,支持提交double,暂不支持,本地修改小数点
 	private String salesPrice;
 	private String salesState;
 	private String isCompDish;//是否套餐子菜,
@@ -135,11 +135,11 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 		this.salesName = salesName;
 	}
 
-	public int getSalesNum() {
+	public String getSalesNum() {
 		return salesNum;
 	}
 
-	public void setSalesNum(int salesNum) {
+	public void setSalesNum(String salesNum) {
 		this.salesNum = salesNum;
 	}
 

@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.android.volley.toolbox.OkHttpStack;
+import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.RequestManager;
 import com.asiainfo.mealorder.ui.LoginActivity;
 import com.asiainfo.mealorder.utils.CrashHandler;
@@ -65,6 +66,7 @@ public class AppApplication extends LitePalApplication{
 		RequestManager.init(this,new OkHttpStack());
 		initImageLoader(getApplicationContext());
         KLog.init(BuildConfig.LOG_DEBUG);
+        HttpController.getInstance().initAddress(this);
 	}
 
 	public static void initImageLoader(Context context) {

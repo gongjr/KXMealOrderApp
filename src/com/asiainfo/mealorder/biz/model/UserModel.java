@@ -159,9 +159,10 @@ public class UserModel {
             lOrderMarketing.setTradeStaffId(merchantRegister.getStaffId());
 
             String discount="0.00";
-            //遍历当前订单所有菜品,计算所有菜的会员价折扣总和
+            //遍历当前订单所有菜品,计算所有菜的会员价折扣总和,跳过套餐子菜的计算
             if(mDeskOrder!=null&&mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0){
                 for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
+                    if (lDeskOrderGoodsItem.getIsCompDish()!=null&&lDeskOrderGoodsItem.getIsCompDish().equals("true"))continue;
                     String discount_OrderGoods=mPrePrice.subPrice(lDeskOrderGoodsItem.getDishesPrice(),lDeskOrderGoodsItem.getMemberPrice());
                     Double allDiscount= Double.valueOf(discount_OrderGoods)*Double.valueOf(lDeskOrderGoodsItem.getSalesNum());
                     discount=mPrePrice.addPrice(allDiscount.toString(),discount);

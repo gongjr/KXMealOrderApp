@@ -1,10 +1,5 @@
 package com.asiainfo.mealorder.ui.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.litepal.crud.DataSupport;
-
 import android.database.Cursor;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,13 +7,18 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnTouchListener;
 
-import com.asiainfo.mealorder.db.DataBinder;
 import com.asiainfo.mealorder.biz.entity.DishesComp;
 import com.asiainfo.mealorder.biz.entity.DishesCompItem;
 import com.asiainfo.mealorder.biz.entity.DishesProperty;
 import com.asiainfo.mealorder.biz.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.biz.entity.MerchantDishes;
 import com.asiainfo.mealorder.biz.entity.MerchantDishesType;
+import com.asiainfo.mealorder.db.DataBinder;
+
+import org.litepal.crud.DataSupport;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 点餐页面基类
@@ -263,7 +263,7 @@ public class MakeOrderActivityBase extends BaseActivity{
 			mCursor.close();
 		}
 		
-		//Log.d(TAG, "mDishesDataList size:" + mDishesDataList.size());
+		Log.d(TAG, "mDishesDataList size:" + mDishesDataList.size());
 		return mDishesDataList;
 	}
 	

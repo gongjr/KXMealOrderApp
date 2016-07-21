@@ -16,7 +16,7 @@ public class OrderSubmit extends DataSupport implements Serializable{
 	private static final long serialVersionUID = 1L;
 	
 	/**所点菜数量**/
-	private int allGoodsNum; 
+	private String allGoodsNum;
 	private Long childMerchantId;
 	/**订单创建时间**/
     private String createTime;
@@ -57,11 +57,11 @@ public class OrderSubmit extends DataSupport implements Serializable{
         return getBaseObjId();
     }
 
-	public int getAllGoodsNum() {
+	public String getAllGoodsNum() {
 		return allGoodsNum;
 	}
 
-	public void setAllGoodsNum(int allGoodsNum) {
+	public void setAllGoodsNum(String allGoodsNum) {
 		this.allGoodsNum = allGoodsNum;
 	}
 

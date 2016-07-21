@@ -1,6 +1,7 @@
 package com.asiainfo.mealorder.biz.entity.http;
 
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
+import com.asiainfo.mealorder.biz.model.PriceUtil;
 
 /**
  *响应接口规范的类,与接口文档对应,与本地实体模型DeskOrderGoodsItem进行转换
@@ -36,6 +37,7 @@ public class HttpDeskOrderGoodsItem {
 	private String hasRemaining;
     private String isCompDish;
     private String compId;
+    private String dishesUnit;
 
     private Long marketingPrice;
     private Long discountPrice;
@@ -287,9 +289,17 @@ public class HttpDeskOrderGoodsItem {
 		this.remark = remark;
 	}
 
+    public String getDishesUnit() {
+        return dishesUnit;
+    }
+
+    public void setDishesUnit(String pDishesUnit) {
+        dishesUnit = pDishesUnit;
+    }
+
     public DeskOrderGoodsItem ToDeskOrderGoodsItem(){
         DeskOrderGoodsItem lDeskOrderGoodsItem=new DeskOrderGoodsItem();
-        /*if (marketingPrice!=null)
+        if (marketingPrice!=null)
             lDeskOrderGoodsItem.setMarketingPrice(PriceUtil.longToStrDiv100(marketingPrice));
         if (discountPrice!=null)
             lDeskOrderGoodsItem.setDiscountPrice(PriceUtil.longToStrDiv100(discountPrice));
@@ -300,14 +310,14 @@ public class HttpDeskOrderGoodsItem {
         if (dishesPrice!=null)
             lDeskOrderGoodsItem.setDishesPrice(PriceUtil.longToStrDiv100(dishesPrice));
         if (salesPrice!=null)
-            lDeskOrderGoodsItem.setSalesPrice(PriceUtil.longToStrDiv100(salesPrice));*/
+            lDeskOrderGoodsItem.setSalesPrice(PriceUtil.longToStrDiv100(salesPrice));
 
-        lDeskOrderGoodsItem.setMarketingPrice(marketingPrice.toString());
+        /*lDeskOrderGoodsItem.setMarketingPrice(marketingPrice.toString());
         lDeskOrderGoodsItem.setDiscountPrice(discountPrice.toString());
         lDeskOrderGoodsItem.setMemberPrice(memberPrice.toString());
         lDeskOrderGoodsItem.setInterferePrice(interferePrice.toString());
         lDeskOrderGoodsItem.setDishesPrice(dishesPrice.toString());
-        lDeskOrderGoodsItem.setSalesPrice(salesPrice.toString());
+        lDeskOrderGoodsItem.setSalesPrice(salesPrice.toString());*/
 
         lDeskOrderGoodsItem.setOrderId(orderId);
         lDeskOrderGoodsItem.setSalesId(salesId);
@@ -333,6 +343,7 @@ public class HttpDeskOrderGoodsItem {
         lDeskOrderGoodsItem.setHasRemaining(hasRemaining);
         lDeskOrderGoodsItem.setIsCompDish(isCompDish);
         lDeskOrderGoodsItem.setCompId(compId);
+        lDeskOrderGoodsItem.setDishesUnit(dishesUnit);
         return lDeskOrderGoodsItem;
     }
 }

@@ -77,7 +77,11 @@ public class DeskOrderAdapter extends BaseAdapter {
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
         holder.dishCount.setText(deskOrderGoodsItem.getSalesNum());
         holder.dishPrice.setText(deskOrderGoodsItem.getSalesPrice());
-        holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/份");
+        if (deskOrderGoodsItem.getDishesUnit()!=null&&deskOrderGoodsItem.getDishesUnit().length()>0){
+            holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/"+deskOrderGoodsItem.getDishesUnit());
+        }else{
+            holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/份");
+        }
         isDishHasRemark(holder, deskOrderGoodsItem);
         isCompDishHasRemark(holder,deskOrderGoodsItemList);
 

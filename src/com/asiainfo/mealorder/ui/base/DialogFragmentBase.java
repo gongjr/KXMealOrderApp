@@ -1,8 +1,5 @@
 package com.asiainfo.mealorder.ui.base;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import android.app.Activity;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -15,10 +12,13 @@ import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.OrderSubmit;
+import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.http.RequestManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import roboguice.fragment.RoboDialogFragment;
 
@@ -91,7 +91,7 @@ public class DialogFragmentBase extends RoboDialogFragment{
 	public OrderSubmit buildOrderSubmitData(){
 		OrderSubmit orderSubmit = new OrderSubmit();
 		orderSubmit.setOriginalPrice("1000");
-		orderSubmit.setAllGoodsNum(15);
+		orderSubmit.setAllGoodsNum("15");
 		orderSubmit.setCreateTime("12:30:00");
 		orderSubmit.setTradeStsffId("70762");
 		List<OrderGoodsItem> mOrderGoodsList = new ArrayList<OrderGoodsItem>();

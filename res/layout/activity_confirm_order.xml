@@ -64,7 +64,7 @@
         android:fadingEdge="none"
         android:overScrollMode="never"
         android:background="#FFFFFF"
-        android:scrollbars="none" >
+        android:scrollbars="vertical" >
     </android.support.v7.widget.RecyclerView>
 
     <LinearLayout
@@ -78,7 +78,7 @@
         <TextView
             android:id="@+id/tv_top_line"
             android:layout_width="match_parent"
-            android:layout_height="0.5dip"
+            android:layout_height="1dip"
             android:background="#c1c1c1" />
 
         <RelativeLayout

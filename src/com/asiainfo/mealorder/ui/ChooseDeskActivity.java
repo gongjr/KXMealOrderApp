@@ -28,6 +28,7 @@ import com.asiainfo.mealorder.AppApplication;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.ChooseDeskAdapter;
 import com.asiainfo.mealorder.biz.entity.http.HttpDeskOrder;
+import com.asiainfo.mealorder.biz.entity.http.HttpMerchantDishes;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.SystemPrefData;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
@@ -113,7 +114,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
     private static final int ID_addMember = 4;
     private static final int ID_exit = 3;
     private List<MerchantDishesType> mDishTypeDataList;
-    private List<MerchantDishes> mAllDishesDataList;
+    private List<MerchantDishes> mAllDishesDataList=new ArrayList<>();
     @InjectResource(R.drawable.ic_actionitem_refresh)
     private Drawable ic_actionitem_refresh;
     @InjectResource(R.drawable.ic_actionitem_exit)
@@ -897,8 +898,11 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
                                 mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
                                 }.getType());
                                 Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
-                                mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
+                                List<HttpMerchantDishes> lHttpMerchantDisheses = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<HttpMerchantDishes>>() {
                                 }.getType());
+                                for (HttpMerchantDishes lHttpMerchantDishes:lHttpMerchantDisheses){
+                                    mAllDishesDataList.add(lHttpMerchantDishes.HttpMerchantDishesToMerchantDishes());
+                                }
                                 Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
 
                                 if (datainfo.has("attrs")) {
@@ -955,8 +959,11 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
                         mDishTypeDataList = gson.fromJson(datainfo.getString("types"), new TypeToken<List<MerchantDishesType>>() {
                         }.getType());
                         Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
-                        mAllDishesDataList = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<MerchantDishes>>() {
+                        List<HttpMerchantDishes> lHttpMerchantDisheses = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<HttpMerchantDishes>>() {
                         }.getType());
+                        for (HttpMerchantDishes lHttpMerchantDishes:lHttpMerchantDisheses){
+                            mAllDishesDataList.add(lHttpMerchantDishes.HttpMerchantDishesToMerchantDishes());
+                        }
                         Log.d(TAG, "All Dishes Count: " + mAllDishesDataList.size());
 
                         if (datainfo.has("attrs")) {

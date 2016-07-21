@@ -41,6 +41,7 @@ import com.asiainfo.mealorder.biz.listener.OnPriceRatioPropertyItemsListener;
 import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
 import com.asiainfo.mealorder.ui.base.EditSinglePriceDF;
 import com.asiainfo.mealorder.utils.Logger;
+import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.utils.Tools;
 import com.google.gson.Gson;
 
@@ -254,7 +255,7 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
 						}
 					}
 				}
-                final int count=orderGoodsList.get(position).getSalesNum();
+                final int count= StringUtils.str2Int(orderGoodsList.get(position).getSalesNum());
                 holder.btn_detail_item.setOnClickListener(new OnClickListener() {
                     @Override
                     public void onClick(View view) {
@@ -604,7 +605,7 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
         	
         	if(gitc!=null && ditc!=null && gitc.equals(ditc) 
         			&& gidid!=null && didid!=null && gidid.equals(didid) ){
-        		return goodsItem.getSalesNum();
+        		return StringUtils.str2Int(goodsItem.getSalesNum());
         	}
 		}
 		
