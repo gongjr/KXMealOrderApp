@@ -1,11 +1,13 @@
 package com.asiainfo.mealorder.ui.base;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -67,6 +69,15 @@ public class MakeOrderFinishDF extends DialogFragment{
 		//getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 	    getDialog().setCancelable(false);
 	    getDialog().setCanceledOnTouchOutside(false);
+        getDialog().setOnKeyListener(new DialogInterface.OnKeyListener()
+        {
+            public boolean onKey(DialogInterface dialog, int keyCode, KeyEvent event){
+                if (keyCode == KeyEvent.KEYCODE_BACK)
+                    return true; // pretend we've processed it
+                else
+                    return false; // pass on to be processed as normal
+            }
+        });
 //	    getDialog().getWindow().setBackgroundDrawable(
 //	    		new ColorDrawable(Color.parseColor("#00009000"))); //设置有效，但是还是有阴影
 		mView = inflater.inflate(R.layout.df_confirm_order_rs, null); //在layout文件中设置也无效
