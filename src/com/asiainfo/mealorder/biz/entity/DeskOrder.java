@@ -52,6 +52,7 @@ public class DeskOrder implements Parcelable{
 	private List<DeskOrderGoodsItem> orderGoods;
 	private String allGoodsNum;
 	private String deskId;
+	private String deskName ;
 	private String generalSitauation;
 	
 	private String inMode;
@@ -547,6 +548,7 @@ public class DeskOrder implements Parcelable{
         personNum = in.readString();
         desk = in.readString();
         userName = in.readString();
+
     }
 
 	public String getNeedPay() {
@@ -556,4 +558,12 @@ public class DeskOrder implements Parcelable{
 	public void setNeedPay(String needPay) {
 		this.needPay = needPay;
 	}
+
+    public String getDeskName() {
+        return deskName;
+    }
+
+    public void setDeskName(String pDeskName) {
+        deskName = pDeskName;
+    }
 }

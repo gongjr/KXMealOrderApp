@@ -20,9 +20,6 @@ import android.widget.TextView;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.DishTypeAdapter;
 import com.asiainfo.mealorder.biz.adapter.SelectCommonDishesAdapter;
-import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.config.LoginUserPrefData;
-import com.asiainfo.mealorder.db.MerchantDishesEntityService;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.DishesProperty;
@@ -40,10 +37,12 @@ import com.asiainfo.mealorder.biz.entity.helper.PropertySelectEntity;
 import com.asiainfo.mealorder.biz.listener.OnChangeDishCountListener;
 import com.asiainfo.mealorder.biz.listener.OnDishesCompClickListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
+import com.asiainfo.mealorder.config.Constants;
+import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.db.MerchantDishesEntityService;
 import com.asiainfo.mealorder.ui.base.EnsureDialogFragmentBase;
 import com.asiainfo.mealorder.ui.base.MakeOrderActivityBase;
 import com.asiainfo.mealorder.utils.Arith;
-import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -623,6 +622,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		mOrderSubmit.setChildMerchantId(StringUtils.str2Long(childMerchantId)); /**子商户id**/  
 		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 		mOrderSubmit.setDeskId(mCurDesk.getDeskId());
+		mOrderSubmit.setDeskName(mCurDesk.getDeskName());
 		mOrderSubmit.setGiftMoney("0");
 		mOrderSubmit.setInMode("1");
 		mOrderSubmit.setInvoId("0");
@@ -659,6 +659,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 //		mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT)); /**订单创建时间**/
 		mOrderSubmit.setCreateTime(mDeskOrder.getStrCreateTime()); /**订单创建时间**/
 		mOrderSubmit.setDeskId(mCurDesk.getDeskId());
+        mOrderSubmit.setDeskName(mCurDesk.getDeskName());
 		mOrderSubmit.setGiftMoney(mDeskOrder.getGiftMoney());
 		mOrderSubmit.setInMode(mDeskOrder.getInMode());
 		mOrderSubmit.setInvoId(mDeskOrder.getInvoId());

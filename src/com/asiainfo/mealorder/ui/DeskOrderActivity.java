@@ -161,6 +161,10 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
         childMerchantId = mBundle.getString("CHILD_MERCHANT_ID");
         String deskOrderString = mBundle.getString("CURRENT_SELECTED_ORDER");
         mDeskOrder = gson.fromJson(deskOrderString, DeskOrder.class);//订单信息
+        if (mDeskOrder!=null&&mDesk!=null){
+            mDeskOrder.setDeskName(mDesk.getDeskName());
+            mDeskOrder.setDeskId(mDesk.getDeskId());
+        }
         mLoginUserPrefData = new LoginUserPrefData(mActivity);
         BaseApp = (AppApplication) getApplication();
         merchantRegister = (MerchantRegister) BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);

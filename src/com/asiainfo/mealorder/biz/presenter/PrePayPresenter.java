@@ -210,6 +210,7 @@ public class PrePayPresenter {
         lOrderSubmit.setLinkPhone(mDeskOrder.getLinkPhone());
         lOrderSubmit.setLinkName(mDeskOrder.getLinkName());
         lOrderSubmit.setDeskId(mDeskOrder.getDeskId());
+        lOrderSubmit.setDeskName(mDeskOrder.getDeskName());
         lOrderSubmit.setInMode(mDeskOrder.getInMode());
         lOrderSubmit.setChildMerchantId(Long.valueOf(mDeskOrder.getChildMerchantId()));
         lOrderSubmit.setGiftMoney(mDeskOrder.getGiftMoney());
