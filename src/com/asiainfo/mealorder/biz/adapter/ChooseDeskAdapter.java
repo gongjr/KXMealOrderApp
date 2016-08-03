@@ -1,7 +1,5 @@
 package com.asiainfo.mealorder.biz.adapter;
 
-import java.util.List;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -19,6 +17,8 @@ import com.asiainfo.mealorder.utils.Logger;
 import com.asiainfo.mealorder.utils.Tools;
 import com.nineoldandroids.animation.AnimatorSet;
 import com.nineoldandroids.animation.ObjectAnimator;
+
+import java.util.List;
 
 public class ChooseDeskAdapter extends BaseAdapter{
     private static final String TAG = ChooseDeskAdapter.class.getSimpleName();

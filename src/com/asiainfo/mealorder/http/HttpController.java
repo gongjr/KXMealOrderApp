@@ -30,7 +30,7 @@ public class HttpController {
     /**
      * 默认服务器配置,程序初始化确认的地址,恢复的初始状态
      */
-    public static final AddressState init=AddressState.debug;
+    public static final AddressState init=AddressState.tst;
     /**
      * 当前服务器环境值,如果配置,保有最新选择
      */
@@ -468,6 +468,22 @@ public class HttpController {
                                        Response.Listener listener, Response.ErrorListener errorListener) {
         String param = "/appController/submitOrderFromOrderId.do?personNumber=" + personNumber + "&deskId=" + deskId
                 + "&childMerchantId=" + childMerchantId + "&orderId=" + orderId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 获取门店下面的员工号列表
+     *
+     * @param merchantId      商户Id
+     * @param childMerchantId 子商户Id
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void queryStaffList(String merchantId, String childMerchantId,
+                               Response.Listener listener, Response.ErrorListener errorListener) {
+        String param = "/appController/queryStaffList.do?merchantId=" + merchantId
+                + "&childMerchantId=" + childMerchantId;
         JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
     }

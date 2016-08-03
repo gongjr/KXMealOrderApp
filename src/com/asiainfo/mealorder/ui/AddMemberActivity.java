@@ -25,6 +25,7 @@ import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.ui.PoPup.ChooseMemberCardAndIDCardDF;
+import com.asiainfo.mealorder.ui.PoPup.ChooseStaffDF;
 import com.asiainfo.mealorder.ui.PoPup.CountDownLoadingDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
@@ -82,6 +83,10 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private TextView passwordTxt;
     @InjectView(R.id.add_con_password_txt)
     private TextView conPasswordTxt;
+    @InjectView(R.id.staff_txt)
+    private TextView staff_txt;
+    @InjectView(R.id.add_staff_txt)
+    private TextView addStaffTxt;
 
 
     private CountDownLoadingDF mCountDownLoadingDF;
@@ -89,11 +94,14 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private AppApplication BaseApp;
     private MerchantRegister merchantRegister;
     private ChooseMemberCardAndIDCardDF chooseMemberCardAndIDCardDF;
+    private ChooseStaffDF chooseStaffDF;
     private MakeOrderFinishDF mMakeOrderDF;
     private List<PsptType> psptTypeList;
     private List<MemberLevel> memberLevelList;
+    private List<MerchantRegister> staffList;
     private int psptIndex = 0;
     private int leverIndex = 0;
+    private int staffIndex = 0;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -125,6 +133,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             String memberCode = memberEdit.getText().toString();
             String password = passwordEdit.getText().toString();
             String confPassword = conPasswordEdit.getText().toString();
+            String staffId = staff_txt.getText().toString();
 
             if (StringUtils.isNull(phone)) {
                 showShortTip("手机号不能为空");
@@ -142,12 +151,18 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 showShortTip("两次密码输入不同");
                 return;
             }
+            if (StringUtils.isNull(staffId)) {
+                showShortTip("请选择办理工号!");
+                return;
+            }
+
 
             showLoadingDF("正在提交会员信息....");
             Map<String, String> param = new HashMap<String, String>();
             param.put("childMerchantId", merchantRegister.getChildMerchantId());
             param.put("merchantId", merchantRegister.getMerchantId());
-            param.put("staffId", merchantRegister.getStaffId());
+//            param.put("staffId", merchantRegister.getStaffId());
+            param.put("staffId", staffId);
             param.put("memberLevel", memberLevelList.get(leverIndex).getLevel() + "");
             param.put("userName", name);
             param.put("phone", phone);
@@ -185,15 +200,18 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
         merchantRegister = (MerchantRegister) BaseApp.gainData(BaseApp.KEY_GLOABLE_LOGININFO);
         showLoadingDF("正在查询会员卡和证件信息....");
         getMemberLevelAndPsptType();
+        getStaffList();
         setTextColor(phoneTxt);
         setTextColor(passwordTxt);
         setTextColor(conPasswordTxt);
+        setTextColor(addStaffTxt);
     }
 
     private void initListener() {
         idCardTxt.setOnClickListener(this);
         memberTypeTxt.setOnClickListener(this);
         memberBtn.setOnClickListener(this);
+        staff_txt.setOnClickListener(this);
     }
 
     private void getMemberLevelAndPsptType() {
@@ -225,6 +243,34 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                     public void onErrorResponse(VolleyError error) {
                         dismissLoadingDF();
                         showShortTip("信息查询失败: " + error.getMessage());
+                    }
+                });
+    }
+
+    private void getStaffList() {
+        HttpController.getInstance().queryStaffList(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, "queryStaffList: " + response.toString());
+                        try {
+                            if (response.getString("errcode").equals("0")) {
+                                String data = response.getJSONObject("data").getString("info");
+                                staffList = gson.fromJson(data, new TypeToken<ArrayList<MerchantRegister>>() {
+                                }.getType());
+                            } else {
+                                showShortTip("获取员工信息失败: " + response.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            showShortTip("Json解析失败");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dismissLoadingDF();
+                        showShortTip("获取员工号列表失败: " + error.getMessage());
                     }
                 });
     }
@@ -438,6 +484,10 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             case R.id.add_member_btn:
                 lkl();
                 break;
+            case R.id.staff_txt:
+                showChooseStaffDF();
+                chooseStaffDF.setCurrentPosition(staffIndex);
+                break;
         }
     }
 
@@ -462,6 +512,16 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /*
+    * 显示选择员工工号弹出框
+    * */
+    private void showChooseStaffDF() {
+        if (chooseStaffDF == null) {
+            chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener);
+        }
+        chooseStaffDF.show(getSupportFragmentManager(), "AddMemberActivity");
     }
 
     /**
@@ -507,6 +567,14 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 memberTypeTxt.setText(memberLevelList.get(position).getLevelName());
                 leverIndex = position;
             }
+        }
+    };
+
+    private ChooseStaffDF.OnFinishListener onFinishListener = new ChooseStaffDF.OnFinishListener() {
+        @Override
+        public void onFinishListener(int position) {
+            staff_txt.setText(staffList.get(position).getStaffId());
+            staffIndex = position;
         }
     };
 

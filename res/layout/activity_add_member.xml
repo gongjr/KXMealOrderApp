@@ -30,317 +30,374 @@
         <!--android:layout_marginBottom="15dp"-->
         <!--/>-->
 
-    <View
-        android:id="@+id/add_underline01"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
+    <ScrollView
         android:layout_below="@+id/title_line"
-        android:layout_marginTop="20dp"/>
-
-    <LinearLayout
-        android:id="@+id/add_name_layout"
-        android:layout_below="@+id/add_underline01"
         android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp">
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="姓名:"
-            android:gravity="center|right"
-            android:textSize="@dimen/text_size_middle"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
-        <EditText
-            android:id="@+id/add_name_edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/add_underline02"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_name_layout"/>
-
-    <LinearLayout
-        android:id="@+id/add_phone_layout"
-        android:layout_below="@+id/add_underline02"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
-
-        <TextView
-            android:id="@+id/add_phone_txt"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="*手机号:"
-            android:gravity="center|right"
-            android:textSize="@dimen/text_size_middle"/>
-
-        <EditText
-            android:id="@+id/add_phone_edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            android:phoneNumber="true"
-            />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/add_underline03"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_phone_layout"/>
-
-    <LinearLayout
-        android:id="@+id/add_idCard_layout"
-        android:layout_below="@+id/add_underline03"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            >
-
-            <TextView
-                android:id="@+id/add_idCard_txt"
+            <View
+                android:id="@+id/add_underline01"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="身份证"
-                android:gravity="center|right"
-                android:textSize="@dimen/text_size_middle"
-                android:paddingRight="10dp"/>
+                android:layout_height="1dip"
+                android:background="#dddddd" />
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:src="@drawable/icon_right_arrow"/>
-        </FrameLayout>
-
-        <EditText
-            android:id="@+id/add_idCard_edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            android:phoneNumber="true"
-            />
-    </LinearLayout>
-
-    <View
-        android:id="@+id/add_underline08"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_idCard_layout" />
-
-    <View
-        android:id="@+id/add_underline04"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_underline08"
-        android:layout_marginTop="20dp"/>
-
-    <LinearLayout
-        android:id="@+id/add_member_type_layout"
-        android:layout_below="@+id/add_underline04"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="会员类型:"
-            android:gravity="center|right"
-            android:textSize="@dimen/text_size_middle"/>
-
-        <FrameLayout
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginRight="10dp">
-
-            <TextView
-                android:id="@+id/add_member_type_txt"
+            <LinearLayout
+                android:id="@+id/add_name_layout"
+                android:layout_below="@+id/add_underline01"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:gravity="center"
-                android:textSize="@dimen/text_size_middle"
-                />
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="right|bottom"
-                android:src="@drawable/icon_right_arrow"/>
-        </FrameLayout>
-    </LinearLayout>
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="姓名:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
 
-    <View
-        android:id="@+id/add_underline09"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_member_type_layout" />
+                <EditText
+                    android:id="@+id/add_name_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@null"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    />
+            </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/add_member_layout"
-        android:layout_below="@+id/add_underline09"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+            <View
+                android:id="@+id/add_underline02"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_name_layout"/>
 
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="会员卡号:"
-            android:gravity="center|right"
-            android:textSize="@dimen/text_size_middle"/>
+            <LinearLayout
+                android:id="@+id/add_phone_layout"
+                android:layout_below="@+id/add_underline02"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
 
-        <EditText
-            android:id="@+id/add_member_edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="4"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            android:inputType="number"
-            />
+                <TextView
+                    android:id="@+id/add_phone_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="*手机号:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
 
-        <Button
-            android:id="@+id/add_member_btn"
-            android:layout_width="0dp"
-            android:layout_height="45dp"
-            android:layout_weight="1"
-            android:background="@drawable/icon_member_card"
-            android:layout_marginRight="10dp"/>
-    </LinearLayout>
+                <EditText
+                    android:id="@+id/add_phone_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@null"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    android:phoneNumber="true"
+                    />
+            </LinearLayout>
 
-    <View
-        android:id="@+id/add_underline05"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_member_layout" />
+            <View
+                android:id="@+id/add_underline03"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_phone_layout"/>
 
-    <LinearLayout
-        android:id="@+id/add_password_layout"
-        android:layout_below="@+id/add_underline05"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+            <LinearLayout
+                android:id="@+id/add_idCard_layout"
+                android:layout_below="@+id/add_underline03"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/add_password_txt"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="*密码:"
-            android:gravity="center|right"
-            android:textSize="@dimen/text_size_middle"/>
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    >
 
-        <EditText
-            android:id="@+id/add_password_edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            android:password="true"
-            />
-    </LinearLayout>
+                    <TextView
+                        android:id="@+id/add_idCard_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="身份证"
+                        android:gravity="center|right"
+                        android:textSize="@dimen/text_size_middle"
+                        android:paddingRight="10dp"/>
 
-    <View
-        android:id="@+id/add_underline06"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_password_layout" />
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:src="@drawable/icon_right_arrow"/>
+                </FrameLayout>
 
-    <LinearLayout
-        android:id="@+id/add_con_password_layout"
-        android:layout_below="@+id/add_underline06"
-        android:layout_width="match_parent"
-        android:layout_height="60dp"
-        android:background="@android:color/white"
-        android:orientation="horizontal">
+                <EditText
+                    android:id="@+id/add_idCard_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@null"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    android:phoneNumber="true"
+                    />
+            </LinearLayout>
 
-        <TextView
-            android:id="@+id/add_con_password_txt"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:text="*确认密码:"
-            android:gravity="center|right"
-            android:textSize="@dimen/text_size_middle"/>
+            <View
+                android:id="@+id/add_underline08"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_idCard_layout" />
 
-        <EditText
-            android:id="@+id/add_con_password_edit"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="5"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
-            android:gravity="center_vertical"
-            android:background="@null"
-            android:textSize="@dimen/text_size_small"
-            android:singleLine="true"
-            android:password="true"
-            />
-    </LinearLayout>
+            <View
+                android:id="@+id/add_underline04"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_underline08"
+                android:layout_marginTop="20dp"/>
 
-    <View
-        android:id="@+id/add_underline07"
-        android:layout_width="match_parent"
-        android:layout_height="1dip"
-        android:background="#dddddd"
-        android:layout_below="@+id/add_con_password_layout" />
+            <LinearLayout
+                android:id="@+id/add_member_type_layout"
+                android:layout_below="@+id/add_underline04"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
 
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="会员类型:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:id="@+id/add_member_type_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_size_middle"
+                        />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:src="@drawable/icon_right_arrow"/>
+                </FrameLayout>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/add_underline09"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_member_type_layout" />
+
+            <LinearLayout
+                android:id="@+id/add_member_layout"
+                android:layout_below="@+id/add_underline09"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="会员卡号:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
+
+                <EditText
+                    android:id="@+id/add_member_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="4"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@null"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    android:inputType="number"
+                    />
+
+                <Button
+                    android:id="@+id/add_member_btn"
+                    android:layout_width="0dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:background="@drawable/icon_member_card"
+                    android:layout_marginRight="10dp"/>
+            </LinearLayout>
+
+            <View
+                android:id="@+id/add_underline05"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_member_layout" />
+
+            <LinearLayout
+                android:id="@+id/add_password_layout"
+                android:layout_below="@+id/add_underline05"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/add_password_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="*密码:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
+
+                <EditText
+                    android:id="@+id/add_password_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@null"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    android:password="true"
+                    />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/add_underline06"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_password_layout" />
+
+            <LinearLayout
+                android:id="@+id/add_con_password_layout"
+                android:layout_below="@+id/add_underline06"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/add_con_password_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="*确认密码:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
+
+                <EditText
+                    android:id="@+id/add_con_password_edit"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:gravity="center_vertical"
+                    android:background="@null"
+                    android:textSize="@dimen/text_size_small"
+                    android:singleLine="true"
+                    android:password="true"
+                    />
+            </LinearLayout>
+
+            <View
+                android:id="@+id/add_underline07"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_con_password_layout" />
+
+            <LinearLayout
+                android:id="@+id/add_staff_layout"
+                android:layout_below="@+id/add_underline07"
+                android:layout_width="match_parent"
+                android:layout_height="60dp"
+                android:background="@android:color/white"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/add_staff_txt"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="2"
+                    android:text="*办理工号:"
+                    android:gravity="center|right"
+                    android:textSize="@dimen/text_size_middle"/>
+
+                <FrameLayout
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:layout_marginRight="10dp">
+
+                    <TextView
+                        android:id="@+id/staff_txt"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center"
+                        android:textSize="@dimen/text_size_middle"
+                        />
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="right|bottom"
+                        android:src="@drawable/icon_right_arrow"/>
+                </FrameLayout>
+
+            </LinearLayout>
+
+            <View
+                android:id="@+id/add_underline"
+                android:layout_width="match_parent"
+                android:layout_height="1dip"
+                android:background="#dddddd"
+                android:layout_below="@+id/add_staff_layout" />
+
+        </RelativeLayout>
+    </ScrollView>
 </RelativeLayout>
