@@ -117,8 +117,8 @@ public class SearchDishesAdapter extends BaseAdapter{
 					/*属性项全局视图*/ View propertyView = mInflater.inflate(R.layout.layout_dishes_property, null);
 					/*属性名*/ TextView tv_propertyName = (TextView)propertyView.findViewById(R.id.tv_property_name);
 					/*选择属性值的可点击区域*/ RelativeLayout rl_propertyItems = (RelativeLayout)propertyView.findViewById(R.id.rl_property_items);
-					/*属性值默认显示*/final TextView tv_propertyValue = (TextView)propertyView.findViewById(R.id.tv_property);
-					
+					/*属性值默认显示*/ TextView tv_propertyValue = (TextView)propertyView.findViewById(R.id.tv_property);
+                    KLog.i("propertyValue:"+tv_propertyValue);
 					tv_propertyName.setText(dp.getItemTypeName());
 					List<DishesPropertyItem>  dpItemList = dp.getItemlist(); //获取当前菜品的的属性
 					
@@ -130,13 +130,16 @@ public class SearchDishesAdapter extends BaseAdapter{
 					}
 					
 					//属性选择
+                    rl_propertyItems.setTag(tv_propertyValue);
 					rl_propertyItems.setOnClickListener(new OnClickListener() {
 						@Override
 						public void onClick(View v) {
+                            TextView lTextView=(TextView)v.getTag();
+                            KLog.i("propertyValue:"+lTextView);
 							/**
 							 * 取代监听器形式设置，直接在adapter里面处理，优化逻辑
 							 */
-							onPropertyItemsClick(1, tv_propertyValue, position, propertyPos);
+							onPropertyItemsClick(1, lTextView, position, propertyPos);
 						}
 					});
 					
@@ -217,6 +220,7 @@ public class SearchDishesAdapter extends BaseAdapter{
                             //返回Activity中处理该菜, 设置选中一份
                             TextView numText = (TextView) v.getTag();
                             int num = Integer.valueOf(numText.getText().toString());
+                            curPropertyChocie.clear(); //普通菜无属性,选择的时候,不管什么情况,首先清空清除选中的属性数据,每次显示时item都清除
                             mOnChangeDishCountListener.onChangeCount(mDishes, num, curPropertyChocie);
                         }
                     }
@@ -320,16 +324,18 @@ public class SearchDishesAdapter extends BaseAdapter{
 	 */
 	private OnEnsureCheckedPropertyItemsListener mOnEnsureCheckedPropertyItemsListener = new OnEnsureCheckedPropertyItemsListener() {
 		@Override
-		public void returnCheckedItems(int curCount, View propertyValue, String propertyType, 
+		public void returnCheckedItems(int curCount, View propertyValue, String propertyType,
 				List<String> curSelectedPropertyList, List<DishesPropertyItem> checkedPropertyItems,int position) {
 			PropertySelectEntity mNewPropertyEntity = new PropertySelectEntity();
 			mNewPropertyEntity.setItemType(propertyType);
+            TextView lTextView=(TextView)propertyValue;
 			if(checkedPropertyItems!=null && checkedPropertyItems.size()>0){
                 KLog.i("checkedPropertyItems.get(0).getItemName():"+checkedPropertyItems.get(0).getItemName());
-				((TextView)propertyValue).setText(checkedPropertyItems.get(0).getItemName()); //显示选中属性值的第一项
+                lTextView.setText(checkedPropertyItems.get(0).getItemName()); //显示选中属性值的第一项
 			}
+            KLog.i("propertyValue:"+propertyValue);
 
-            KLog.i("text显示:"+((TextView)propertyValue).getText().toString());
+            KLog.i("text显示:"+lTextView.getText().toString());
 			mNewPropertyEntity.setmSelectedItemsList(checkedPropertyItems);
 			updateDishesPropertyChoice(curCount, curSelectedPropertyList, mNewPropertyEntity); //应该有默认选择，这里只做更改
 		}
