@@ -521,7 +521,7 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             @Override
             public void onResponse(SubmitPayResult response) {
                 if (response.getStatus()==1) {
-                    if (response.getEwUrlString().length()>0){
+                    if (response.getEwUrlString()!=null&&response.getEwUrlString().length()>0){
                         Bitmap bitmap=null;
                         try {
                             bitmap= ToolPicture.makeQRImage(response.getEwUrlString(), 400, 400);
