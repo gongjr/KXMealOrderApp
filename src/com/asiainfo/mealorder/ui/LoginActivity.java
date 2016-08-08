@@ -107,6 +107,10 @@ public class LoginActivity extends BaseActivity {
                     intent.putExtra("CHILD_MERCHANT_ID", mLoginUserPrefData.getChildMerchantId());
                     startActivity(intent);
                     break;
+                case EventMain.TYPE_SECOND:
+                    showShortTip("菜单更新异常!");
+                    dismissLoginDialog();
+                    break;
                 default:
                     break;
             }
@@ -120,42 +124,52 @@ public class LoginActivity extends BaseActivity {
         if (isRun) {
             switch (event.getType()) {
                 case EventBackground.TYPE_FIRST:
-                    DishesListEntity DishesListEntity = (DishesListEntity) event.getData();
-                    mDishTypeDataList = DishesListEntity.getmDishTypeDataList();
+                    try {
+                        DishesListEntity DishesListEntity = (DishesListEntity) event.getData();
+                        mDishTypeDataList = DishesListEntity.getmDishTypeDataList();
 
-                    if (mDishTypeDataList != null && mDishTypeDataList.size() > 0) {
-                        DataSupport.deleteAll(MerchantDishesType.class);//清空菜品类型缓存表
-                        DataSupport.saveAll(mDishTypeDataList);
-                    }
-                    if (mAllDishesDataList != null && mAllDishesDataList.size() > 0) {
-                        DataSupport.deleteAll(MerchantDishes.class);//清空菜品缓存
-                        DataSupport.deleteAll(DishesProperty.class);//清空菜品属性类型缓存
-                        DataSupport.deleteAll(DishesPropertyItem.class);//清空菜品属性值缓存
-                        DataSupport.saveAll(mAllDishesDataList);
-                        for (int i = 0; i < mAllDishesDataList.size(); i++) {
-                            MerchantDishes md = mAllDishesDataList.get(i);
-                            List<DishesProperty> dpList = md.getDishesItemTypelist();
-                            if (dpList != null && dpList.size() > 0) {
-                                DataSupport.saveAll(dpList); //缓存菜品属性类型数据
-                                for (int j = 0; j < dpList.size(); j++) {
-                                    DishesProperty dpItem = dpList.get(j);
-                                    List<DishesPropertyItem> dpiList = dpItem.getItemlist();
-                                    DataSupport.saveAll(dpiList); //缓存菜品属性值数据
+                        if (mDishTypeDataList != null && mDishTypeDataList.size() > 0) {
+                            DataSupport.deleteAll(MerchantDishesType.class);//清空菜品类型缓存表
+                            DataSupport.saveAll(mDishTypeDataList);
+                        }
+                        if (mAllDishesDataList != null && mAllDishesDataList.size() > 0) {
+                            DataSupport.deleteAll(MerchantDishes.class);//清空菜品缓存
+                            DataSupport.deleteAll(DishesProperty.class);//清空菜品属性类型缓存
+                            DataSupport.deleteAll(DishesPropertyItem.class);//清空菜品属性值缓存
+                            DataSupport.saveAll(mAllDishesDataList);
+                            for (int i = 0; i < mAllDishesDataList.size(); i++) {
+                                MerchantDishes md = mAllDishesDataList.get(i);
+                                List<DishesProperty> dpList = md.getDishesItemTypelist();
+                                if (dpList != null && dpList.size() > 0) {
+                                    DataSupport.saveAll(dpList); //缓存菜品属性类型数据
+                                    for (int j = 0; j < dpList.size(); j++) {
+                                        DishesProperty dpItem = dpList.get(j);
+                                        List<DishesPropertyItem> dpiList = dpItem.getItemlist();
+                                        DataSupport.saveAll(dpiList); //缓存菜品属性值数据
+                                    }
                                 }
                             }
                         }
+
+                        //更新时将套餐数据清空，后续缓存更新
+                        DataSupport.deleteAll(DishesComp.class);
+                        DataSupport.deleteAll(DishesCompItem.class);
+                        Log.i("onEventBackgroundThread", "LoginActivity中数据库更新成功");
+
+                        EventMain eventMain = new EventMain();
+                        eventMain.setName(LoginActivity.class.getName());
+                        eventMain.setType(EventMain.TYPE_FIRST);
+                        eventMain.setDescribe("菜品更新成功后，通知消息发布到登陆页面主线程");
+                        EventBus.getDefault().post(eventMain);
+                    }catch (Exception e){
+                        EventMain eventMain = new EventMain();
+                        eventMain.setName(LoginActivity.class.getName());
+                        eventMain.setType(EventMain.TYPE_SECOND);
+                        eventMain.setDescribe("菜品更新异常!");
+                        EventBus.getDefault().post(eventMain);
+                        e.printStackTrace();
                     }
 
-                    //更新时将套餐数据清空，后续缓存更新
-                    DataSupport.deleteAll(DishesComp.class);
-                    DataSupport.deleteAll(DishesCompItem.class);
-                    Log.i("onEventBackgroundThread", "LoginActivity中数据库更新成功");
-
-                    EventMain eventMain = new EventMain();
-                    eventMain.setName(LoginActivity.class.getName());
-                    eventMain.setType(EventMain.TYPE_FIRST);
-                    eventMain.setDescribe("菜品更新成功后，通知消息发布到登陆页面主线程");
-                    EventBus.getDefault().post(eventMain);
                     break;
                 default:
                     break;
@@ -536,6 +550,7 @@ public class LoginActivity extends BaseActivity {
 
                         List<HttpMerchantDishes> lHttpMerchantDisheses = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<HttpMerchantDishes>>() {
                         }.getType());
+                        mAllDishesDataList.clear();
                         for (HttpMerchantDishes lHttpMerchantDishes:lHttpMerchantDisheses){
                             mAllDishesDataList.add(lHttpMerchantDishes.HttpMerchantDishesToMerchantDishes());
                         }

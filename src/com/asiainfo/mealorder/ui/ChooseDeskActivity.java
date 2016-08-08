@@ -961,6 +961,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
                         Log.d(TAG, "Dishes Type Count: " + mDishTypeDataList.size());
                         List<HttpMerchantDishes> lHttpMerchantDisheses = gson.fromJson(datainfo.getString("dishes"), new TypeToken<List<HttpMerchantDishes>>() {
                         }.getType());
+                        mAllDishesDataList.clear();
                         for (HttpMerchantDishes lHttpMerchantDishes:lHttpMerchantDisheses){
                             mAllDishesDataList.add(lHttpMerchantDishes.HttpMerchantDishesToMerchantDishes());
                         }
@@ -984,7 +985,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
                         event.setType(EventBackground.TYPE_FIRST);
                         event.setDescribe("菜单数据传入后台线程存入数据库");
                         EventBus.getDefault().post(event);
-                        dismissCommonDialog();
+
                     } else {
                         dismissCommonDialog();
                         showShortTip("菜品更新失败! " + data.getString("msg"));
@@ -1012,7 +1013,12 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
         if (isRun) {
             switch (event.getType()) {
                 case EventMain.TYPE_FIRST:
+                    dismissCommonDialog();
                     showShortTip("菜单更新成功!");
+                    break;
+                case EventMain.TYPE_SECOND:
+                    dismissCommonDialog();
+                    showShortTip("菜单更新发生异常!");
                     break;
                 default:
                     break;
@@ -1027,39 +1033,49 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
         if (isRun) {
             switch (event.getType()) {
                 case EventBackground.TYPE_FIRST:
-                    DishesListEntity DishesListEntity = (DishesListEntity) event.getData();
-                    mDishTypeDataList = DishesListEntity.getmDishTypeDataList();
-                    if (mDishTypeDataList != null && mDishTypeDataList.size() > 0) {
-                        DataSupport.deleteAll(MerchantDishesType.class);//清空菜品类型缓存表
-                        DataSupport.saveAll(mDishTypeDataList);
-                    }
-                    if (mAllDishesDataList != null && mAllDishesDataList.size() > 0) {
-                        DataSupport.deleteAll(MerchantDishes.class);//清空菜品缓存
-                        DataSupport.deleteAll(DishesProperty.class);//清空菜品属性类型缓存
-                        DataSupport.deleteAll(DishesPropertyItem.class);//清空菜品属性值缓存
-                        DataSupport.saveAll(mAllDishesDataList);
-                        for (int i = 0; i < mAllDishesDataList.size(); i++) {
-                            MerchantDishes md = mAllDishesDataList.get(i);
-                            List<DishesProperty> dpList = md.getDishesItemTypelist();
-                            if (dpList != null && dpList.size() > 0) {
-                                DataSupport.saveAll(dpList); //缓存菜品属性类型数据
-                                for (int j = 0; j < dpList.size(); j++) {
-                                    DishesProperty dpItem = dpList.get(j);
-                                    List<DishesPropertyItem> dpiList = dpItem.getItemlist();
-                                    DataSupport.saveAll(dpiList); //缓存菜品属性值数据
+                    try {
+                        DishesListEntity DishesListEntity = (DishesListEntity) event.getData();
+                        mDishTypeDataList = DishesListEntity.getmDishTypeDataList();
+                        if (mDishTypeDataList != null && mDishTypeDataList.size() > 0) {
+                            DataSupport.deleteAll(MerchantDishesType.class);//清空菜品类型缓存表
+                            DataSupport.saveAll(mDishTypeDataList);
+                        }
+                        if (mAllDishesDataList != null && mAllDishesDataList.size() > 0) {
+                            DataSupport.deleteAll(MerchantDishes.class);//清空菜品缓存
+                            DataSupport.deleteAll(DishesProperty.class);//清空菜品属性类型缓存
+                            DataSupport.deleteAll(DishesPropertyItem.class);//清空菜品属性值缓存
+                            DataSupport.saveAll(mAllDishesDataList);
+                            for (int i = 0; i < mAllDishesDataList.size(); i++) {
+                                MerchantDishes md = mAllDishesDataList.get(i);
+                                List<DishesProperty> dpList = md.getDishesItemTypelist();
+                                if (dpList != null && dpList.size() > 0) {
+                                    DataSupport.saveAll(dpList); //缓存菜品属性类型数据
+                                    for (int j = 0; j < dpList.size(); j++) {
+                                        DishesProperty dpItem = dpList.get(j);
+                                        List<DishesPropertyItem> dpiList = dpItem.getItemlist();
+                                        DataSupport.saveAll(dpiList); //缓存菜品属性值数据
+                                    }
                                 }
                             }
                         }
-                    }
-                    //更新时将套餐数据清空，后续缓存更新
-                    DataSupport.deleteAll(DishesComp.class);
-                    DataSupport.deleteAll(DishesCompItem.class);
+                        //更新时将套餐数据清空，后续缓存更新
+                        DataSupport.deleteAll(DishesComp.class);
+                        DataSupport.deleteAll(DishesCompItem.class);
 
-                    EventMain eventMain = new EventMain();
-                    eventMain.setName(ChooseDeskActivity.class.getName());
-                    eventMain.setType(EventMain.TYPE_FIRST);
-                    eventMain.setDescribe("菜品更新成功后，通知消息发布到桌台页面");
-                    EventBus.getDefault().post(eventMain);
+                        EventMain eventMain = new EventMain();
+                        eventMain.setName(ChooseDeskActivity.class.getName());
+                        eventMain.setType(EventMain.TYPE_FIRST);
+                        eventMain.setDescribe("菜品更新成功后，通知消息发布到桌台页面");
+                        EventBus.getDefault().post(eventMain);
+                    }catch (Exception e){
+                        EventMain eventMain = new EventMain();
+                        eventMain.setName(ChooseDeskActivity.class.getName());
+                        eventMain.setType(EventMain.TYPE_SECOND);
+                        eventMain.setDescribe("菜品更新发生异常!");
+                        EventBus.getDefault().post(eventMain);
+                        e.printStackTrace();
+                    }
+
                     break;
                 default:
                     break;
