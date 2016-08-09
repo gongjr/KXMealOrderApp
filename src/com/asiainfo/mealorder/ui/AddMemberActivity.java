@@ -102,6 +102,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private int psptIndex = 0;
     private int leverIndex = 0;
     private int staffIndex = 0;
+    private boolean isRequired = false; //密码是否必填
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -139,18 +140,24 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 showShortTip("手机号不能为空");
                 return;
             }
-            if (StringUtils.isNull(password)) {
-                showShortTip("密码不能为空");
-                return;
+            if (isRequired = true) {
+
+                if (StringUtils.isNull(password)) {
+                    showShortTip("密码不能为空");
+                    return;
+                }
+                if (StringUtils.isNull(confPassword)) {
+                    showShortTip("请再次确认密码");
+                    return;
+                }
+
             }
-            if (StringUtils.isNull(confPassword)) {
-                showShortTip("请再次确认密码");
-                return;
-            }
+
             if (!password.equals(confPassword)) {
                 showShortTip("两次密码输入不同");
                 return;
             }
+
             if (StringUtils.isNull(staffId)) {
                 showShortTip("请选择办理工号!");
                 return;
@@ -202,8 +209,6 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
         getMemberLevelAndPsptType();
         getStaffList();
         setTextColor(phoneTxt);
-        setTextColor(passwordTxt);
-        setTextColor(conPasswordTxt);
         setTextColor(addStaffTxt);
     }
 
@@ -285,7 +290,27 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             showShortTip("服务器无会员类型数据,请确认=.=!!");
             return;
         }
+        if (memberLevelList.get(0).getLevelName().equals("储值会员")) {
+            isRequired = true;
+            setPasswordTag();
+        } else {
+            isRequired = false;
+            setPasswordTag();
+        }
+
         memberTypeTxt.setText(memberLevelList.get(0).getLevelName());
+    }
+
+    private void setPasswordTag() {
+        if (isRequired) {
+            passwordTxt.setText("*密码");
+            conPasswordTxt.setText("*确认密码");
+            setTextColor(passwordTxt);
+            setTextColor(conPasswordTxt);
+        } else {
+            passwordTxt.setText("密码");
+            conPasswordTxt.setText("确认密码");
+        }
     }
 
     private void lkl() {
@@ -468,18 +493,18 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.add_idCard_txt:
-                if(psptTypeList!=null&&psptTypeList.size()>0){
+                if (psptTypeList != null && psptTypeList.size() > 0) {
                     showIDCardAndMemberCard();
                     chooseMemberCardAndIDCardDF.setCurrentPosition(psptIndex);
                     chooseMemberCardAndIDCardDF.setIsId(true);
-                }else showShortTip("没有证件类型可选择");
+                } else showShortTip("没有证件类型可选择");
                 break;
             case R.id.add_member_type_txt:
-                if(memberLevelList!=null&&memberLevelList.size()>=0){
+                if (memberLevelList != null && memberLevelList.size() >= 0) {
                     showIDCardAndMemberCard();
                     chooseMemberCardAndIDCardDF.setCurrentPosition(leverIndex);
                     chooseMemberCardAndIDCardDF.setIsId(false);
-                }else showShortTip("没有会员类型可选择");
+                } else showShortTip("没有会员类型可选择");
                 break;
             case R.id.add_member_btn:
                 lkl();
@@ -565,6 +590,13 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 psptIndex = position;
             } else {
                 memberTypeTxt.setText(memberLevelList.get(position).getLevelName());
+                if (memberLevelList.get(position).getLevelName().equals("储值会员")) {
+                    isRequired = true;
+                    setPasswordTag();
+                } else {
+                    isRequired = false;
+                    setPasswordTag();
+                }
                 leverIndex = position;
             }
         }
@@ -580,7 +612,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
 
     private void setTextColor(TextView v) {
         String str = v.getText().toString();
-        SpannableStringBuilder style=new SpannableStringBuilder(str);
+        SpannableStringBuilder style = new SpannableStringBuilder(str);
         ForegroundColorSpan redSpan = new ForegroundColorSpan(getResources().getColor(R.color.dark_red));
         style.setSpan(redSpan, 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         v.setText(style);
