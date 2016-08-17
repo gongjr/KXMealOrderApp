@@ -87,6 +87,10 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private TextView staff_txt;
     @InjectView(R.id.add_staff_txt)
     private TextView addStaffTxt;
+    @InjectView(R.id.add_notice)
+    private TextView noticeTxt;
+    @InjectView(R.id.add_remark_edit)
+    private EditText remarkEdit;
 
 
     private CountDownLoadingDF mCountDownLoadingDF;
@@ -135,12 +139,13 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             String password = passwordEdit.getText().toString();
             String confPassword = conPasswordEdit.getText().toString();
             String staffId = staff_txt.getText().toString();
+            String remark = remarkEdit.getText().toString();
 
             if (StringUtils.isNull(phone)) {
                 showShortTip("手机号不能为空");
                 return;
             }
-            if (isRequired = true) {
+            if (isRequired) {
 
                 if (StringUtils.isNull(password)) {
                     showShortTip("密码不能为空");
@@ -175,6 +180,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             param.put("phone", phone);
             param.put("icid", memberCode);
             param.put("memberPwd", password);
+            param.put("remark", remark);
             if (!StringUtils.isNull(cardCode)) {
                 param.put("psptId", cardCode);
                 param.put("psptType", idCardTxt.getText().toString());
@@ -217,6 +223,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
         memberTypeTxt.setOnClickListener(this);
         memberBtn.setOnClickListener(this);
         staff_txt.setOnClickListener(this);
+        noticeTxt.setOnClickListener(this);
     }
 
     private void getMemberLevelAndPsptType() {
@@ -303,13 +310,13 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
 
     private void setPasswordTag() {
         if (isRequired) {
-            passwordTxt.setText("*密码");
-            conPasswordTxt.setText("*确认密码");
+            passwordTxt.setText("*密码:");
+            conPasswordTxt.setText("*确认密码:");
             setTextColor(passwordTxt);
             setTextColor(conPasswordTxt);
         } else {
-            passwordTxt.setText("密码");
-            conPasswordTxt.setText("确认密码");
+            passwordTxt.setText("密码:");
+            conPasswordTxt.setText("确认密码:");
         }
     }
 
@@ -512,6 +519,9 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             case R.id.staff_txt:
                 showChooseStaffDF();
                 chooseStaffDF.setCurrentPosition(staffIndex);
+                break;
+            case R.id.add_notice:
+                getOperation().forward(ImageActivity.class);
                 break;
         }
     }
