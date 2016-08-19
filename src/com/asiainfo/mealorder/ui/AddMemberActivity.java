@@ -270,8 +270,11 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                                 String data = response.getJSONObject("data").getString("info");
                                 staffList = gson.fromJson(data, new TypeToken<ArrayList<MerchantRegister>>() {
                                 }.getType());
+                                if (staffList.size() == 0) {
+                                    staff_txt.setText(merchantRegister.getStaffName());
+                                }
                             } else {
-                                showShortTip("获取员工信息失败: " + response.getString("msg"));
+                                staff_txt.setText(merchantRegister.getStaffName());
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -282,7 +285,8 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         dismissLoadingDF();
-                        showShortTip("获取员工号列表失败: " + error.getMessage());
+//                        showShortTip("获取员工号列表失败: " + error.getMessage());
+                        staff_txt.setText(merchantRegister.getStaffName());
                     }
                 });
     }
@@ -517,8 +521,12 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 lkl();
                 break;
             case R.id.staff_txt:
-                showChooseStaffDF();
-                chooseStaffDF.setCurrentPosition(staffIndex);
+                if (staffList == null || staffList.size() == 0) {
+                    showShortTip("没有工号可供选择,请确认~.~");
+                } else {
+                    showChooseStaffDF();
+                    chooseStaffDF.setCurrentPosition(staffIndex);
+                }
                 break;
             case R.id.add_notice:
                 getOperation().forward(ImageActivity.class);
