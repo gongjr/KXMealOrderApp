@@ -89,8 +89,8 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private TextView addStaffTxt;
     @InjectView(R.id.add_notice)
     private TextView noticeTxt;
-    @InjectView(R.id.add_remark_edit)
-    private EditText remarkEdit;
+//    @InjectView(R.id.add_remark_edit)
+//    private EditText remarkEdit;
 
 
     private CountDownLoadingDF mCountDownLoadingDF;
@@ -139,7 +139,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             String password = passwordEdit.getText().toString();
             String confPassword = conPasswordEdit.getText().toString();
             String staffId = staff_txt.getText().toString();
-            String remark = remarkEdit.getText().toString();
+//            String remark = remarkEdit.getText().toString();
 
             if (StringUtils.isNull(phone)) {
                 showShortTip("手机号不能为空");
@@ -180,7 +180,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             param.put("phone", phone);
             param.put("icid", memberCode);
             param.put("memberPwd", password);
-            param.put("remark", remark);
+//            param.put("remark", remark);
             if (!StringUtils.isNull(cardCode)) {
                 param.put("psptId", cardCode);
                 param.put("psptType", idCardTxt.getText().toString());
