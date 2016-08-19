@@ -19,15 +19,17 @@
 
     <TextView
         android:id="@+id/add_notice"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/title_line"
         android:layout_centerHorizontal="true"
-        android:text="活动介绍  >>"
-        android:textSize="@dimen/text_size_small"
-        android:textColor="#999999"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:text="查看办卡优惠活动信息 >>"
+        android:textSize="@dimen/text_size_xsmall"
+        android:textColor="@android:color/white"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:gravity="center"
+        android:background="#a19a92"
         />
 
     <View
