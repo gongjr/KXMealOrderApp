@@ -429,7 +429,8 @@ public class PrePayPresenter {
         //(3)根据积分抵扣和余额支付,及需要支付金额,判断赋予应该积分抵扣和余额支付的值
         Double scorePrice=0.00;
         if (isScore){
-            Double scores=mUserModel.getScorePriceFormScore(memberCard.getScore());
+//            Double scores=mUserModel.getScorePriceFormScore(memberCard.getScore());
+            Double scores=Double.valueOf(memberCard.getScoreCash());//积分实际金额读取scoreCash
             scorePrice= scores >= Double.valueOf(mPrePrice.getCurNeedPay())?Double.valueOf(mPrePrice.getCurNeedPay()):scores;
         }
         //(4)积分抵扣金额,需要当做一条支付行为处理
