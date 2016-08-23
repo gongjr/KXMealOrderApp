@@ -182,7 +182,7 @@ public class MemberActivity extends BaseActivity {
         @Override
         public void setScore(String score) {
             scoreTxt.setText(Html.fromHtml("<font color='#D0021B'>" + score + "抵" +
-                    memberPresenter.getScorePriceFormScore(score) + "元"));
+                    score+ "元"));
         }
 
         @Override
