@@ -27,6 +27,7 @@ import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Tools;
 import com.lkl.cloudpos.aidl.AidlDeviceService;
 import com.lkl.cloudpos.aidl.magcard.AidlMagCard;
+import com.lkl.cloudpos.aidl.magcard.EncryptMagCardListener;
 import com.lkl.cloudpos.aidl.magcard.MagCardListener;
 import com.lkl.cloudpos.aidl.magcard.TrackData;
 import com.lkl.cloudpos.aidl.printer.AidlPrinter;
@@ -525,7 +526,11 @@ public class LakalaController {
         AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
         if(aidlMagCard!=null){
             try {
-                aidlMagCard.searchCard(timeout,pMagCardListener);
+                KLog.i("开始读卡:");
+                aidlMagCard.searchCard(timeout, pMagCardListener);
+//                byte keyIndex=0x01;
+//                byte index_00=0x00;
+//                aidlMagCard.searchEncryptCard(timeout,index_00, keyIndex, null, keyIndex, mEncryptMagCardListener);
             } catch (RemoteException e) {
                 e.printStackTrace();
             }catch (Exception e){
@@ -586,6 +591,39 @@ public class LakalaController {
         @Override
         public IBinder asBinder() {
             return this;
+        }
+    };
+
+    EncryptMagCardListener.Stub mEncryptMagCardListener=new EncryptMagCardListener.Stub() {
+        @Override
+        public void onTimeout() throws RemoteException {
+            KLog.i("超时");
+
+        }
+
+        @Override
+        public void onError(int errorCode) throws RemoteException {
+            KLog.i("错误");
+
+        }
+
+        @Override
+        public void onCanceled() throws RemoteException {
+            KLog.i("取消");
+
+        }
+
+        @Override
+        public void onSuccess(String[] trackData) throws RemoteException {
+            KLog.i("成功");
+            for (String s:trackData){
+                KLog.i("内容:"+s);
+            }
+        }
+
+        @Override
+        public void onGetTrackFail() throws RemoteException {
+
         }
     };
 }

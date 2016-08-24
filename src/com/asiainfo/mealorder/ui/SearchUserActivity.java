@@ -448,6 +448,7 @@ public class SearchUserActivity extends BaseActivity {
 
         @Override
         public void onSuccess(final TrackData trackData) throws RemoteException {
+            KLog.i("onSuccess");
             Observable.create(new Observable.OnSubscribe<TrackData>() {
                 @Override
                 public void call(Subscriber<? super TrackData> subscriber) {
@@ -475,8 +476,18 @@ public class SearchUserActivity extends BaseActivity {
 
                         @Override
                         public void onNext(TrackData pData) {
-                            if (pData.getCardno().length() > 0)
-                                userNum.setText(pData.getCardno());
+                            KLog.i("Cardno:"+pData.getCardno());
+                            KLog.i("ExpiryDate:"+pData.getExpiryDate());
+                            KLog.i("FirstTrackData:"+pData.getFirstTrackData());
+
+                            KLog.i("SecondTrackData:"+pData.getSecondTrackData());
+
+                            KLog.i("ThirdTrackData:"+pData.getThirdTrackData());
+                            KLog.i("ServiceCode:"+pData.getServiceCode());
+                            KLog.i("FormatTrackData:"+pData.getFormatTrackData());
+
+                            if (pData.getSecondTrackData().length() > 0)
+                                userNum.setText(pData.getSecondTrackData());
                         }
                     });
         }

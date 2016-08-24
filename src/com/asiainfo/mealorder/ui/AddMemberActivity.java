@@ -482,8 +482,8 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
 
                         @Override
                         public void onNext(TrackData pData) {
-                            if (pData.getCardno().length() > 0) {
-                                memberEdit.setText(pData.getCardno());
+                            if (pData.getSecondTrackData().length() > 0) {
+                                memberEdit.setText(pData.getSecondTrackData());
                             }
                         }
                     });
