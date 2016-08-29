@@ -113,6 +113,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
     private static final int ID_localOrder = 2;
     private static final int ID_addMember = 4;
     private static final int ID_exit = 3;
+    private static final int ID_modify = 5;
     private List<MerchantDishesType> mDishTypeDataList;
     private List<MerchantDishes> mAllDishesDataList=new ArrayList<>();
     @InjectResource(R.drawable.ic_actionitem_refresh)
@@ -159,6 +160,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
         ActionItem exitItem = new ActionItem(ID_exit, "退出登录", ic_actionitem_exit);
         ActionItem localOrder = new ActionItem(ID_localOrder, "本地订单", ic_actionitem_order);
         ActionItem addMember = new ActionItem(ID_addMember, "新增会员", ic_actionitem_member);
+        ActionItem modifyPassword = new ActionItem(ID_modify, "修改密码", ic_actionitem_exit);
         localOrder.setSticky(true);
         refreshDishesItem.setSticky(true);
         exitItem.setSticky(true);
@@ -166,6 +168,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
         quickAction.addActionItem(localOrder);
         quickAction.addActionItem(addMember);
         quickAction.addActionItem(exitItem);
+        quickAction.addActionItem(modifyPassword);
         quickAction.setOnActionItemClickListener(new QuickAction.OnActionItemClickListener() {
             @Override
             public void onItemClick(QuickAction source, int pos, int actionId) {
@@ -183,6 +186,9 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
                 } else if (actionId == ID_addMember) {
                     source.dismiss();
                     getOperation().forward(AddMemberActivity.class);
+                } else if (actionId == ID_modify) {
+                    source.dismiss();
+                    getOperation().forward(ModifyPasswordActivity.class);
                 }
             }
         });

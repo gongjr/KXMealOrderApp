@@ -30,7 +30,7 @@ public class HttpController {
     /**
      * 默认服务器配置,程序初始化确认的地址,恢复的初始状态
      */
-    public static final AddressState init=AddressState.debug;
+    public static final AddressState init=AddressState.localtest;
     /**
      * 当前服务器环境值,如果配置,保有最新选择
      */
@@ -484,6 +484,23 @@ public class HttpController {
                                Response.Listener listener, Response.ErrorListener errorListener) {
         String param = "/appController/queryStaffList.do?merchantId=" + merchantId
                 + "&childMerchantId=" + childMerchantId;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
+
+    /**
+     * 更新会员密码
+     *
+     * @param merchantId      商户Id
+     * @param userId          用户Id
+     * @param password        新密码
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void updateUserMemberPassword(String merchantId, String userId, String password,
+                                         Response.Listener listener, Response.ErrorListener errorListener) {
+        String param = "/appController/updateUserMemberPassword.do?merchantId=" + merchantId + "&userId="
+                + userId + "&password=" + password;
         JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
     }

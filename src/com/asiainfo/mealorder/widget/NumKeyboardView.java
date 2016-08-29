@@ -172,4 +172,8 @@ public class NumKeyboardView {
     public interface OnConfirmListener {
         public void onConfirm(String s);
     }
+
+    public int isVisibility() {
+        return mView.getVisibility();
+    }
 }
