@@ -26,6 +26,7 @@ import com.asiainfo.mealorder.biz.adapter.DeskOrderAdapter;
 import com.asiainfo.mealorder.biz.bean.merchant.FunctionCode;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
 import com.asiainfo.mealorder.biz.model.PriceUtil;
+import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.biz.entity.DeskOrder;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
@@ -46,6 +47,7 @@ import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.biz.listener.DialogDelayListener;
+import com.asiainfo.mealorder.ui.PoPup.SelectSettlementDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
 import com.asiainfo.mealorder.utils.Arith;
@@ -86,6 +88,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
     private AppApplication BaseApp;
     private MakeOrderFinishDF mMakeOrderDF;
     private View view;
+    private SelectSettlementDF selectSettlementDF;
 
     @InjectView(R.id.order_list)
     private SwipeMenuListView mSwipeMenuList;
@@ -306,10 +309,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
             case R.id.order_paybtn:
                 if (mDeskOrder.getOrderState().equals(OrderState.ORDERSTATE_NORMAL.getValue())) {
                     if (merchantRegister.isFunctionCode(FunctionCode.OrderSellete)){
-                        Intent intent = new Intent(this, SettleAccountActivity.class);
-                        String deskOrder=gson.toJson(mDeskOrder);
-                        intent.putExtra("deskOrder",deskOrder);
-                        startActivity(intent);
+                        showSelectDF();
                     }else{
                         showShortTip("本工号没有配置"+FunctionCode.OrderSellete.getTitle()+"权限!");
                     }
@@ -807,6 +807,51 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
             lDeskOrderGoodsItem.setSalesState("1");
         }
     }
+
+    /*
+    * 显示选择结算方式窗口
+    * */
+    private void showSelectDF() {
+        if (selectSettlementDF == null) {
+            selectSettlementDF = new SelectSettlementDF();
+            selectSettlementDF.setOnSelectBackListener(onSelectBackListener);
+        }
+        selectSettlementDF.show(getSupportFragmentManager(), "SettleAccountActivity");
+    }
+
+    private void dismissSelectDF() {
+        try {
+            if (selectSettlementDF != null && selectSettlementDF.isAdded()) {
+                selectSettlementDF.dismiss();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /*
+    * 选择结算还是挂账返回监听事件
+    * */
+    private SelectSettlementDF.OnSelectBackListener onSelectBackListener = new SelectSettlementDF.OnSelectBackListener() {
+        @Override
+        public void onSelectBack(int tag) {
+            dismissSelectDF();
+            if (tag == SelectSettlementDF.HANGING_ACCOUNT) {
+                Intent intent = new Intent(mActivity, SettleAccountActivity.class);
+                String deskOrder=gson.toJson(mDeskOrder);
+                intent.putExtra("deskOrder",deskOrder);
+                intent.putExtra("type", Constants.Settle_Type_HangUpOrder);
+                startActivity(intent);
+            } else {
+                Intent intent = new Intent(mActivity, SettleAccountActivity.class);
+                String deskOrder=gson.toJson(mDeskOrder);
+                intent.putExtra("deskOrder",deskOrder);
+                intent.putExtra("type",Constants.Settle_Type_SubmitOrder);
+                startActivity(intent);
+
+            }
+        }
+    };
 
 
 }

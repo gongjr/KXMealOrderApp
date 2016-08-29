@@ -22,7 +22,7 @@ public class SelectSettlementDF  extends DialogFragmentBase implements View.OnCl
     public static final int SETTLE_ACCOUNT = 1;  //结账
     private View view;
     private OnSelectBackListener onSelectBackListener;
-    private int index = HANGING_ACCOUNT;
+    private int index = SETTLE_ACCOUNT;
     private TextView hangingAccount;
     private TextView settleAccount;
     private Button sureBtn;
@@ -51,7 +51,7 @@ public class SelectSettlementDF  extends DialogFragmentBase implements View.OnCl
     @Override
     public void onStart() {
         super.onStart();
-        index = HANGING_ACCOUNT;
+        index = SETTLE_ACCOUNT;
         setCurSelectBg(index);
     }
 

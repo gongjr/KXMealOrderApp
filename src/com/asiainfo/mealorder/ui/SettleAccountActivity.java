@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,6 +15,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.PayOrderListAdapter;
+import com.asiainfo.mealorder.biz.adapter.PayTypeListAdapter;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
 import com.asiainfo.mealorder.biz.bean.settleaccount.MemberCard;
 import com.asiainfo.mealorder.biz.bean.settleaccount.OrderPay;
@@ -31,6 +33,7 @@ import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnVisibilityListener;
 import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.biz.presenter.PrePayPresenter;
+import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.ui.PoPup.SelectLakalaPaymentDF;
@@ -86,11 +89,15 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private TextView oddChange;
     @InjectView(R.id.account_payorderlist)
     private ListView curPayOrderListView;
+    @InjectView(R.id.settle_paytype_list)
+    private GridView curPayTypeGridView;
     @InjectView(R.id.favorable_group)
     private RelativeLayout favorable_group;
     private PayOrderListAdapter mPayOrderListAdapter;
+    private PayTypeListAdapter mPayTypeListAdapter;
     private MakeOrderFinishDF mMakeOrderDF;
     private SelectSettlementDF selectSettlementDF;
+    private int Type= Constants.Settle_Type_SubmitOrder;
 
     /**
      * presenter主导器,隔离model与当前view层,将业务逻辑控制写在里面
@@ -118,11 +125,15 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     public void initData() {
         MerchantRegister merchantRegister = (MerchantRegister) baseApp.gainData(baseApp.KEY_GLOABLE_LOGININFO);
         String deskOrder = getIntent().getStringExtra("deskOrder");
+        Type=getIntent().getIntExtra("type",Constants.Settle_Type_SubmitOrder);
         DeskOrder lDeskOrder = gson.fromJson(deskOrder, DeskOrder.class);
         mPrePayPresenter = new PrePayPresenter(lDeskOrder, merchantRegister);
         mPayOrderListAdapter = new PayOrderListAdapter(mActivity, mPrePayPresenter.getOrderPayList());
         mPayOrderListAdapter.setOnVisibilityListener(onVisibilityListener);
         curPayOrderListView.setAdapter(mPayOrderListAdapter);
+        mPayTypeListAdapter=new PayTypeListAdapter(mActivity, mPrePayPresenter.getCurPayTypeList());
+        mPayTypeListAdapter.setOnVisibilityListener(onPayTypeListener);
+        curPayTypeGridView.setAdapter(mPayTypeListAdapter);
         setTitle();
         refreshPrice();
         initPayMethod();
@@ -144,7 +155,26 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                                 int size = payMethodList.size();
                                 for (int i = 0; i < size; i++) {
                                     PayType payType = payMethodList.get(i);
-                                    mPrePayPresenter.setPayMent(payType);
+                                    if (payType.getMobilePosShow()!=null&&payType.getMobilePosShow().length()>0&&
+                                            payType.getMobilePosShow().equals("1")&&payType.getMobilePosHoldup()!=null&payType.getMobilePosHoldup().length()>0){
+                                        //过滤挂单与结账不同的支付方式,加入mPrePayPresenter缓存
+                                        switch (Type){
+                                            case Constants.Settle_Type_HangUpOrder:
+                                                if (payType.getMobilePosHoldup().equals("1")||payType.getMobilePosHoldup().equals("3")){
+                                                    mPrePayPresenter.setPayMent(payType);
+                                                }
+                                                break;
+                                            case Constants.Settle_Type_SubmitOrder:
+                                                if (payType.getMobilePosHoldup().equals("2")||payType.getMobilePosHoldup().equals("3")){
+                                                    mPrePayPresenter.setPayMent(payType);
+                                                }
+                                                break;
+                                            default:break;
+                                        }
+                                    }else{
+                                        mPrePayPresenter.setPayMent(payType);
+                                    }
+                                    mPayTypeListAdapter.refreshDate(mPrePayPresenter.getCurPayTypeList());
                                 }
                             } else {
                                 updateNotice("获取支付方式配置失败,无法结算!", getPayMentResultmListener);
@@ -182,7 +212,14 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
-            showSelectDF();
+//            showSelectDF();
+            if (Type == Constants.Settle_Type_HangUpOrder) {
+                showLoadingDF("正在提交挂单信息...");
+                submitHangUpOrder();
+            } else if(Type == Constants.Settle_Type_SubmitOrder){
+                showLoadingDF("正在提交结算信息...");
+                submitOrder();
+            }
         }
     };
 
@@ -438,19 +475,26 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 switch (tag) {
                     case PayPriceActivity.PAY_BANK:
                         mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.BankPayMent), price);
-                        bankCard.setBackgroundResource(R.drawable.itemsel_selected);
+//                        bankCard.setBackgroundResource(R.drawable.itemsel_selected);
+                        mPayTypeListAdapter.addSelectedPaytype(PayMent.BankPayMent.getValue());
                         break;
                     case PayPriceActivity.PAY_CASH:
                         mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.CashPayMent), price);
-                        cash.setBackgroundResource(R.drawable.itemsel_selected);
+//                        cash.setBackgroundResource(R.drawable.itemsel_selected);
+                        mPayTypeListAdapter.addSelectedPaytype(PayMent.CashPayMent.getValue());
+
                         break;
                     case PayPriceActivity.PAY_WEIXIN:
                         mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.WeixinPayMent), price);
-                        weixin.setBackgroundResource(R.drawable.itemsel_selected);
+//                        weixin.setBackgroundResource(R.drawable.itemsel_selected);
+                        mPayTypeListAdapter.addSelectedPaytype(PayMent.WeixinPayMent.getValue());
+
                         break;
                     case PayPriceActivity.PAY_ZHIFUBAO:
                         mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.ZhifubaoPayMent), price);
-                        zhifubao.setBackgroundResource(R.drawable.itemsel_selected);
+//                        zhifubao.setBackgroundResource(R.drawable.itemsel_selected);
+                        mPayTypeListAdapter.addSelectedPaytype(PayMent.ZhifubaoPayMent.getValue());
+
                         break;
                 }
                 refreshPayOrderListView();
@@ -483,7 +527,9 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                         if (reasonSucess != null) {
                             showShortTip(reasonSucess);
                             mPrePayPresenter.addOrderPay(mPrePayPresenter.getPayMent().get(PayMent.LakalaPayMent), LakalaController.getInstance().getCurLakalaPayPrice());
-                            lkl.setBackgroundResource(R.drawable.itemsel_selected);
+//                            lkl.setBackgroundResource(R.drawable.itemsel_selected);
+                            mPayTypeListAdapter.addSelectedPaytype(PayMent.LakalaPayMent.getValue());
+
                             refreshPayOrderListView();
                             refreshPrice();
                         }
@@ -604,7 +650,8 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                 public void onResponse(String response) {
                     if (response.equals(mPrePayPresenter.Response_ok)) {
                         if (!mPrePayPresenter.isExistOrderPay(type)) {
-                            hidePayment(type);
+//                            hidePayment(type);
+                            mPayTypeListAdapter.removeSelectedPaytype(type);
                         }
                         refreshPayOrderListView();
                         refreshPrice();
@@ -613,6 +660,60 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     }
                 }
             });
+        }
+    };
+
+    private OnVisibilityListener<PayType> onPayTypeListener = new OnVisibilityListener<PayType>() {
+        @Override
+        public void onVisibility(final String type, PayType pOrderPay) {
+            //必然关系,必须等业务模型处理成功后,在进行界面更新
+            getOperation().addParameter("payPrice", mPrePayPresenter.getPrePrice().getCurNeedPay());
+            if (type.equals(PayMent.UserPayMent.getValue())){
+                if (mPrePayPresenter.isExistOrderPay(PayMent.UserPayMent.getValue())) {
+                    showShortTip("您已使用过 (会员卡支付),请换一种支付方式~.~");
+                    return;
+                }
+                getOperation().forwardForResult(SearchUserActivity.class, REQUEST_CODE);
+            }else if(type.equals(PayMent.BankPayMent.getValue())){
+                if (mPrePayPresenter.isExistOrderPay(PayMent.BankPayMent.getValue())) {
+                    showShortTip("您已使用过 (银行卡支付),请换一种支付方式~.~");
+                    return;
+                }
+                getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_BANK);
+                getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
+            }else if(type.equals(PayMent.CashPayMent.getValue())){
+                if (mPrePayPresenter.isExistOrderPay(PayMent.CashPayMent.getValue())) {
+                    showShortTip("您已使用过 (现金支付),请换一种支付方式~.~");
+                    return;
+                }
+                getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_CASH);
+                getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
+            }else if(type.equals(PayMent.ZhifubaoPayMent.getValue())){
+                if (mPrePayPresenter.isExistOrderPay(PayMent.ZhifubaoPayMent.getValue())) {
+                    showShortTip("您已使用过 (支付宝支付),请换一种支付方式~.~");
+                    return;
+                }
+                getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_ZHIFUBAO);
+                getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
+            }else if(type.equals(PayMent.WeixinPayMent.getValue())){
+                if (mPrePayPresenter.isExistOrderPay(PayMent.WeixinPayMent.getValue())) {
+                    showShortTip("您已使用过 (微信支付),请换一种支付方式~.~");
+                    return;
+                }
+                getOperation().addParameter(PayPriceActivity.PAY_METHOD, PayPriceActivity.PAY_WEIXIN);
+                getOperation().forwardForResult(PayPriceActivity.class, REQUEST_CODE);
+            }
+            else if(type.equals(PayMent.LakalaPayMent.getValue())){
+                if (mPrePayPresenter.isExistOrderPay(PayMent.LakalaPayMent.getValue())) {
+                    showShortTip("您已使用过 (拉卡拉支付),请换一种支付方式~.~");
+                    return;
+                }
+                if (LakalaController.getInstance().isSupport()){
+                    showSelectLakalaPaymentDF(mPrePayPresenter.getPrePrice().getCurNeedPay());
+                }else showShortTip("本设备不支持 (拉卡拉支付)!");
+            }else{
+                showShortTip("暂不支持本方式支付!");
+            }
         }
     };
 
@@ -644,7 +745,9 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                         @Override
                         public void onResponse(String response) {
                             if (response.equals(mPrePayPresenter.Response_ok)) {
-                                memberCard.setBackgroundResource(R.drawable.itemsel_selected);
+//                                memberCard.setBackgroundResource(R.drawable.itemsel_selected);
+                                mPayTypeListAdapter.addSelectedPaytype(PayMent.UserPayMent.getValue());
+
                                 refreshPayOrderListView();
                                 refreshPrice();
                             } else {

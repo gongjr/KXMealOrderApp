@@ -77,4 +77,9 @@ public class Constants {
     public static final String Preferences_Login_PassWord="PASSWORD";
     public static final String Preferences_Login_IsCheck="ISCHECK";
 
+    /**
+     * 判断结算类型,0:挂单操作,1:直接支付
+     */
+    public static final int Settle_Type_HangUpOrder= 0;
+    public static final int Settle_Type_SubmitOrder = 1;
 }

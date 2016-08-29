@@ -367,7 +367,7 @@ public class PrePayPresenter {
 
     /**
      * 根据paytype,将数据填充到payTypeList里面
-     *
+     * 默认支持6种,新方法需要确认
      * @param payType
      */
     public void setPayMent(PayType payType) {
@@ -376,15 +376,19 @@ public class PrePayPresenter {
             payTypeList.put(PayMent.CashPayMent, payType); // 现金
         } else if (type.equals(PayMent.BankPayMent.getValue())) {
             payTypeList.put(PayMent.BankPayMent, payType); // 银行卡
-        } else if (type.equals(PayMent.HangAccountPayMent.getValue())) {
-            payTypeList.put(PayMent.HangAccountPayMent, payType); // 挂账
-        } else if (type.equals(PayMent.UserPayMent.getValue())) {
+        }else if(type.equals(PayMent.LakalaPayMent.getValue())){
+            payTypeList.put(PayMent.LakalaPayMent, payType); //拉卡拉支付
+        }else if (type.equals(PayMent.UserPayMent.getValue())) {
             payTypeList.put(PayMent.UserPayMent, payType); // 会员卡
         } else if (type.equals(PayMent.WeixinPayMent.getValue())) {
             payTypeList.put(PayMent.WeixinPayMent, payType); //微信
         } else if (type.equals(PayMent.ZhifubaoPayMent.getValue())) {
             payTypeList.put(PayMent.ZhifubaoPayMent, payType); //支付宝
-        } else if (type.equals(PayMent.DianpingPayMent.getValue())) {
+        }else{
+            KLog.i("支付方式不匹配,请查询");
+        }
+
+        /*else if (type.equals(PayMent.DianpingPayMent.getValue())) {
             payTypeList.put(PayMent.DianpingPayMent, payType); //点评闪惠
         } else if (type.equals(PayMent.AutoMolingPayMent.getValue())) {
             payTypeList.put(PayMent.AutoMolingPayMent, payType); //自动抹零
@@ -396,12 +400,10 @@ public class PrePayPresenter {
             payTypeList.put(PayMent.MarketCardPayMent, payType); //商场卡
         } else if (type.equals(PayMent.ComityPayMent.getValue())) {
             payTypeList.put(PayMent.ComityPayMent, payType); //礼让金额
-        } else if(type.equals(PayMent.LakalaPayMent.getValue())){
-            payTypeList.put(PayMent.LakalaPayMent, payType); //拉卡拉支付
         }
-        else{
-            KLog.i("支付方式不匹配,请查询");
-        }
+        else if (type.equals(PayMent.HangAccountPayMent.getValue())) {
+            payTypeList.put(PayMent.HangAccountPayMent, payType); // 挂账
+        }*/
     }
 
     public Map<PayMent, PayType> getPayMent() {
@@ -639,6 +641,18 @@ public class PrePayPresenter {
             lOrderMarketing.setMemberFavor(true);
             mOrderMarketingList.add(lOrderMarketing);
         }
+    }
+
+    public List<PayType> getCurPayTypeList(){
+        List<PayType> mPayTypeList=new ArrayList<>();
+        if (payTypeList.size()>0){
+            Iterator lIterator=payTypeList.entrySet().iterator();
+            while (lIterator.hasNext()){
+                Map.Entry<PayMent, PayType> lNext =(Map.Entry<PayMent, PayType>)lIterator.next();
+                mPayTypeList.add( lNext.getValue());
+            }
+        }
+        return mPayTypeList;
     }
 
 }
