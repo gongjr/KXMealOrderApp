@@ -245,9 +245,20 @@
         android:id="@+id/account_payorderlist"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/account_bottom_layout_ii"
+        android:layout_above="@+id/settle_paytype_list"
         android:layout_below="@+id/account_pay_method_tag_line"
         android:layout_marginBottom="10dp"></ListView>
+
+
+    <GridView
+        android:id="@+id/settle_paytype_list"
+        android:layout_width="match_parent"
+        android:layout_height="120dip"
+        android:clipToPadding="false"
+        android:numColumns="3"
+        android:layout_margin="@dimen/Dip_10"
+        android:layout_alignParentBottom="true"
+        />
 
 
     <LinearLayout
@@ -256,7 +267,8 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/account_bottom_layout"
         android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/account_member_card"
@@ -300,7 +312,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="10dp"
-        android:orientation="horizontal">
+        android:orientation="horizontal"
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/account_lkl"

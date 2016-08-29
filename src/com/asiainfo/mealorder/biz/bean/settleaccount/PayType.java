@@ -27,6 +27,14 @@ public class PayType {
 
 	private Long marketingId;
 
+    private String mobilePosShow;//1显示,0不显示
+
+    /**
+     * 移动pos端该支付方式是否支持挂单与结账,: 0.不能挂单不能结账1.只能挂单不能结账 ;2.只能结账不能挂单; 3.即可结账也可挂单;
+     * 默认值:0
+     */
+    private String mobilePosHoldup;
+
 	public String getPayTypeName() {
 		return payTypeName;
 	}
@@ -123,4 +131,19 @@ public class PayType {
 		this.marketingId = marketingId;
 	}
 
+    public String getMobilePosShow() {
+        return mobilePosShow;
+    }
+
+    public void setMobilePosShow(String pMobilePosShow) {
+        mobilePosShow = pMobilePosShow;
+    }
+
+    public String getMobilePosHoldup() {
+        return mobilePosHoldup;
+    }
+
+    public void setMobilePosHoldup(String pMobilePosHoldup) {
+        mobilePosHoldup = pMobilePosHoldup;
+    }
 }
