@@ -494,13 +494,15 @@ public class HttpController {
      * @param merchantId      商户Id
      * @param userId          用户Id
      * @param password        新密码
+     * @param phone           手机号
+     * @param staffId         员工Id
      * @param listener        响应监听器
      * @param errorListener   异常监听器
      */
-    public void updateUserMemberPassword(String merchantId, String userId, String password,
+    public void updateUserMemberPassword(String merchantId, String userId, String password, String phone, String staffId,
                                          Response.Listener listener, Response.ErrorListener errorListener) {
         String param = "/appController/updateUserMemberPassword.do?merchantId=" + merchantId + "&userId="
-                + userId + "&password=" + password;
+                + userId + "&password=" + password + "&phone=" + phone + "&staffId=" + staffId;
         JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
     }

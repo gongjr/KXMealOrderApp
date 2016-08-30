@@ -7,7 +7,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -20,6 +19,7 @@ import com.asiainfo.mealorder.biz.listener.OnRightBtnClickListener;
 import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.ui.PoPup.ChooseMemberCardDF;
+import com.asiainfo.mealorder.ui.PoPup.ChooseStaffDF;
 import com.asiainfo.mealorder.ui.PoPup.CountDownLoadingDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
@@ -36,6 +36,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.security.MessageDigest;
+import java.util.ArrayList;
 import java.util.List;
 
 import roboguice.inject.InjectView;
@@ -52,10 +53,6 @@ public class ModifyPasswordActivity extends BaseActivity {
 
     @InjectView(R.id.mp_title)
     private TitleView titleView;
-    @InjectView(R.id.mp_name)
-    private TextView nameTxt;
-    @InjectView(R.id.mp_phone)
-    private TextView phoneTxt;
     @InjectView(R.id.num_keyboard)
     private View num_keyboard;
     @InjectView(R.id.mp_member_id)
@@ -64,16 +61,16 @@ public class ModifyPasswordActivity extends BaseActivity {
     private EditText userNum;
     @InjectView(R.id.mp_relative_layout)
     private RelativeLayout relativeLayout;
-    @InjectView(R.id.mp_new_password_layout)
-    private LinearLayout newPasswordLayout;
-    @InjectView(R.id.mp_conf_password_layout)
-    private LinearLayout confPasswordLayout;
     @InjectView(R.id.read_membercard)
     private Button readMembercard;
     @InjectView(R.id.mp_new_password_edit)
     private EditText passwordEdit;
     @InjectView(R.id.mp_conf_password_edit)
     private EditText confPasswordEdit;
+    @InjectView(R.id.mp_staff_txt)
+    private TextView staffTxt;
+    @InjectView(R.id.mp_phone_edit)
+    private EditText phoneEdit;
 
     private NumKeyboardView mNumKeyboardView;
     private MerchantRegister merchantRegister;
@@ -82,6 +79,9 @@ public class ModifyPasswordActivity extends BaseActivity {
     private CountDownLoadingDF mCountDownLoadingDF;
     private int TimeOut=10;
     private MemberCard mMemberCard;
+    private List<MerchantRegister> staffList;
+    private ChooseStaffDF chooseStaffDF;
+    private int staffIndex = 0;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -96,18 +96,25 @@ public class ModifyPasswordActivity extends BaseActivity {
         setTitleView();
         initKeyboardView();
         initListener();
+        showLoadingDF("正在查询员工ID...");
+        getStaffList();
     }
 
     private void setTitleView() {
         titleView.isLeftBtnVisible(false);
+        titleView.isRightBtnVisible(false);
         titleView.setRightTxt("提交");
-        titleView.setCenterTxt("修改密码");
+        titleView.setCenterTxt("完善资料");
         titleView.setOnRightBtnClickListener(onRightBtnClickListener);
     }
 
     private OnRightBtnClickListener onRightBtnClickListener = new OnRightBtnClickListener() {
         @Override
         public void onRightBtnClick() {
+            if (StringUtils.isNull(phoneEdit.getText().toString())) {
+                showShortTip("请先输入手机号!");
+                return;
+            }
             if (StringUtils.isNull(passwordEdit.getText().toString())) {
                 showShortTip("请先输入新密码!");
                 return;
@@ -120,8 +127,12 @@ public class ModifyPasswordActivity extends BaseActivity {
                 showShortTip("两次密码输入不同,请确认!");
                 return;
             }
+            if (StringUtils.isNull(staffTxt.getText().toString())) {
+                showShortTip("请先选择员工工号!");
+                return;
+            }
             showLoadingDF("正在更新用户密码...");
-            updateUserPassword(passwordEdit.getText().toString());
+            updateUserPassword(passwordEdit.getText().toString(), phoneEdit.getText().toString(), staffTxt.getText().toString());
 
         }
     };
@@ -129,12 +140,8 @@ public class ModifyPasswordActivity extends BaseActivity {
     private void isVisible(boolean b) {
         if (b) {
             relativeLayout.setVisibility(View.VISIBLE);
-            newPasswordLayout.setVisibility(View.VISIBLE);
-            confPasswordLayout.setVisibility(View.VISIBLE);
         } else {
             relativeLayout.setVisibility(View.GONE);
-            newPasswordLayout.setVisibility(View.GONE);
-            confPasswordLayout.setVisibility(View.GONE);
         }
     }
 
@@ -174,6 +181,17 @@ public class ModifyPasswordActivity extends BaseActivity {
                     mNumKeyboardView.hideKeyboard();
                 } else {
                     mNumKeyboardView.showKeyboard();
+                }
+            }
+        });
+        staffTxt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (staffList == null || staffList.size() == 0) {
+                    showShortTip("没有工号可供选择,请确认~.~");
+                } else {
+                    showChooseStaffDF();
+                    chooseStaffDF.setCurrentPosition(staffIndex);
                 }
             }
         });
@@ -275,10 +293,9 @@ public class ModifyPasswordActivity extends BaseActivity {
     };
 
     private void setCardInfo(MemberCard memberCard) {
+        titleView.isRightBtnVisible(true);
         isVisible(true);
-        nameTxt.setText("姓名: " + memberCard.getCardName());
-        phoneTxt.setText("手机号: " + memberCard.getPhone());
-        memberId.setText("NO." + memberCard.getCardNumber() + " " + memberCard.getLevelName());
+        memberId.setText("NO." + memberCard.getCardNumber() + "    " + memberCard.getLevelName());
     }
 
     /**
@@ -492,8 +509,9 @@ public class ModifyPasswordActivity extends BaseActivity {
         return hexValue.toString();
     }
 
-    private void updateUserPassword(String password) {
+    private void updateUserPassword(String password, String phone, String staffId) {
         HttpController.getInstance().updateUserMemberPassword(merchantRegister.getMerchantId(), mMemberCard.getUserId(), MD5(password),
+                phone, staffId,
                 new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
@@ -501,10 +519,10 @@ public class ModifyPasswordActivity extends BaseActivity {
                         try {
                             if (response.getString("errcode").equals("0")) {
                                 dismissLoadingDF();
-                                showShortTip("密码修改成功!");
+                                showShortTip("信息完善成功!");
                                 finish();
                             } else {
-                                updateNotice("密码修改失败: " + response.getString("msg"), 0);
+                                updateNotice("信息完善失败: " + response.getString("msg"), 0);
                             }
                         } catch (JSONException e) {
                             e.printStackTrace();
@@ -514,9 +532,60 @@ public class ModifyPasswordActivity extends BaseActivity {
                 }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        updateNotice("密码修改失败: " + error.getMessage(), 0);
+                        updateNotice("信息完善失败: " + error.getMessage(), 0);
                     }
                 });
     }
+
+    private void getStaffList() {
+        HttpController.getInstance().queryStaffList(merchantRegister.getMerchantId(), merchantRegister.getChildMerchantId(),
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        dismissLoadingDF();
+                        Log.d(TAG, "queryStaffList: " + response.toString());
+                        try {
+                            if (response.getString("errcode").equals("0")) {
+                                String data = response.getJSONObject("data").getString("info");
+                                staffList = gson.fromJson(data, new TypeToken<ArrayList<MerchantRegister>>() {
+                                }.getType());
+                                if (staffList.size() == 0) {
+                                    staffTxt.setText(merchantRegister.getStaffName());
+                                }
+                            } else {
+                                staffTxt.setText(merchantRegister.getStaffName());
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            showShortTip("Json解析失败");
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        dismissLoadingDF();
+//                        showShortTip("获取员工号列表失败: " + error.getMessage());
+                        staffTxt.setText(merchantRegister.getStaffName());
+                    }
+                });
+    }
+
+    /*
+   * 显示选择员工工号弹出框
+   * */
+    private void showChooseStaffDF() {
+        if (chooseStaffDF == null) {
+            chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener);
+        }
+        chooseStaffDF.show(getSupportFragmentManager(), "AddMemberActivity");
+    }
+
+    private ChooseStaffDF.OnFinishListener onFinishListener = new ChooseStaffDF.OnFinishListener() {
+        @Override
+        public void onFinishListener(int position) {
+            staffTxt.setText(staffList.get(position).getStaffId());
+            staffIndex = position;
+        }
+    };
 
 }
