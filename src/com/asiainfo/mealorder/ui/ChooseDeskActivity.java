@@ -124,6 +124,8 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
     private Drawable ic_actionitem_order;
     @InjectResource(R.drawable.ic_actionitem_member)
     private Drawable ic_actionitem_member;
+    @InjectResource(R.drawable.ic_actionitem_modify)
+    private Drawable ic_actionitem_modify;
     private MerchantRegister merchantRegister;
 
     @Override
@@ -160,7 +162,7 @@ public class ChooseDeskActivity extends ChooseDeskActivityBase {
         ActionItem exitItem = new ActionItem(ID_exit, "退出登录", ic_actionitem_exit);
         ActionItem localOrder = new ActionItem(ID_localOrder, "本地订单", ic_actionitem_order);
         ActionItem addMember = new ActionItem(ID_addMember, "新增会员", ic_actionitem_member);
-        ActionItem modifyPassword = new ActionItem(ID_modify, "完善资料", ic_actionitem_exit);
+        ActionItem modifyPassword = new ActionItem(ID_modify, "完善资料", ic_actionitem_modify);
         localOrder.setSticky(true);
         refreshDishesItem.setSticky(true);
         exitItem.setSticky(true);

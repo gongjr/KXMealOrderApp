@@ -295,7 +295,7 @@ public class ModifyPasswordActivity extends BaseActivity {
     private void setCardInfo(MemberCard memberCard) {
         titleView.isRightBtnVisible(true);
         isVisible(true);
-        memberId.setText("NO." + memberCard.getCardNumber() + "    " + memberCard.getLevelName());
+        memberId.setText("NO." + memberCard.getIcid() + "    " + memberCard.getLevelName());
     }
 
     /**

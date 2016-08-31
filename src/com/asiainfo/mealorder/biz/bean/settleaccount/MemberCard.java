@@ -42,6 +42,7 @@ public class MemberCard implements Parcelable {
     private String isNeedPwd;
     private String cardNumber;
     private List<UserCoupon> userCoupons = new ArrayList<UserCoupon>();
+    private String icid;
 
     protected MemberCard(Parcel in) {
         scoreCash = in.readString();
@@ -69,6 +70,7 @@ public class MemberCard implements Parcelable {
         birthdayLargess = in.readString();
         isNeedPwd = in.readString();
         cardNumber = in.readString();
+        icid = in.readString();
         in.readList(yhqList, null);
         in.readList(discountList, null);
         in.readList(userCoupons, null);
@@ -342,8 +344,17 @@ public class MemberCard implements Parcelable {
         dest.writeString(birthdayLargess);
         dest.writeString(isNeedPwd);
         dest.writeString(cardNumber);
+        dest.writeString(icid);
         dest.writeList(yhqList);
         dest.writeList(discountList);
         dest.writeList(userCoupons);
+    }
+
+    public String getIcid() {
+        return icid;
+    }
+
+    public void setIcid(String icid) {
+        this.icid = icid;
     }
 }
