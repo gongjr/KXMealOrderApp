@@ -175,7 +175,9 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             param.put("merchantId", merchantRegister.getMerchantId());
 //            param.put("staffId", merchantRegister.getStaffId());
             param.put("staffId", staffId);
-            param.put("memberLevel", memberLevelList.get(leverIndex).getLevel() + "");
+            if (memberLevelList.size() != 0) {
+                param.put("memberLevel", memberLevelList.get(leverIndex).getLevel() + "");
+            }
             param.put("userName", name);
             param.put("phone", phone);
             param.put("icid", memberCode);
