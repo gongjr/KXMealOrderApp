@@ -428,7 +428,6 @@
                     android:background="@null"
                     android:textSize="@dimen/text_size_small"
                     android:singleLine="true"
-                    android:password="true"
                     />
             </LinearLayout>
 
