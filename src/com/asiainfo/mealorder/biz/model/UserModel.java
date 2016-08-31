@@ -369,7 +369,9 @@ public class UserModel {
         pMemberData.setIsMemberPrice(memberCard.getIsMemberPrice());
         pMemberData.setIsMemberScore(memberCard.getIsMemberScore());
         pMemberData.setIsThisMember(memberCard.getIsThisMember());
+        if (memberCard.getLevel()!=null&&memberCard.getLevel().length()>0)
         pMemberData.setLevel(Long.valueOf(memberCard.getLevel()));
+        if (memberCard.getMerchantId()!=null&&memberCard.getMerchantId().length()>0)
         pMemberData.setMerchantId(Long.valueOf(memberCard.getMerchantId()));
         setMemberData(pMemberData);
 
