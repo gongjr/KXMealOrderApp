@@ -236,7 +236,7 @@ public class BaseActivity extends RoboFragmentActivity{
 		Toast.makeText(mActivity, txt, Toast.LENGTH_LONG).show();
 	}
 
-	protected void showCommonDialog(){
+	protected synchronized void showCommonDialog(){
         try {
         if(mHttpDialogCommon==null)
 		mHttpDialogCommon = new HttpDialogCommon();
@@ -247,7 +247,7 @@ public class BaseActivity extends RoboFragmentActivity{
             ex.printStackTrace();
         }}
 	
-	protected void showCommonDialog(String txt){
+	protected synchronized void showCommonDialog(String txt){
         try {
         if(mHttpDialogCommon==null)
 		mHttpDialogCommon = new HttpDialogCommon();
@@ -260,7 +260,7 @@ public class BaseActivity extends RoboFragmentActivity{
     }
 	}
 	
-	protected void dismissCommonDialog(){
+	protected synchronized void dismissCommonDialog(){
         try {
 		if(mHttpDialogCommon!=null&&mHttpDialogCommon.isAdded()){
 			mHttpDialogCommon.dismiss();
@@ -270,7 +270,7 @@ public class BaseActivity extends RoboFragmentActivity{
         }
 	}
 	
-	protected Boolean isComoDialogShowing(){
+	protected synchronized Boolean isComoDialogShowing(){
 		if(mHttpDialogCommon!=null && mHttpDialogCommon.isVisible()){
 			return true;
 		}
