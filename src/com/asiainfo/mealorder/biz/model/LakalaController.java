@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -20,12 +21,14 @@ import com.asiainfo.mealorder.biz.entity.lakala.ResultInfo;
 import com.asiainfo.mealorder.biz.entity.lakala.StartPayTypeKey;
 import com.asiainfo.mealorder.biz.entity.lakala.TradeKey;
 import com.asiainfo.mealorder.biz.model.lakala.MagCardReader;
+import com.asiainfo.mealorder.biz.model.lakala.MemberConsumeInfo;
 import com.asiainfo.mealorder.biz.model.lakala.PrintDriver;
 import com.asiainfo.mealorder.biz.model.lakala.Util;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Tools;
 import com.lkl.cloudpos.aidl.AidlDeviceService;
 import com.lkl.cloudpos.aidl.magcard.MagCardListener;
+import com.lkl.cloudpos.aidl.printer.AidlPrinterListener;
 
 import java.util.Date;
 
@@ -38,10 +41,6 @@ public class LakalaController {
      * 拉卡拉设备服务实例,判断设备是否支持
      */
     private  AidlDeviceService mService=null;
-    /**
-     * 磁条卡读卡实例
-     */
-    private MagCardReader lMagCardReader=null;
     /**
      * 打印机调用实例
      */
@@ -88,7 +87,13 @@ public class LakalaController {
     }
 
     public static LakalaController getInstance() {
-        if (laKalaController == null) laKalaController = new LakalaController();
+        if(laKalaController==null){
+            synchronized(LakalaController.class){
+                if(laKalaController==null){
+                    laKalaController = new LakalaController();
+                }
+            }
+        }
         return laKalaController;
     }
 
@@ -367,18 +372,12 @@ public class LakalaController {
             pContext.unbindService(mConnection);
             mService=null;
             mContext=null;
-            lMagCardReader=null;
             mPrintDriver=null;
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    public void testPrint(){
-        if (mPrintDriver!=null){
-            mPrintDriver.testPrint(mService);
-        }
-    };
 
     public boolean isSupport(){
         if (mService==null)return false;
@@ -393,24 +392,14 @@ public class LakalaController {
         curLakalaPayPrice = pCurLakalaPayPrice;
     }
 
-    public boolean initMagCard(){
-            if(lMagCardReader==null){
-                MagCardReader lMagCardReader=new MagCardReader();
-            }
-        return lMagCardReader.initMagCard(mService);
-    }
-
-    public boolean isSupportMagCardReader(){
-        if (lMagCardReader==null)return false;
-        return true;
-    }
-
     /**
      *读取磁条卡数据
      */
     public void getMagCardWithWait(int timeout,MagCardListener pMagCardListener){
-          if (lMagCardReader!=null){
-              lMagCardReader.getMagCardWithWait(timeout,pMagCardListener);
+          if (mService!=null&&MagCardReader.getInstance(mService)!=null){
+              MagCardReader.getInstance(mService).getMagCardWithWait(timeout, pMagCardListener);
+          }else{
+              KLog.i("读取普通磁条卡操作无效!");
           }
     };
 
@@ -418,9 +407,53 @@ public class LakalaController {
      * 停止磁条卡的读取状态
      */
     public void stopMagCardbyWait(){
-        if (lMagCardReader!=null){
-            lMagCardReader.stopMagCardbyWait();
+        if (mService!=null&&MagCardReader.getInstance(mService)!=null){
+            MagCardReader.getInstance(mService).stopMagCardbyWait();
+        }else{
+            KLog.i("取消读卡操作无效!");
         }
     }
+
+    public void testPrint(){
+        if (mService!=null&&PrintDriver.getInstance(mService)!=null){
+            PrintDriver.getInstance(mService).testPrint();
+        }else{
+            KLog.i("测试打印无效!");
+        }
+    };
+
+    public void testMemberConsumeInfo(){
+        if (mService!=null&&PrintDriver.getInstance(mService)!=null){
+            MemberConsumeInfo lMemberConsumeInfo=new MemberConsumeInfo();
+            lMemberConsumeInfo.setMerchantName("创作酒吧");
+            lMemberConsumeInfo.setDeskName("6");
+            lMemberConsumeInfo.setStaffName("卡卡卡");
+            lMemberConsumeInfo.setOrderId("2016090116518938742");
+            lMemberConsumeInfo.setFinishTime("2016-09-01 16:51:00");
+            lMemberConsumeInfo.setCardId("002255");
+            lMemberConsumeInfo.setCardType("至尊会员");
+            lMemberConsumeInfo.setCardScore("5000");
+            lMemberConsumeInfo.setCurrentUsedScore("1000");
+            lMemberConsumeInfo.setResidueScore("1000");
+            PrintDriver.getInstance(mService).PrintContext(lMemberConsumeInfo.getPrintData(),printListener);
+        }else{
+            KLog.i("测试打印无效!");
+        }
+    };
+
+    /**
+     * 接口都是在子线程中执行,需要返回到主线程处理交互
+     */
+    AidlPrinterListener.Stub printListener =new AidlPrinterListener.Stub() {
+        @Override
+        public void onError(int errorCode) throws RemoteException {
+            KLog.i("打印出错:"+errorCode);
+        }
+
+        @Override
+        public void onPrintFinish() throws RemoteException {
+            KLog.i("打印成功");
+        }
+    };
 
 }

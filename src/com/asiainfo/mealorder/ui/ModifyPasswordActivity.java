@@ -95,9 +95,6 @@ public class ModifyPasswordActivity extends BaseActivity {
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_modify_password);
-        if (LakalaController.getInstance().isSupport()) {
-            LakalaController.getInstance().initMagCard();
-        }
         userNum.setFocusable(false);
         merchantRegister=(MerchantRegister)baseApp.gainData(baseApp.KEY_GLOABLE_LOGININFO);
         isVisible(false);
@@ -173,8 +170,6 @@ public class ModifyPasswordActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (!LakalaController.getInstance().isSupport()){
-                    showShortTip("设备不支持刷卡");
-                }else if(LakalaController.getInstance().getAidlMagCard()==null){
                     showShortTip("设备不支持刷卡");
                 }else{
                     showCountDownLoadingDF("正在读取磁条卡~~",TimeOut+1);

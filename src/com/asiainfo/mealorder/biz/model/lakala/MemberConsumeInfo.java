@@ -12,20 +12,75 @@ import java.util.List;
 public class MemberConsumeInfo implements PrintModel{
 
     /**
+     * 头部居中店名
+     */
+    private String merchantName;
+    private String merchantName_tag="";
+
+    /**
      * 头部居中标题
      */
     private String title;
-    private String title_tag="";
+    private String title_tag="会员消费单";
+
+    private final String null_line="                               ";
+    /**
+     * 桌台名称
+     */
+    private String deskName;
+    private String deskName_tag="桌台:";
+    /**
+     * 收银员
+     */
+    private String staffName;
+    private String staffName_tag="收银员:";
+
+    /**
+     * 订单编号
+     */
+    private String orderId;
+    private String orderId_tag="订单编号:";
+
+    /**
+     * 结账时间
+     */
+    private String finishTime;
+    private String finishTime_tag="结账时间:";
+
+    /**
+     * 32个一行
+     */
+    private final String middle_line1="--------------------------------";
     /**
      * 卡号:
      */
     private String cardId;
-    private String cardId_tag="卡号:";
+    private String cardId_tag="会员卡号:";
     /**
-     * 持卡人:
+     * 卡类型:
      */
-    private String name;
-    private String name_tag="持卡人:";
+    private String cardType;
+    private String cardType_tag="会员类型:";
+
+    /**
+     * 卡内积分:
+     */
+    private String cardScore;
+    private String cardScore_tag="卡内积分:";
+
+    /**
+     * 此次消费:
+     */
+    private String currentUsedScore;
+    private String currentUsedScore_tag="此次消费:";
+
+    /**
+     * 剩余积分:
+     */
+    private String residueScore;
+    private String residueScore_tag="剩余积分:";
+
+
     /**
      * 消费金额:
      */
@@ -37,11 +92,13 @@ public class MemberConsumeInfo implements PrintModel{
     private String balance;
     private String balance_tag="当前余额:";
 
-    /**
-     * 消费时间:
-     */
-    private String time;
-    private String time_tag="消费时间:";
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String pMerchantName) {
+        merchantName = pMerchantName;
+    }
 
     public String getTitle() {
         return title;
@@ -49,6 +106,38 @@ public class MemberConsumeInfo implements PrintModel{
 
     public void setTitle(String pTitle) {
         title = pTitle;
+    }
+
+    public String getDeskName() {
+        return deskName;
+    }
+
+    public void setDeskName(String pDeskName) {
+        deskName = pDeskName;
+    }
+
+    public String getStaffName() {
+        return staffName;
+    }
+
+    public void setStaffName(String pStaffName) {
+        staffName = pStaffName;
+    }
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String pOrderId) {
+        orderId = pOrderId;
+    }
+
+    public String getFinishTime() {
+        return finishTime;
+    }
+
+    public void setFinishTime(String pFinishTime) {
+        finishTime = pFinishTime;
     }
 
     public String getCardId() {
@@ -59,12 +148,36 @@ public class MemberConsumeInfo implements PrintModel{
         cardId = pCardId;
     }
 
-    public String getName() {
-        return name;
+    public String getCardType() {
+        return cardType;
     }
 
-    public void setName(String pName) {
-        name = pName;
+    public void setCardType(String pCardType) {
+        cardType = pCardType;
+    }
+
+    public String getCardScore() {
+        return cardScore;
+    }
+
+    public void setCardScore(String pCardScore) {
+        cardScore = pCardScore;
+    }
+
+    public String getCurrentUsedScore() {
+        return currentUsedScore;
+    }
+
+    public void setCurrentUsedScore(String pCurrentUsedScore) {
+        currentUsedScore = pCurrentUsedScore;
+    }
+
+    public String getResidueScore() {
+        return residueScore;
+    }
+
+    public void setResidueScore(String pResidueScore) {
+        residueScore = pResidueScore;
     }
 
     public String getConsumePrice() {
@@ -73,14 +186,6 @@ public class MemberConsumeInfo implements PrintModel{
 
     public void setConsumePrice(String pConsumePrice) {
         ConsumePrice = pConsumePrice;
-    }
-
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String pTime) {
-        time = pTime;
     }
 
     public String getBalance() {
@@ -95,36 +200,84 @@ public class MemberConsumeInfo implements PrintModel{
     public List<PrintItemObj> getPrintData() {
         List<PrintItemObj> lPrintItemObjs=new ArrayList<>();
 
-        PrintItemObj titleItem=new PrintItemObj(title_tag+title);
+        PrintItemObj merchantNameItem=new PrintItemObj(merchantName);
+        merchantNameItem.setAlign(PrintItemObj.ALIGN.CENTER);
+        merchantNameItem.setBold(true);
+        merchantNameItem.setFontSize(16);
+        lPrintItemObjs.add(merchantNameItem);
+
+        PrintItemObj null_lineItem1=new PrintItemObj(null_line);
+        null_lineItem1.setFontSize(4);
+        lPrintItemObjs.add(null_lineItem1);
+
+        PrintItemObj titleItem=new PrintItemObj(title_tag);
         titleItem.setAlign(PrintItemObj.ALIGN.CENTER);
         titleItem.setBold(true);
-        titleItem.setFontSize(12);
+        titleItem.setFontSize(16);
         lPrintItemObjs.add(titleItem);
 
-        PrintItemObj lineItem=new PrintItemObj("");
-        lineItem.setFontSize(10);
-        lPrintItemObjs.add(lineItem);
+        PrintItemObj null_lineItem=new PrintItemObj(null_line);
+        null_lineItem.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem);
+
+        PrintItemObj deskNameItem=new PrintItemObj(deskName_tag+deskName);
+        deskNameItem.setFontSize(12);
+        lPrintItemObjs.add(deskNameItem);
+
+        PrintItemObj staffNameItem=new PrintItemObj(staffName_tag+staffName);
+        staffNameItem.setFontSize(10);
+        lPrintItemObjs.add(staffNameItem);
+
+        PrintItemObj orderIdItem=new PrintItemObj(orderId_tag+orderId);
+        orderIdItem.setFontSize(10);
+        lPrintItemObjs.add(orderIdItem);
+
+        PrintItemObj finishTimeItem=new PrintItemObj(finishTime_tag+finishTime);
+        finishTimeItem.setFontSize(10);
+        lPrintItemObjs.add(finishTimeItem);
+
+        PrintItemObj timeItem=new PrintItemObj(middle_line1);
+        timeItem.setFontSize(10);
+        lPrintItemObjs.add(timeItem);
 
         PrintItemObj cardIdItem=new PrintItemObj(cardId_tag+cardId);
         cardIdItem.setFontSize(10);
         lPrintItemObjs.add(cardIdItem);
 
-        PrintItemObj nameItem=new PrintItemObj(name_tag+name);
-        nameItem.setFontSize(10);
-        lPrintItemObjs.add(nameItem);
+        PrintItemObj cardTypeItem=new PrintItemObj(cardType_tag+cardType);
+        cardTypeItem.setFontSize(10);
+        lPrintItemObjs.add(cardTypeItem);
 
-        PrintItemObj ConsumePriceItem=new PrintItemObj(ConsumePrice_tag+ConsumePrice);
-        ConsumePriceItem.setFontSize(10);
-        lPrintItemObjs.add(ConsumePriceItem);
+        PrintItemObj cardScoreItem=new PrintItemObj(cardScore_tag+cardScore);
+        cardScoreItem.setFontSize(10);
+        lPrintItemObjs.add(cardScoreItem);
 
-        PrintItemObj balanceItem=new PrintItemObj(balance_tag+balance);
-        balanceItem.setFontSize(10);
-        lPrintItemObjs.add(balanceItem);
+        PrintItemObj currentUsedScoreItem=new PrintItemObj(currentUsedScore_tag+currentUsedScore);
+        currentUsedScoreItem.setFontSize(10);
+        lPrintItemObjs.add(currentUsedScoreItem);
 
-        PrintItemObj timeItem=new PrintItemObj(time_tag+time);
-        timeItem.setFontSize(10);
-        timeItem.setUnderline(true);
+        PrintItemObj residueScoreItem=new PrintItemObj(residueScore_tag+residueScore);
+        residueScoreItem.setFontSize(10);
+        lPrintItemObjs.add(residueScoreItem);
+
         lPrintItemObjs.add(timeItem);
+
+        PrintItemObj null_lineItem2=new PrintItemObj(null_line);
+        null_lineItem2.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem2);
+
+        PrintItemObj null_lineItem3=new PrintItemObj(null_line);
+        null_lineItem3.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem3);
+
+        PrintItemObj null_lineItem4=new PrintItemObj(null_line);
+        null_lineItem4.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem4);
+
+        PrintItemObj null_lineItem5=new PrintItemObj(null_line);
+        null_lineItem5.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem5);
+
 
         return lPrintItemObjs;
     }

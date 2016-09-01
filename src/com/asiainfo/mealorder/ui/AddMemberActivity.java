@@ -112,9 +112,6 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle arg0) {
         super.onCreate(arg0);
         setContentView(R.layout.activity_add_member);
-        if (LakalaController.getInstance().isSupport()) {
-            LakalaController.getInstance().initMagCard();
-        }
         setTitleView();
         initData();
         initListener();
@@ -328,8 +325,6 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
 
     private void lkl() {
         if (!LakalaController.getInstance().isSupport()) {
-            showShortTip("设备不支持刷卡");
-        } else if (LakalaController.getInstance().getAidlMagCard() == null) {
             showShortTip("设备不支持刷卡");
         } else {
             showCountDownLoadingDF("正在读取磁条卡~~", TimeOut + 1);

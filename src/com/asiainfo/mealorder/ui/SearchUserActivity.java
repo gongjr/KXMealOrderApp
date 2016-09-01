@@ -66,8 +66,6 @@ public class SearchUserActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_user);
-        if (LakalaController.getInstance().isSupport())
-        LakalaController.getInstance().initMagCard();
         userNum.setFocusable(false);
         initListener();
         setTitleView();
@@ -349,8 +347,6 @@ public class SearchUserActivity extends BaseActivity {
             @Override
             public void onClick(View v) {
                 if (!LakalaController.getInstance().isSupport()){
-                    showShortTip("设备不支持刷卡");
-                }else if(!LakalaController.getInstance().isSupportMagCardReader()){
                     showShortTip("设备不支持刷卡");
                 }else{
                     showCountDownLoadingDF("正在读取磁条卡~~",TimeOut+1);

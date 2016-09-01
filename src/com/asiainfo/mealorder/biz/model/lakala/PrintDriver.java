@@ -23,36 +23,49 @@ public class PrintDriver {
      */
     private AidlPrinter aidlPrinter=null;
 
-    public AidlPrinter getAidlPrinter() {
-        return aidlPrinter;
-    }
+    private static PrintDriver sPrintDriver=null;
 
-    public void setAidlPrinter(AidlPrinter pAidlPrinter) {
-        aidlPrinter = pAidlPrinter;
-    }
-
-    public boolean initPrint(AidlDeviceService mService){
-        boolean isSucess=true;
-        try {
-            IBinder print=mService.getPrinter();
-            aidlPrinter=AidlPrinter.Stub.asInterface(print);
-            KLog.i("rinterState:"+aidlPrinter.getPrinterState());
-            aidlPrinter.setPrinterGray(Gravity.CENTER);
-            KLog.i("get Print IBinder success");
-        } catch (RemoteException e) {
-            isSucess=false;
-            e.printStackTrace();
-        }catch (Exception e){
-            isSucess=false;
-            e.printStackTrace();
-        }finally {
-            return isSucess;
+    public static PrintDriver getInstance(AidlDeviceService mService){
+        if(sPrintDriver==null){
+            synchronized (AidlPrinter.class){
+                if (sPrintDriver==null){
+                    PrintDriver mPrintDriver=new PrintDriver();
+                    //必须保证初始化成功才能,成功返回
+                    if (mPrintDriver.initPrint(mService)){
+                        sPrintDriver=mPrintDriver;
+                    }
+                }
+            }
         }
+        return sPrintDriver;
     }
 
-    public void testPrint(AidlDeviceService mService){
-        AidlPrinter aidlPrinter=getAidlPrinter();
-        if (aidlPrinter==null)initPrint(mService);
+    private boolean initPrint(AidlDeviceService mService){
+        boolean isSucess=true;
+        if (aidlPrinter==null){
+            try {
+                IBinder print=mService.getPrinter();
+                aidlPrinter=AidlPrinter.Stub.asInterface(print);
+                KLog.i("rinterState:"+aidlPrinter.getPrinterState());
+                aidlPrinter.setPrinterGray(Gravity.CENTER);
+                KLog.i("get Print IBinder success");
+            } catch (RemoteException e) {
+                isSucess=false;
+                e.printStackTrace();
+            }catch (Exception e){
+                isSucess=false;
+                e.printStackTrace();
+            }finally {
+                return isSucess;
+            }
+        }else{
+            KLog.i("已存在打印驱动实例 aidlPrinter:"+aidlPrinter);
+            return true;
+        }
+
+    }
+
+    public void testPrint(){
         if(aidlPrinter!=null){
             try {
                 List<PrintItemObj> data=new ArrayList<PrintItemObj>();
@@ -70,9 +83,7 @@ public class PrintDriver {
         }
     };
 
-    public void PrintContext(AidlDeviceService mService,List<PrintItemObj> data,AidlPrinterListener pAidlPrinterListener){
-        AidlPrinter aidlPrinter=getAidlPrinter();
-        if (aidlPrinter==null)initPrint(mService);
+    public void PrintContext(List<PrintItemObj> data,AidlPrinterListener pAidlPrinterListener){
         if(aidlPrinter!=null){
             try {
                 aidlPrinter.printText(data,pAidlPrinterListener);
