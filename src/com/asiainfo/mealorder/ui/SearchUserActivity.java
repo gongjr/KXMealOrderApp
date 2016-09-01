@@ -350,7 +350,7 @@ public class SearchUserActivity extends BaseActivity {
             public void onClick(View v) {
                 if (!LakalaController.getInstance().isSupport()){
                     showShortTip("设备不支持刷卡");
-                }else if(LakalaController.getInstance().getAidlMagCard()==null){
+                }else if(!LakalaController.getInstance().isSupportMagCardReader()){
                     showShortTip("设备不支持刷卡");
                 }else{
                     showCountDownLoadingDF("正在读取磁条卡~~",TimeOut+1);

@@ -6,13 +6,9 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
-import android.view.Gravity;
 import android.widget.Toast;
 
 import com.asiainfo.mealorder.biz.entity.lakala.CodePayTypeKey;
@@ -23,45 +19,37 @@ import com.asiainfo.mealorder.biz.entity.lakala.ProTypeKey;
 import com.asiainfo.mealorder.biz.entity.lakala.ResultInfo;
 import com.asiainfo.mealorder.biz.entity.lakala.StartPayTypeKey;
 import com.asiainfo.mealorder.biz.entity.lakala.TradeKey;
+import com.asiainfo.mealorder.biz.model.lakala.MagCardReader;
+import com.asiainfo.mealorder.biz.model.lakala.PrintDriver;
+import com.asiainfo.mealorder.biz.model.lakala.Util;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Tools;
 import com.lkl.cloudpos.aidl.AidlDeviceService;
-import com.lkl.cloudpos.aidl.magcard.AidlMagCard;
-import com.lkl.cloudpos.aidl.magcard.EncryptMagCardListener;
 import com.lkl.cloudpos.aidl.magcard.MagCardListener;
-import com.lkl.cloudpos.aidl.magcard.TrackData;
-import com.lkl.cloudpos.aidl.printer.AidlPrinter;
-import com.lkl.cloudpos.aidl.printer.AidlPrinterListener;
-import com.lkl.cloudpos.aidl.printer.PrintItemObj;
 
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
 /**
  * 卡拉卡服务控制器
  * Created by gjr on 2016/4/11.
  */
 public class LakalaController {
-
+    /**
+     * 拉卡拉设备服务实例,判断设备是否支持
+     */
+    private  AidlDeviceService mService=null;
+    /**
+     * 磁条卡读卡实例
+     */
+    private MagCardReader lMagCardReader=null;
+    /**
+     * 打印机调用实例
+     */
+    private PrintDriver mPrintDriver=null;
     /**
      * 当前正在请求的拉卡拉支付的金额
      */
     private String curLakalaPayPrice="0.0";
-    /**
-     * 接口都是在子线程中执行,需要返回到主线程处理交互
-     */
-    AidlPrinterListener.Stub printListener =new AidlPrinterListener.Stub() {
-        @Override
-        public void onError(int errorCode) throws RemoteException {
-            KLog.i("打印出错:"+errorCode);
-        }
-
-        @Override
-        public void onPrintFinish() throws RemoteException {
-            KLog.i("打印成功");
-        }
-    };
 
 
     /**
@@ -78,16 +66,6 @@ public class LakalaController {
             mService = null;
         }
     };
-    /**
-     * 拉卡拉设备服务实例,判断设备是否支持
-     */
-    private  AidlDeviceService mService=null;
-    /**
-     * 打印机调用实例
-     */
-    private AidlPrinter aidlPrinter=null;
-
-    private AidlMagCard mAidlMagCard=null;
 
     /**
      * 开关,验证是否阻塞调用
@@ -373,106 +351,32 @@ public class LakalaController {
         Toast.makeText(mContext, value, Toast.LENGTH_SHORT).show();
     }
 
-    public AidlPrinterListener getPrintListener(){
-        return printListener;
-    }
-
     public  void bindService(){
         try {
             Intent intent = new Intent();
             intent.setAction("lkl_cloudpos_mid_service");
-            Intent mintent=new Intent(createExplicitFromImplicitIntent(mContext,intent));
+            Intent mintent=new Intent(new Util().createExplicitFromImplicitIntent(mContext,intent));
             mContext.bindService(mintent, mConnection, Context.BIND_AUTO_CREATE);
         }catch (Exception e){
             e.printStackTrace();
         }
     }
 
-    /**
-     * 释放服务,解除引用
-     * @param context
-     */
-    public void unbindService(Context context){
-        context.unbindService(mConnection);
-        mService=null;
-        aidlPrinter=null;
-        mAidlMagCard=null;
-        mContext=null;
-    };
-
-    public boolean initPrint(){
-        boolean isSucess=true;
+    public  void unbindService(Context pContext){
         try {
-            IBinder print=mService.getPrinter();
-            aidlPrinter=AidlPrinter.Stub.asInterface(print);
-            KLog.i("rinterState:"+aidlPrinter.getPrinterState());
-            aidlPrinter.setPrinterGray(Gravity.CENTER);
-            KLog.i("get Print IBinder success");
-        } catch (RemoteException e) {
-            isSucess=false;
-            e.printStackTrace();
+            pContext.unbindService(mConnection);
+            mService=null;
+            mContext=null;
+            lMagCardReader=null;
+            mPrintDriver=null;
         }catch (Exception e){
-            isSucess=false;
             e.printStackTrace();
-        }finally {
-            return isSucess;
         }
-    }
-
-    public AidlPrinter getPrinterBinder(){
-        return aidlPrinter;
-    }
-
-
-    /***
-     * Android L (lollipop, API 21) introduced a new problem when trying to invoke implicit intent,
-     * "java.lang.IllegalArgumentException: Service Intent must be explicit"
-     *
-     * If you are using an implicit intent, and know only 1 target would answer this intent,
-     * This method will help you turn the implicit intent into the explicit form.
-     *
-     * Inspired from SO answer: http://stackoverflow.com/a/26318757/1446466
-     * @param context
-     * @param implicitIntent - The original implicit intent
-     * @return Explicit Intent created from the implicit original intent
-     */
-    public  Intent createExplicitFromImplicitIntent(Context context, Intent implicitIntent) {
-        // Retrieve all services that can match the given intent
-        PackageManager pm = context.getPackageManager();
-        List<ResolveInfo> resolveInfo = pm.queryIntentServices(implicitIntent, 0);
-        // Make sure only one match was found
-        if (resolveInfo == null || resolveInfo.size() != 1) {
-            return null;
-        }
-        // Get component info and create ComponentName
-        ResolveInfo serviceInfo = resolveInfo.get(0);
-        String packageName = serviceInfo.serviceInfo.packageName;
-        String className = serviceInfo.serviceInfo.name;
-        ComponentName component = new ComponentName(packageName, className);
-        // Create a new intent. Use the old one for extras and such reuse
-        Intent explicitIntent = new Intent(implicitIntent);
-        // Set the component to be explicit
-        explicitIntent.setComponent(component);
-        return explicitIntent;
     }
 
     public void testPrint(){
-        AidlPrinter aidlPrinter=LakalaController.getInstance().getPrinterBinder();
-        if (aidlPrinter==null)initPrint();
-        if(aidlPrinter!=null){
-            try {
-                List<PrintItemObj> data=new ArrayList<PrintItemObj>();
-                PrintItemObj printItemObj1=new PrintItemObj("打印测试1");
-                PrintItemObj printItemObj2=new PrintItemObj("打印测试2");
-                KLog.i("rinterState:"+aidlPrinter.getPrinterState());
-                data.add(printItemObj1);
-                data.add(printItemObj2);
-                aidlPrinter.printText(data,LakalaController.getInstance().getPrintListener());
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        if (mPrintDriver!=null){
+            mPrintDriver.testPrint(mService);
         }
     };
 
@@ -490,140 +394,33 @@ public class LakalaController {
     }
 
     public boolean initMagCard(){
-        if (mAidlMagCard==null){
-        boolean isSucess=true;
-        try {
-            IBinder magCard=mService.getMagCardReader();
-            mAidlMagCard=AidlMagCard.Stub.asInterface(magCard);
-            KLog.i("磁条卡实例获取成功 mAidlMagCard:"+mAidlMagCard);
-        } catch (RemoteException e) {
-            isSucess=false;
-            e.printStackTrace();
-        }catch (Exception e){
-            isSucess=false;
-            e.printStackTrace();
-        }finally {
-            return isSucess;
-        }
-        }else{
-            KLog.i("已存在磁条卡实例 mAidlMagCard:"+mAidlMagCard);
-            return true;
-        }
+            if(lMagCardReader==null){
+                MagCardReader lMagCardReader=new MagCardReader();
+            }
+        return lMagCardReader.initMagCard(mService);
     }
 
-    public AidlMagCard getAidlMagCard() {
-        return mAidlMagCard;
-    }
-
-    public void setAidlMagCard(AidlMagCard pAidlMagCard) {
-        mAidlMagCard = pAidlMagCard;
+    public boolean isSupportMagCardReader(){
+        if (lMagCardReader==null)return false;
+        return true;
     }
 
     /**
      *读取磁条卡数据
      */
     public void getMagCardWithWait(int timeout,MagCardListener pMagCardListener){
-        AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
-        if(aidlMagCard!=null){
-            try {
-                KLog.i("开始读卡:");
-                aidlMagCard.searchCard(timeout, pMagCardListener);
-//                byte keyIndex=0x01;
-//                byte index_00=0x00;
-//                aidlMagCard.searchEncryptCard(timeout,index_00, keyIndex, null, keyIndex, mEncryptMagCardListener);
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
+          if (lMagCardReader!=null){
+              lMagCardReader.getMagCardWithWait(timeout,pMagCardListener);
+          }
     };
 
     /**
      * 停止磁条卡的读取状态
      */
     public void stopMagCardbyWait(){
-        AidlMagCard aidlMagCard=LakalaController.getInstance().getAidlMagCard();
-        if(aidlMagCard!=null){
-            try {
-                aidlMagCard.stopSearch();
-                KLog.i("取消寻卡,触发cancle");
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            }catch (Exception e){
-                e.printStackTrace();
-            }
+        if (lMagCardReader!=null){
+            lMagCardReader.stopMagCardbyWait();
         }
     }
 
-    MagCardListener.Stub magCardListener =new MagCardListener.Stub() {
-        @Override
-        public void onTimeout() throws RemoteException {
-            KLog.i("onTimeout");
-        }
-
-        @Override
-        public void onError(int errorCode) throws RemoteException {
-            KLog.i("onError");
-        }
-
-        @Override
-        public void onCanceled() throws RemoteException {
-            KLog.i("onCanceled");
-        }
-
-        @Override
-        public void onSuccess(TrackData trackData) throws RemoteException {
-            KLog.i("Cardno:"+trackData.getCardno());
-            KLog.i("ExpiryDate:"+trackData.getExpiryDate());
-            KLog.i("FirstTrackData:"+trackData.getFirstTrackData());
-            KLog.i("SecondTrackData:"+trackData.getSecondTrackData());
-            KLog.i("ThirdTrackData:"+trackData.getThirdTrackData());
-            KLog.i("ServiceCode:"+trackData.getServiceCode());
-            KLog.i("FormatTrackData:"+trackData.getFormatTrackData());
-        }
-
-        @Override
-        public void onGetTrackFail() throws RemoteException {
-
-        }
-
-        @Override
-        public IBinder asBinder() {
-            return this;
-        }
-    };
-
-    EncryptMagCardListener.Stub mEncryptMagCardListener=new EncryptMagCardListener.Stub() {
-        @Override
-        public void onTimeout() throws RemoteException {
-            KLog.i("超时");
-
-        }
-
-        @Override
-        public void onError(int errorCode) throws RemoteException {
-            KLog.i("错误");
-
-        }
-
-        @Override
-        public void onCanceled() throws RemoteException {
-            KLog.i("取消");
-
-        }
-
-        @Override
-        public void onSuccess(String[] trackData) throws RemoteException {
-            KLog.i("成功");
-            for (String s:trackData){
-                KLog.i("内容:"+s);
-            }
-        }
-
-        @Override
-        public void onGetTrackFail() throws RemoteException {
-
-        }
-    };
 }
