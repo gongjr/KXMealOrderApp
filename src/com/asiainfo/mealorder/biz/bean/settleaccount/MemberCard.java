@@ -43,6 +43,7 @@ public class MemberCard implements Parcelable {
     private String cardNumber;
     private List<UserCoupon> userCoupons = new ArrayList<UserCoupon>();
     private String icid;
+    private String tradeStaffId;
 
     protected MemberCard(Parcel in) {
         scoreCash = in.readString();
@@ -71,6 +72,7 @@ public class MemberCard implements Parcelable {
         isNeedPwd = in.readString();
         cardNumber = in.readString();
         icid = in.readString();
+        tradeStaffId = in.readString();
         in.readList(yhqList, null);
         in.readList(discountList, null);
         in.readList(userCoupons, null);
@@ -345,6 +347,7 @@ public class MemberCard implements Parcelable {
         dest.writeString(isNeedPwd);
         dest.writeString(cardNumber);
         dest.writeString(icid);
+        dest.writeString(tradeStaffId);
         dest.writeList(yhqList);
         dest.writeList(discountList);
         dest.writeList(userCoupons);
@@ -356,5 +359,13 @@ public class MemberCard implements Parcelable {
 
     public void setIcid(String icid) {
         this.icid = icid;
+    }
+
+    public String getTradeStaffId() {
+        return tradeStaffId;
+    }
+
+    public void setTradeStaffId(String tradeStaffId) {
+        this.tradeStaffId = tradeStaffId;
     }
 }

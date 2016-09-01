@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -71,6 +72,12 @@ public class ModifyPasswordActivity extends BaseActivity {
     private TextView staffTxt;
     @InjectView(R.id.mp_phone_edit)
     private EditText phoneEdit;
+    @InjectView(R.id.mp_balance)
+    private TextView balanceTxt;
+    @InjectView(R.id.mp_score)
+    private TextView scoreTxt;
+    @InjectView(R.id.mp_info_layout)
+    private LinearLayout infoLayout;
 
     private NumKeyboardView mNumKeyboardView;
     private MerchantRegister merchantRegister;
@@ -82,6 +89,7 @@ public class ModifyPasswordActivity extends BaseActivity {
     private List<MerchantRegister> staffList;
     private ChooseStaffDF chooseStaffDF;
     private int staffIndex = 0;
+    private boolean isClick = true;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -187,11 +195,13 @@ public class ModifyPasswordActivity extends BaseActivity {
         staffTxt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (staffList == null || staffList.size() == 0) {
-                    showShortTip("没有工号可供选择,请确认~.~");
-                } else {
-                    showChooseStaffDF();
-                    chooseStaffDF.setCurrentPosition(staffIndex);
+                if (isClick) {
+                    if (staffList == null || staffList.size() == 0) {
+                        showShortTip("没有工号可供选择,请确认~.~");
+                    } else {
+                        showChooseStaffDF();
+                        chooseStaffDF.setCurrentPosition(staffIndex);
+                    }
                 }
             }
         });
@@ -295,6 +305,37 @@ public class ModifyPasswordActivity extends BaseActivity {
     private void setCardInfo(MemberCard memberCard) {
         titleView.isRightBtnVisible(true);
         isVisible(true);
+        if (StringUtils.isNull(memberCard.getAccountLeave()) && StringUtils.isNull(memberCard.getScoreCash())) {
+            infoLayout.setVisibility(View.GONE);
+        }
+        if (StringUtils.isNull(memberCard.getAccountLeave()) || memberCard.getAccountLeave().equals("0")) {
+            balanceTxt.setVisibility(View.GONE);
+        } else {
+            balanceTxt.setText("余额: " + memberCard.getAccountLeave());
+        }
+        if (StringUtils.isNull(memberCard.getScoreCash()) || memberCard.getScoreCash().equals("0")) {
+            scoreTxt.setVisibility(View.GONE);
+        } else {
+            scoreTxt.setText("积分: " + memberCard.getScoreCash());
+        }
+        if (!StringUtils.isNull(memberCard.getPhone())) {
+            phoneEdit.setText(memberCard.getPhone());
+            phoneEdit.setEnabled(false);
+            phoneEdit.setFocusable(false);
+        } else {
+            phoneEdit.setText("");
+            phoneEdit.setFocusable(true);
+            phoneEdit.setEnabled(true);
+            phoneEdit.setFocusableInTouchMode(true);
+            phoneEdit.requestFocus();
+        }
+        if (!StringUtils.isNull(memberCard.getTradeStaffId())) {
+            staffTxt.setText(memberCard.getTradeStaffId());
+            isClick = false;
+        } else {
+            staffTxt.setText("");
+            isClick = true;
+        }
         memberId.setText("NO." + memberCard.getIcid() + "    " + memberCard.getLevelName());
     }
 
