@@ -13,7 +13,7 @@ public class MemberPay {
     private String username;
     private String memberType;
     private String phone;
-    private Long scorePercent;
+    private Double scorePercent;
     private Long costPrice;
     private Long scoreNum;
     private String isAccountScore;
@@ -84,11 +84,11 @@ public class MemberPay {
         phone = pPhone;
     }
 
-    public Long getScorePercent() {
+    public Double getScorePercent() {
         return scorePercent;
     }
 
-    public void setScorePercent(Long pScorePercent) {
+    public void setScorePercent(Double pScorePercent) {
         scorePercent = pScorePercent;
     }
 

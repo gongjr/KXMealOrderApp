@@ -63,22 +63,22 @@ public class MemberConsumeInfo implements PrintModel{
     private String cardType_tag="会员类型:";
 
     /**
-     * 卡内积分:
+     * 上次剩余积分:
      */
     private String cardScore;
-    private String cardScore_tag="卡内积分:";
+    private String cardScore_tag="上次剩余积分:";
 
     /**
-     * 此次消费:
+     * 本次消费积分:
      */
     private String currentUsedScore;
-    private String currentUsedScore_tag="此次消费:";
+    private String currentUsedScore_tag="本次消费积分:";
 
     /**
-     * 剩余积分:
+     * 本次剩余积分:
      */
     private String residueScore;
-    private String residueScore_tag="剩余积分:";
+    private String residueScore_tag="本次剩余积分:";
 
 
     /**
@@ -91,6 +91,19 @@ public class MemberConsumeInfo implements PrintModel{
      */
     private String balance;
     private String balance_tag="当前余额:";
+
+
+    private String memberSign_tag="会员签字:";
+    private Boolean isNeedMemberSign=false;
+
+
+    public Boolean getIsNeedMemberSign() {
+        return isNeedMemberSign;
+    }
+
+    public void setIsNeedMemberSign(Boolean pIsNeedMemberSign) {
+        isNeedMemberSign = pIsNeedMemberSign;
+    }
 
     public String getMerchantName() {
         return merchantName;
@@ -248,13 +261,13 @@ public class MemberConsumeInfo implements PrintModel{
         cardTypeItem.setFontSize(10);
         lPrintItemObjs.add(cardTypeItem);
 
-        PrintItemObj cardScoreItem=new PrintItemObj(cardScore_tag+cardScore);
-        cardScoreItem.setFontSize(10);
-        lPrintItemObjs.add(cardScoreItem);
-
         PrintItemObj currentUsedScoreItem=new PrintItemObj(currentUsedScore_tag+currentUsedScore);
         currentUsedScoreItem.setFontSize(10);
         lPrintItemObjs.add(currentUsedScoreItem);
+
+        PrintItemObj cardScoreItem=new PrintItemObj(cardScore_tag+cardScore);
+        cardScoreItem.setFontSize(10);
+        lPrintItemObjs.add(cardScoreItem);
 
         PrintItemObj residueScoreItem=new PrintItemObj(residueScore_tag+residueScore);
         residueScoreItem.setFontSize(10);
@@ -265,6 +278,14 @@ public class MemberConsumeInfo implements PrintModel{
         PrintItemObj null_lineItem2=new PrintItemObj(null_line);
         null_lineItem2.setFontSize(8);
         lPrintItemObjs.add(null_lineItem2);
+
+        if (isNeedMemberSign){
+            PrintItemObj memberSignItem=new PrintItemObj(memberSign_tag);
+            memberSignItem.setFontSize(12);
+            memberSignItem.setBold(true);
+            lPrintItemObjs.add(memberSignItem);
+        }
+
 
         PrintItemObj null_lineItem3=new PrintItemObj(null_line);
         null_lineItem3.setFontSize(8);
@@ -277,6 +298,19 @@ public class MemberConsumeInfo implements PrintModel{
         PrintItemObj null_lineItem5=new PrintItemObj(null_line);
         null_lineItem5.setFontSize(8);
         lPrintItemObjs.add(null_lineItem5);
+
+        PrintItemObj null_lineItem6=new PrintItemObj(null_line);
+        null_lineItem6.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem6);
+
+
+        PrintItemObj null_lineItem7=new PrintItemObj(null_line);
+        null_lineItem7.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem7);
+
+        PrintItemObj null_lineItem8=new PrintItemObj(null_line);
+        null_lineItem8.setFontSize(8);
+        lPrintItemObjs.add(null_lineItem8);
 
 
         return lPrintItemObjs;

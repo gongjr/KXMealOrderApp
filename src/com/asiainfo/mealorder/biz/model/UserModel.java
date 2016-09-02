@@ -76,6 +76,20 @@ public class UserModel {
         }else return 0.00;
     }
 
+    /**
+     * 根据当前选中的会员卡计算对应金额转换积分,无会员返回0.00
+     * @param price
+     * @return
+     */
+    public long getScoreFormDeductionPrice(Double price){
+        long scoreNum=0;
+        if (mMemberCard!=null){
+            Double scoreNums=Arith.mul(price,Double.valueOf(mMemberCard.getOffsetNum()));
+            scoreNum=scoreNums.longValue();
+        }
+            return scoreNum;
+    }
+
     public MemberCard getMemberCard() {
         return mMemberCard;
     }
@@ -271,7 +285,8 @@ public class UserModel {
         UserScore lUserScore=new UserScore();
         lUserScore.setUserId(Long.valueOf(getMemberCard().getUserId()));
         lUserScore.setAction(0);
-        if (scorePrice>=0)lUserScore.setScoreNum(0-scorePrice.longValue());
+        long scoreNum=getScoreFormDeductionPrice(scorePrice);
+        if (scorePrice>=0)lUserScore.setScoreNum(0-scoreNum);
         else lUserScore.setScoreNum(scorePrice.longValue());
         mUserScoreList.add(lUserScore);
     }
@@ -332,7 +347,7 @@ public class UserModel {
         lMemberPay.setAccountLeave(balance);
 
         lMemberPay.setScoreCash(scorePrice);
-        long useScore=getScoreFormPrice(scorePrice.toString()).longValue();
+        long useScore=getScoreFormDeductionPrice(scorePrice);
         long scoreBanlance=0;
         if (Long.valueOf(memberCard.getScore())>=useScore)
             scoreBanlance=Long.valueOf(memberCard.getScore())-useScore;
@@ -344,7 +359,7 @@ public class UserModel {
         lMemberPay.setUsername(memberCard.getUsername());
         lMemberPay.setMemberType(memberCard.getMemberType());
         lMemberPay.setPhone(memberCard.getPhone());
-        long scorePercent=1;
+        Double scorePercent=Arith.div(Double.valueOf("1"),Double.valueOf(memberCard.getOffsetNum()));
         lMemberPay.setScorePercent(scorePercent);
         lMemberPay.setCostPrice(Long.valueOf(memberCard.getCostPrice()));
         lMemberPay.setScoreNum(Long.valueOf(memberCard.getScoreNum()));

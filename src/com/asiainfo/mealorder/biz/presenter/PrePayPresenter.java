@@ -1,5 +1,7 @@
 package com.asiainfo.mealorder.biz.presenter;
 
+import android.util.Log;
+
 import com.android.volley.Response;
 import com.asiainfo.mealorder.biz.bean.order.OrderState;
 import com.asiainfo.mealorder.biz.bean.settleaccount.Discount;
@@ -16,14 +18,20 @@ import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
 import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitPayResult;
+import com.asiainfo.mealorder.biz.model.LakalaController;
 import com.asiainfo.mealorder.biz.model.PrePrice;
 import com.asiainfo.mealorder.biz.model.UserModel;
+import com.asiainfo.mealorder.biz.model.lakala.MemberConsumeInfo;
 import com.asiainfo.mealorder.http.HttpController;
+import com.asiainfo.mealorder.utils.Arith;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
+import com.asiainfo.mealorder.utils.ToolDateTime;
 import com.google.gson.Gson;
+import com.lkl.cloudpos.aidl.printer.AidlPrinterListener;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -283,6 +291,7 @@ public class PrePayPresenter {
         lOrderPay.setTradeStaffId(merchantRegister.getStaffId());
         mOrderPayList.add(lOrderPay);
         mPrePrice.addCurPayPrice(price);
+        mUserModel.refreshScoreList(paytype, lOrderPay.getPayPrice().toString(), 0, mPrePrice);
     }
 
     public List<OrderPay> getLastOrderPay() {
@@ -467,7 +476,7 @@ public class PrePayPresenter {
             if (lOrderPay.getPayType().equals(pOrderPay.getPayType())) {
                 mOrderPayList.remove(lOrderPay);
                 PayType lPayType = getPayTypeFromType(lOrderPay.getPayType());
-                mUserModel.refreshScoreList(lPayType, lOrderPay.getPayPrice().toString(), 0, mPrePrice);
+                mUserModel.refreshScoreList(lPayType, lOrderPay.getPayPrice().toString(), 1, mPrePrice);
                 break;
             }
         }
@@ -653,6 +662,60 @@ public class PrePayPresenter {
             }
         }
         return mPayTypeList;
+    }
+
+    public Boolean isNeedPrintMemberInfo(AidlPrinterListener pAidlPrinterListener){
+        for (OrderPay lOrderPay : getOrderPayList()) {
+            if (lOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())) {
+                if (LakalaController.getInstance().isSupport()){
+                    MemberConsumeInfo lMemberConsumeInfo=new MemberConsumeInfo();
+                    lMemberConsumeInfo.setMerchantName(merchantRegister.getMerchantName());
+                    lMemberConsumeInfo.setDeskName(mDeskOrder.getDeskName());
+                    lMemberConsumeInfo.setStaffName(merchantRegister.getStaffName());
+                    lMemberConsumeInfo.setOrderId(mDeskOrder.getOrderId());
+                    lMemberConsumeInfo.setFinishTime(ToolDateTime.formatDateTime(new Date(),ToolDateTime.DF_YYYY_MM_DD_HH_MM_SS));
+                    lMemberConsumeInfo.setCardId(mUserModel.getMemberCard().getIcid());
+                    lMemberConsumeInfo.setCardType(mUserModel.getMemberCard().getMemberType());
+                    lMemberConsumeInfo.setCardScore(mUserModel.getMemberCard().getScoreCash());
+                    lMemberConsumeInfo.setCurrentUsedScore(Arith.d2str(lOrderPay.getPayPrice()));
+                    String currentScoreCash=mPrePrice.subPrice(mUserModel.getMemberCard().getScoreCash(),lOrderPay.getPayPrice().toString());
+                    lMemberConsumeInfo.setResidueScore(currentScoreCash);
+                    lMemberConsumeInfo.setIsNeedMemberSign(true);
+
+                    LakalaController.getInstance().printMemberConsumeInfo(lMemberConsumeInfo,pAidlPrinterListener);
+                }
+                else Log.i("lakala", "拉卡拉服务无响应");
+            }
+        }
+        return false;
+    }
+
+    public Boolean PrintMemberInfo(AidlPrinterListener pAidlPrinterListener){
+        for (OrderPay lOrderPay : getOrderPayList()) {
+            if (lOrderPay.getPayType().equals(PayMent.ScoreDikbPayMent.getValue())) {
+                if (LakalaController.getInstance().isSupport()){
+                    MemberConsumeInfo lMemberConsumeInfo=new MemberConsumeInfo();
+                    lMemberConsumeInfo.setMerchantName(merchantRegister.getMerchantName());
+                    lMemberConsumeInfo.setDeskName(mDeskOrder.getDeskName());
+                    lMemberConsumeInfo.setStaffName(merchantRegister.getStaffName());
+                    lMemberConsumeInfo.setOrderId(mDeskOrder.getOrderId());
+                    lMemberConsumeInfo.setFinishTime(ToolDateTime.formatDateTime(new Date(),ToolDateTime.DF_YYYY_MM_DD_HH_MM_SS));
+                    lMemberConsumeInfo.setCardId(mUserModel.getMemberCard().getIcid());
+                    lMemberConsumeInfo.setCardType(mUserModel.getMemberCard().getMemberType());
+                    lMemberConsumeInfo.setCardScore(mUserModel.getMemberCard().getScoreCash());
+                    lMemberConsumeInfo.setCurrentUsedScore(Arith.d2str(lOrderPay.getPayPrice()));
+                    String currentScoreCash=mPrePrice.subPrice(mUserModel.getMemberCard().getScoreCash(),lOrderPay.getPayPrice().toString());
+                    lMemberConsumeInfo.setResidueScore(currentScoreCash);
+                    LakalaController.getInstance().printMemberConsumeInfo(lMemberConsumeInfo,pAidlPrinterListener);
+                }
+                else Log.i("lakala", "拉卡拉服务无响应");
+            }
+        }
+        return false;
+    }
+
+    public MerchantRegister getMerchantRegister() {
+        return merchantRegister;
     }
 
 }

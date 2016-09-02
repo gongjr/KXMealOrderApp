@@ -203,7 +203,9 @@
                 android:gravity="right|center_vertical"
                 android:paddingRight="@dimen/Dip_20"
                 android:text="¥30.0"
-                android:textSize="@dimen/text_size_small" />
+                android:textSize="@dimen/text_size_small"
+                android:textColor="#D0021B"
+                />
 
             <ImageView
                 android:layout_width="match_parent"

@@ -31,7 +31,7 @@ public class MemberPresenter {
         onMemberActivityListener.setUserName(memberCard.getUsername());
         onMemberActivityListener.setCardLevel(memberCard.getLevelName());
         onMemberActivityListener.setBalance(memberCard.getAccountLeave());
-        onMemberActivityListener.setScore(memberCard.getScoreCash());
+        onMemberActivityListener.setScore(memberCard.getScore(),memberCard.getScoreCash());
         onMemberActivityListener.setCouponTag(memberCard.getUserCoupons().size() + "张");
     }
 

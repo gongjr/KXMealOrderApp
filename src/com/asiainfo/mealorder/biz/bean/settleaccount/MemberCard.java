@@ -14,11 +14,11 @@ import java.util.List;
  */
 public class MemberCard implements Parcelable {
 
-    private String scoreCash;
+    private String scoreCash;//积分抵扣的时间金额,score/offsetNum
     private List<Coupon> yhqList = new ArrayList<Coupon>(); // 不new的话读取可能会报null错误
     private String phone;
-    private String costPrice;
-    private String score;
+    private String costPrice;//消费 costPrice元送scoreNum积分
+    private String score;//积分值
     private String memberType;
     private String isThisMember;
     private String isAccountScore;
@@ -36,7 +36,7 @@ public class MemberCard implements Parcelable {
     private String merchantId;
     private String srFlag;
     private String accountLeave;
-    private String offsetNum;
+    private String offsetNum;// offsetNum个积分可抵用1元
     private String birthdayLargess;
     private List<Discount> discountList = new ArrayList<Discount>();
     private String isNeedPwd;

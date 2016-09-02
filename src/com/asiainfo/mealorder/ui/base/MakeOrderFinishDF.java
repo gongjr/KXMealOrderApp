@@ -212,4 +212,26 @@ public class MakeOrderFinishDF extends DialogFragment{
             }
         });
     }
+
+    public void showNoticeText(String txt,int type,Bitmap url,final DialogDelayListener mListener){
+        contentTxt = txt;
+        mContextView.setText(txt);
+        prog_progBar.setVisibility(View.GONE);
+        if (url!=null){
+            mRelativeLayout.setVisibility(View.VISIBLE);
+            mTextView.setVisibility(View.VISIBLE);
+            mImageView.setImageBitmap(url);
+        }
+
+        btn_navToDesk.setClickable(true);
+        btn_navToDesk.setEnabled(true);
+        btn_navToDesk.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mListener!=null)
+                    mListener.onexecute();
+                dismiss();
+            }
+        });
+    }
 }

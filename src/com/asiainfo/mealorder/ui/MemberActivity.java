@@ -152,7 +152,7 @@ public class MemberActivity extends BaseActivity {
 
         public void setBalance(String balance);
 
-        public void setScore(String score);
+        public void setScore(String scoreNum,String scoreCash);
 
         public void setCouponTag(String couponTag);
 
@@ -180,9 +180,9 @@ public class MemberActivity extends BaseActivity {
         }
 
         @Override
-        public void setScore(String score) {
-            scoreTxt.setText(Html.fromHtml("<font color='#D0021B'>" + score + "抵" +
-                    score+ "元"));
+        public void setScore(String scoreNum,String scoreCash) {
+            scoreTxt.setText(Html.fromHtml("<font color='#D0021B'>" + scoreNum + "抵" +
+                    scoreCash+ "元"));
         }
 
         @Override

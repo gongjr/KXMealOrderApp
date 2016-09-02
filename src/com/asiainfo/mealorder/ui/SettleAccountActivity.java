@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.os.RemoteException;
 import android.util.Log;
 import android.view.View;
 import android.widget.GridView;
@@ -45,6 +46,7 @@ import com.asiainfo.mealorder.utils.StringUtils;
 import com.asiainfo.mealorder.utils.ToolPicture;
 import com.asiainfo.mealorder.widget.TitleView;
 import com.google.gson.reflect.TypeToken;
+import com.lkl.cloudpos.aidl.printer.AidlPrinterListener;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -52,6 +54,10 @@ import org.json.JSONObject;
 import java.util.List;
 
 import roboguice.inject.InjectView;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
 
 /**
  * singleTask加载模式
@@ -410,9 +416,9 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
      * @param info
      * @param type 0无事件,1返回桌台
      */
-    private void showNotice(String info, int type,Bitmap url) {
+    private void showNotice(String info, int type,Bitmap url,DialogDelayListener pDialogDelayListener) {
         if (mMakeOrderDF != null && mMakeOrderDF.isAdded()) {
-            mMakeOrderDF.showNoticeText(info, type, url);
+            mMakeOrderDF.showNoticeText(info, type, url,pDialogDelayListener);
         }
     }
 
@@ -576,12 +582,15 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                             e.printStackTrace();
                         }finally {
                             if (bitmap==null)
-                            updateNotice("提交结账信息成功", 1);
-                            else showNotice("提交结账信息成功", 1,bitmap);
+                            updateNotice("提交结账信息成功",mDialogDelayListener );
+                            else showNotice("提交结账信息成功", 1,bitmap,mDialogDelayListener);
+
                         }
                     }else{
-                        updateNotice("提交结账信息成功", 1);
+                        updateNotice("提交结账信息成功",mDialogDelayListener);
                     }
+                    mPrePayPresenter.isNeedPrintMemberInfo(printListener);
+
                 }else{
                     showShortTip(response.getInfo());
                     updateNotice(response.getInfo(), 0);
@@ -606,6 +615,67 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
             }
         });
     }
+
+    /**
+     * 接口都是在子线程中执行,需要返回到主线程处理交互
+     */
+    AidlPrinterListener.Stub printListener =new AidlPrinterListener.Stub() {
+        @Override
+        public void onError(final int errorCode) throws RemoteException {
+            KLog.i("打印会员积分消费凭证出错:"+errorCode);
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext("打印会员积分消费凭证出错:"+errorCode);
+                    subscriber.onCompleted();
+                }
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(String t) {
+                            showShortTip(t);
+
+                        }
+                    });
+        }
+
+        @Override
+        public void onPrintFinish() throws RemoteException {
+            KLog.i("打印会员积分消费凭证成功");
+            Observable.create(new Observable.OnSubscribe<String>() {
+                @Override
+                public void call(Subscriber<? super String> subscriber) {
+                    subscriber.onNext("打印会员积分消费凭证成功");
+                    subscriber.onCompleted();
+                }
+            }).observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Observer<String>() {
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+
+                        }
+
+                        @Override
+                        public void onNext(String t) {
+                            showShortTip(t);
+
+                        }
+                    });
+        }
+    };
 
     /*
     * 订单挂单
@@ -757,4 +827,25 @@ public class SettleAccountActivity extends BaseActivity implements View.OnClickL
                     });
         }
     }
+
+
+
+    /**
+     * 返回桌台页面
+     */
+    private void backToDeskPage(){
+        Intent intent = new Intent(mActivity, ChooseDeskActivity.class);
+        intent.putExtra("STAFF_ID", mPrePayPresenter.getMerchantRegister().getStaffId());
+        intent.putExtra("STAFF_NAME", mPrePayPresenter.getMerchantRegister().getStaffName());
+        intent.putExtra("CHILD_MERCHANT_ID", mPrePayPresenter.getMerchantRegister().getChildMerchantId());
+        startActivity(intent);
+    }
+
+    DialogDelayListener mDialogDelayListener=new DialogDelayListener() {
+        @Override
+        public void onexecute() {
+            mPrePayPresenter.PrintMemberInfo(printListener);
+            backToDeskPage();
+        }
+    };
 }

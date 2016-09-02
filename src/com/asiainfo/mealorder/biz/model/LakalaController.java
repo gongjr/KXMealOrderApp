@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.RemoteException;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -422,37 +421,16 @@ public class LakalaController {
         }
     };
 
-    public void testMemberConsumeInfo(){
-        if (mService!=null&&PrintDriver.getInstance(mService)!=null){
-            MemberConsumeInfo lMemberConsumeInfo=new MemberConsumeInfo();
-            lMemberConsumeInfo.setMerchantName("创作酒吧");
-            lMemberConsumeInfo.setDeskName("6");
-            lMemberConsumeInfo.setStaffName("卡卡卡");
-            lMemberConsumeInfo.setOrderId("2016090116518938742");
-            lMemberConsumeInfo.setFinishTime("2016-09-01 16:51:00");
-            lMemberConsumeInfo.setCardId("002255");
-            lMemberConsumeInfo.setCardType("至尊会员");
-            lMemberConsumeInfo.setCardScore("5000");
-            lMemberConsumeInfo.setCurrentUsedScore("1000");
-            lMemberConsumeInfo.setResidueScore("1000");
-            PrintDriver.getInstance(mService).PrintContext(lMemberConsumeInfo.getPrintData(),printListener);
-        }else{
-            KLog.i("测试打印无效!");
-        }
-    };
-
     /**
-     * 接口都是在子线程中执行,需要返回到主线程处理交互
+     * 打印会员消费凭证
+     * @param lMemberConsumeInfo
+     * @param pAidlPrinterListener
      */
-    AidlPrinterListener.Stub printListener =new AidlPrinterListener.Stub() {
-        @Override
-        public void onError(int errorCode) throws RemoteException {
-            KLog.i("打印出错:"+errorCode);
-        }
-
-        @Override
-        public void onPrintFinish() throws RemoteException {
-            KLog.i("打印成功");
+    public void printMemberConsumeInfo(MemberConsumeInfo lMemberConsumeInfo,AidlPrinterListener pAidlPrinterListener){
+        if (mService!=null&&PrintDriver.getInstance(mService)!=null){
+            PrintDriver.getInstance(mService).PrintContext(lMemberConsumeInfo.getPrintData(),pAidlPrinterListener);
+        }else{
+            KLog.i("打印不支持!");
         }
     };
 
