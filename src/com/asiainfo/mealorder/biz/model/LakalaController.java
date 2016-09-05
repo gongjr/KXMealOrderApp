@@ -145,9 +145,10 @@ public class LakalaController {
             lakalaInfo.setDate(TradeKey.Proc_cd, ProCodeKey.ScanCodePay.getValue());
             lakalaInfo.setDate(TradeKey.Pay_tp, StartPayTypeKey.Code.getValue());
             lakalaInfo.setDate(TradeKey.Appid, Tools.getPackageName(mActivity));
-            lakalaInfo.setDate(TradeKey.Time_stamp, "" + new Date().getTime());
+            long time=new Date().getTime();
+            lakalaInfo.setDate(TradeKey.Time_stamp, "" + time);
             lakalaInfo.setDate(TradeKey.Amt, price);
-            lakalaInfo.setDate(TradeKey.Order_no, orderid);
+            lakalaInfo.setDate(TradeKey.Order_no, time+"-"+orderid);//time+orderid来是同一个订单可以多次付款
             lakalaInfo.setDate(TradeKey.Order_info, Order_info);
             intent.putExtras(lakalaInfo.ToBundle());
             setIsRun(false);//调用前阻塞
@@ -213,9 +214,10 @@ public class LakalaController {
             lakalaInfo.setDate(TradeKey.Proc_cd, ProCodeKey.Consume.getValue());
             lakalaInfo.setDate(TradeKey.Pay_tp, StartPayTypeKey.Card.getValue());
             lakalaInfo.setDate(TradeKey.Appid, Tools.getPackageName(mActivity));
-            lakalaInfo.setDate(TradeKey.Time_stamp, "" + new Date().getTime());
+            long time=new Date().getTime();
+            lakalaInfo.setDate(TradeKey.Time_stamp, "" +time);
             lakalaInfo.setDate(TradeKey.Amt, curLakalaPayPrice);
-            lakalaInfo.setDate(TradeKey.Order_no, orderid);
+            lakalaInfo.setDate(TradeKey.Order_no, time+"-"+orderid);//time+orderid来是同一个订单可以多次付款
             lakalaInfo.setDate(TradeKey.Order_info, Order_info);
             intent.putExtras(lakalaInfo.ToBundle());
             setIsRun(false);//调用前阻塞
