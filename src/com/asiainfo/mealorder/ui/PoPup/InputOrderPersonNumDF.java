@@ -142,7 +142,7 @@ public class InputOrderPersonNumDF extends DialogFragmentBase {
      */
     private void finishInputPersonNum() {
         String num = edit_inputPersonNum.getText().toString();
-        if (StringUtils.str2Int(num) > 0) {
+        if (StringUtils.str2Int(num) >= 0) {
             if (checkBox.isChecked()) {
                 Intent intent = new Intent(getActivity(), SearchUserActivity.class);
                 intent.putExtra("merchantDesk", merchantDesk);
