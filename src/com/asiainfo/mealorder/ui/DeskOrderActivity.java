@@ -47,6 +47,7 @@ import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.biz.listener.DialogDelayListener;
+import com.asiainfo.mealorder.ui.PoPup.ModifyPeopleNumberDF;
 import com.asiainfo.mealorder.ui.PoPup.SelectSettlementDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
@@ -57,6 +58,9 @@ import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuItem;
 import com.asiainfo.mealorder.widget.baoyz.swipemenulistview.SwipeMenuListView;
 import com.google.gson.Gson;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -89,6 +93,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
     private MakeOrderFinishDF mMakeOrderDF;
     private View view;
     private SelectSettlementDF selectSettlementDF;
+    private ModifyPeopleNumberDF modifyPeopleNumberDF;
 
     @InjectView(R.id.order_list)
     private SwipeMenuListView mSwipeMenuList;
@@ -186,6 +191,7 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
         deleteBtn.setOnClickListener(this);
         addBtn.setOnClickListener(this);
         payBtn.setOnClickListener(this);
+        title.setOnClickListener(this);
         mSwipeMenuList.setOnMenuItemClickListener(new SwipeMenuListView.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
@@ -321,6 +327,9 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
                 break;
             case R.id.order_morebtn:
                 showPopupWindow();
+                break;
+            case R.id.order_title:
+                showModifyPeopleNumberDF();
                 break;
         }
     }
@@ -852,6 +861,57 @@ public class DeskOrderActivity extends BaseActivity implements View.OnClickListe
             }
         }
     };
+
+    /*
+    *显示修改人数弹框
+    * */
+    private void showModifyPeopleNumberDF() {
+        if (modifyPeopleNumberDF == null) {
+            modifyPeopleNumberDF = ModifyPeopleNumberDF.newInstance(mDesk.getDeskName());
+            modifyPeopleNumberDF.setOnDismissListener(onDismissListener);
+        }
+        modifyPeopleNumberDF.show(getSupportFragmentManager(), "DeskOrder");
+    }
+
+
+    /*
+    * 修改人数弹框关闭监听事件
+    * */
+    private ModifyPeopleNumberDF.OnDismissListener onDismissListener = new ModifyPeopleNumberDF.OnDismissListener() {
+        @Override
+        public void onDismiss(String num) {
+            showLoadingDF("正在修改人数....");
+            modifyPeopleNumber(num);
+        }
+    };
+
+    private void modifyPeopleNumber(final String num) {
+        HttpController.getInstance().updateOrder(mDeskOrder.getOrderId(), num, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                Log.d(TAG, "modifyPeopleNumber: " + response.toString());
+                try {
+                    dismissLoadingDF();
+                    if (response.getString("errcode").equals("0")) {
+                        showShortTip("修改人数成功");
+                        title.setText(mDesk.getDeskName() + "订单" + " [" + num + "人]");
+                    } else {
+                        showShortTip("修改人数失败: " + response.getString("msg"));
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    dismissLoadingDF();
+                    showShortTip("修改人数失败: JsonError");
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                dismissLoadingDF();
+                showShortTip("修改人数失败: " + error.getMessage());
+            }
+        });
+    }
 
 
 }

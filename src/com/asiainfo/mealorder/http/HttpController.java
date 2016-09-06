@@ -506,4 +506,19 @@ public class HttpController {
         JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(ResultMapRequest);
     }
+
+    /**
+     * 修改人数
+     *
+     * @param orderId         订单Id
+     * @param personNum       人数
+     * @param listener        响应监听器
+     * @param errorListener   异常监听器
+     */
+    public void updateOrder(String orderId, String personNum, Response.Listener listener,
+                            Response.ErrorListener errorListener) {
+        String param = "/appController/updateOrder.do?orderId=" + orderId + "&personNum=" + personNum;
+        JsonObjectRequest ResultMapRequest = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(ResultMapRequest);
+    }
 }
