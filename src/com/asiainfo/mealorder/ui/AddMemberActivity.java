@@ -521,8 +521,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 if (staffList == null || staffList.size() == 0) {
                     showShortTip("没有工号可供选择,请确认~.~");
                 } else {
-                    showChooseStaffDF();
-                    chooseStaffDF.setCurrentPosition(staffIndex);
+                    showChooseStaffDF(staffIndex);
                 }
                 break;
             case R.id.add_notice:
@@ -557,10 +556,8 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     /*
     * 显示选择员工工号弹出框
     * */
-    private void showChooseStaffDF() {
-        if (chooseStaffDF == null) {
-            chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener);
-        }
+    private void showChooseStaffDF(int staffIndex) {
+        ChooseStaffDF  chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener,staffIndex);
         chooseStaffDF.show(getSupportFragmentManager(), "AddMemberActivity");
     }
 
