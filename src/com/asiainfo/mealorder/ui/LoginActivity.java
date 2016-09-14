@@ -432,7 +432,7 @@ public class LoginActivity extends BaseActivity {
      * 应用自动更新检测
      */
     private void httpAutoUpdate2() {
-        HttpController.getInstance().getAppUpdate(new Listener<JSONObject>() {
+        HttpController.getInstance().getAppUpdateAndAddress(new Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject data) {
                 Log.d(TAG, "http auto update data: " + data.toString());

@@ -175,6 +175,19 @@ public class HttpController {
     /**
      * 获取自动更新版本信息
      *
+     * @param listener      响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getAppUpdateAndAddress(Response.Listener listener,
+                             Response.ErrorListener errorListener) {
+        String param = "/appController/queryAppUpdateAndAddress.do?appKey=" + AppKey+"&versionAddress="+init.getValue();
+        JsonObjectRequest httpAutoUpdate = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(httpAutoUpdate);
+    }
+
+    /**
+     * 获取自动更新版本信息
+     *
      * @param userName      用户名
      * @param passwd        密码
      * @param listener      响应监听器
