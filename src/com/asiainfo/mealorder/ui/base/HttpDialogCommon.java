@@ -9,7 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -30,6 +29,7 @@ public class HttpDialogCommon extends DialogFragment{
 	private LinearLayout ll_contentView;
 	private TextView mContextView;
 	private String contentTxt;
+    private Boolean isRun=false;
 	
 	@SuppressLint("InlinedApi")
 	@Override
@@ -89,4 +89,12 @@ public class HttpDialogCommon extends DialogFragment{
 	public void setNoticeText(String txt){
 		contentTxt = txt;
 	}
+
+    public Boolean getIsRun() {
+        return isRun;
+    }
+
+    public void setIsRun(Boolean pIsRun) {
+        isRun = pIsRun;
+    }
 }

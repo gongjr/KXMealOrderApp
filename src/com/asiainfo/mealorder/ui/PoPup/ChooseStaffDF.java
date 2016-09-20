@@ -41,10 +41,15 @@ public class ChooseStaffDF extends DialogFragmentBase {
     @InjectView(R.id.btn_ensure)
     private Button ensureBtn;
 
-    public static ChooseStaffDF newInstance(List<MerchantRegister> registerList, OnFinishListener onFinishListener) {
-        ChooseStaffDF chooseStaffDF = new ChooseStaffDF();
+    private static ChooseStaffDF chooseStaffDF;
+
+    public static ChooseStaffDF newInstance(List<MerchantRegister> registerList, OnFinishListener onFinishListener,int staffIndex) {
+        if (chooseStaffDF == null){
+            chooseStaffDF = new ChooseStaffDF();
+        }
         Bundle bundle = new Bundle();
         bundle.putSerializable("staffList", (Serializable) registerList);
+        bundle.putInt("index", staffIndex);
         if (chooseStaffDF.getArguments() != null) {
             chooseStaffDF.getArguments().clear();
         }
@@ -57,6 +62,7 @@ public class ChooseStaffDF extends DialogFragmentBase {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        currentPosition= getArguments().getInt("index") ;
         staffList =  (List<MerchantRegister>) getArguments().getSerializable("staffList");
     }
 
@@ -77,9 +83,7 @@ public class ChooseStaffDF extends DialogFragmentBase {
     }
 
     private void initData() {
-        if (adapter == null) {
-            adapter = new ChooseStaffAdapter(getActivity(), staffList, currentPosition);
-        }
+        adapter = new ChooseStaffAdapter(mView.getContext(), staffList, currentPosition);
         listView.setAdapter(adapter);
         titleName.setText("员工号选择");
     }

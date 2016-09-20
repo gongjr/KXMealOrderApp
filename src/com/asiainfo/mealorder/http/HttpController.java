@@ -30,7 +30,7 @@ public class HttpController {
     /**
      * 默认服务器配置,程序初始化确认的地址,恢复的初始状态
      */
-    public static final AddressState init=AddressState.debug;
+    public static final AddressState init=AddressState.release;
     /**
      * 当前服务器环境值,如果配置,保有最新选择
      */
@@ -168,6 +168,19 @@ public class HttpController {
     public void getAppUpdate(Response.Listener listener,
                              Response.ErrorListener errorListener) {
         String param = "/appController/queryAppUpdate.do?appKey=" + AppKey;
+        JsonObjectRequest httpAutoUpdate = new JsonObjectRequest(HOST + param, null, listener, errorListener);
+        executeRequest(httpAutoUpdate);
+    }
+
+    /**
+     * 获取自动更新版本信息
+     *
+     * @param listener      响应监听器
+     * @param errorListener 异常监听器
+     */
+    public void getAppUpdateAndAddress(Response.Listener listener,
+                             Response.ErrorListener errorListener) {
+        String param = "/appController/queryAppUpdateAndAddress.do?appKey=" + AppKey+"&versionAddress="+init.getValue();
         JsonObjectRequest httpAutoUpdate = new JsonObjectRequest(HOST + param, null, listener, errorListener);
         executeRequest(httpAutoUpdate);
     }

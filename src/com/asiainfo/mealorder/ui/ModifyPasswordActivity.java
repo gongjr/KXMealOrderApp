@@ -195,7 +195,6 @@ public class ModifyPasswordActivity extends BaseActivity {
                         showShortTip("没有工号可供选择,请确认~.~");
                     } else {
                         showChooseStaffDF();
-                        chooseStaffDF.setCurrentPosition(staffIndex);
                     }
                 }
             }
@@ -610,10 +609,8 @@ public class ModifyPasswordActivity extends BaseActivity {
    * 显示选择员工工号弹出框
    * */
     private void showChooseStaffDF() {
-        if (chooseStaffDF == null) {
-            chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener);
-        }
-        chooseStaffDF.show(getSupportFragmentManager(), "AddMemberActivity");
+        ChooseStaffDF  chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener,staffIndex);
+        chooseStaffDF.show(getSupportFragmentManager(), "ModifyPasswordActivity");
     }
 
     private ChooseStaffDF.OnFinishListener onFinishListener = new ChooseStaffDF.OnFinishListener() {

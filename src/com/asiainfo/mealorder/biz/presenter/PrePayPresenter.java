@@ -315,7 +315,7 @@ public class PrePayPresenter {
             }
             OrderPay lOrderPay = new OrderPay();
             lOrderPay.setOrderId(Long.valueOf(mDeskOrder.getOrderId()));
-            lOrderPay.setPayPrice(pLDouble);
+            lOrderPay.setPayPrice(0-pLDouble);
             //支付类型信息
             lOrderPay.setPayType(PayMent.OddChangePayMent.getValue());
             lOrderPay.setPayTypeName(PayMent.OddChangePayMent.getTitle());

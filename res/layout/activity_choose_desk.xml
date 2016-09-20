@@ -1,13 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    style="@style/activity_root_style">
+    style="@style/activity_root_style"
+    android:splitMotionEvents="false">
 
     <RelativeLayout
         android:id="@+id/rl_waiter_info"
         android:layout_width="match_parent"
         android:layout_height="50dip"
         android:layout_alignParentTop="true"
-        android:background="@color/bg_choose_desk_header" >
+        android:background="@color/bg_choose_desk_header"
+        android:splitMotionEvents="false">
 
         <ImageView
             android:id="@+id/img_header_icon"
@@ -74,7 +76,8 @@
             android:gravity="left|center_vertical"
             android:orientation="horizontal"
             android:paddingBottom="10dip"
-            android:paddingTop="10dip" >
+            android:paddingTop="10dip"
+            android:splitMotionEvents="false">
         </RadioGroup>
         
     </HorizontalScrollView>
@@ -98,7 +101,8 @@
         ptr:ptrMode="pullFromStart"
         ptr:ptrShowIndicator="false"
         ptr:ptrScrollingWhileRefreshingEnabled="true"
-        ptr:ptrDrawable="@drawable/refresh_rotate_icon" />
+        ptr:ptrDrawable="@drawable/refresh_rotate_icon"
+        android:splitMotionEvents="false"/>
     
     <!--  -->
 </RelativeLayout>

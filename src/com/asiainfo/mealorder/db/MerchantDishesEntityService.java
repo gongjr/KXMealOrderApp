@@ -207,6 +207,7 @@ public class MerchantDishesEntityService {
 	
 	public List<MerchantDishes> queryAllMerchantDishesByInfo(String searchInfo){
 		List<MerchantDishes> mDishesDataList = new ArrayList<MerchantDishes>();
+        searchInfo = searchInfo.replaceAll("'", "");
         Cursor mCursor=null;
             mCursor = DataSupport.findBySQL("select distinct * from merchantdishes "
                     + " where dishescode like '%" + searchInfo + "%'"

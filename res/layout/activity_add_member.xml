@@ -366,7 +366,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="2"
-                    android:text="*办理工号:"
+                    android:text="*办理员工:"
                     android:gravity="center|right"
                     android:textSize="@dimen/text_size_middle"/>
 
@@ -382,6 +382,7 @@
                         android:layout_height="match_parent"
                         android:gravity="center"
                         android:textSize="@dimen/text_size_middle"
+                        android:textColor="@color/dark_red"
                         />
 
                     <ImageView

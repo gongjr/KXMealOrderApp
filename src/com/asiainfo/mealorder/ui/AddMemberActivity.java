@@ -106,6 +106,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private int psptIndex = 0;
     private int leverIndex = 0;
     private int staffIndex = 0;
+    private String staffId = "";
     private boolean isRequired = false; //密码是否必填
 
     @Override
@@ -135,7 +136,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
             String memberCode = memberEdit.getText().toString();
             String password = passwordEdit.getText().toString();
             String confPassword = conPasswordEdit.getText().toString();
-            String staffId = staff_txt.getText().toString();
+            String staffName = staff_txt.getText().toString();
             String remark = remarkEdit.getText().toString();
 
             if (StringUtils.isNull(phone)) {
@@ -160,7 +161,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 return;
             }
 
-            if (StringUtils.isNull(staffId)) {
+            if (StringUtils.isNull(staffName)) {
                 showShortTip("请选择办理工号!");
                 return;
             }
@@ -521,8 +522,7 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
                 if (staffList == null || staffList.size() == 0) {
                     showShortTip("没有工号可供选择,请确认~.~");
                 } else {
-                    showChooseStaffDF();
-                    chooseStaffDF.setCurrentPosition(staffIndex);
+                    showChooseStaffDF(staffIndex);
                 }
                 break;
             case R.id.add_notice:
@@ -557,10 +557,8 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     /*
     * 显示选择员工工号弹出框
     * */
-    private void showChooseStaffDF() {
-        if (chooseStaffDF == null) {
-            chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener);
-        }
+    private void showChooseStaffDF(int staffIndex) {
+        ChooseStaffDF  chooseStaffDF = ChooseStaffDF.newInstance(staffList, onFinishListener,staffIndex);
         chooseStaffDF.show(getSupportFragmentManager(), "AddMemberActivity");
     }
 
@@ -620,7 +618,8 @@ public class AddMemberActivity extends BaseActivity implements View.OnClickListe
     private ChooseStaffDF.OnFinishListener onFinishListener = new ChooseStaffDF.OnFinishListener() {
         @Override
         public void onFinishListener(int position) {
-            staff_txt.setText(staffList.get(position).getStaffId());
+            staff_txt.setText(staffList.get(position).getStaffName());
+            staffId=staffList.get(position).getStaffId();
             staffIndex = position;
         }
     };

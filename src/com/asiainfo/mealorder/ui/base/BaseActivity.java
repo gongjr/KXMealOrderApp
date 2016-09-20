@@ -238,10 +238,20 @@ public class BaseActivity extends RoboFragmentActivity{
 
 	protected void showCommonDialog(){
         try {
-        if(mHttpDialogCommon==null)
-		mHttpDialogCommon = new HttpDialogCommon();
+        if(mHttpDialogCommon==null){
+            synchronized (HttpDialogCommon.class){
+                if (mHttpDialogCommon==null){
+                    mHttpDialogCommon = new HttpDialogCommon();
+                    mHttpDialogCommon.setIsRun(true);
+                }
+            }
+        }
         if(mHttpDialogCommon!=null&&!mHttpDialogCommon.isAdded()) {
-            mHttpDialogCommon.show(getSupportFragmentManager(), "dialog_fragment_http_common");
+            if (mHttpDialogCommon.getIsRun()){
+                mHttpDialogCommon.setIsRun(false);
+                mHttpDialogCommon.show(getSupportFragmentManager(), "dialog_fragment_http_common");
+            }
+            else KLog.i("dialog_fragment_http_common mHttpDialogCommon isRun :"+mHttpDialogCommon.getIsRun());
         }
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -249,11 +259,21 @@ public class BaseActivity extends RoboFragmentActivity{
 	
 	protected void showCommonDialog(String txt){
         try {
-        if(mHttpDialogCommon==null)
-		mHttpDialogCommon = new HttpDialogCommon();
+            if(mHttpDialogCommon==null){
+                synchronized (HttpDialogCommon.class){
+                    if (mHttpDialogCommon==null){
+                        mHttpDialogCommon = new HttpDialogCommon();
+                        mHttpDialogCommon.setIsRun(true);
+                    }
+                }
+            }
 		mHttpDialogCommon.setNoticeText(txt);
         if(mHttpDialogCommon!=null&&!mHttpDialogCommon.isAdded()) {
-            mHttpDialogCommon.show(getSupportFragmentManager(), "dialog_fragment_http_common");
+            if (mHttpDialogCommon.getIsRun()){
+                mHttpDialogCommon.setIsRun(false);
+                mHttpDialogCommon.show(getSupportFragmentManager(), "dialog_fragment_http_common");
+            }
+            else KLog.i("dialog_fragment_http_common mHttpDialogCommon isRun :"+mHttpDialogCommon.getIsRun());
         }
     } catch (Exception ex) {
         ex.printStackTrace();
@@ -262,8 +282,9 @@ public class BaseActivity extends RoboFragmentActivity{
 	
 	protected void dismissCommonDialog(){
         try {
-		if(mHttpDialogCommon!=null&&mHttpDialogCommon.isAdded()){
-			mHttpDialogCommon.dismiss();
+		if(mHttpDialogCommon!=null&&!mHttpDialogCommon.getIsRun()&&mHttpDialogCommon.isAdded()){
+            mHttpDialogCommon.setIsRun(true);
+            mHttpDialogCommon.dismiss();
 		}
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -271,7 +292,7 @@ public class BaseActivity extends RoboFragmentActivity{
 	}
 	
 	protected Boolean isComoDialogShowing(){
-		if(mHttpDialogCommon!=null && mHttpDialogCommon.isVisible()){
+		if(mHttpDialogCommon!=null &&mHttpDialogCommon.getIsRun()&& mHttpDialogCommon.isVisible()){
 			return true;
 		}
 		return false;
