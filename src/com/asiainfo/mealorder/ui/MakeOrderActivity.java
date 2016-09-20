@@ -416,18 +416,6 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		btn_viewOrder.setOnClickListener(mOnClickListener);
 		img_basket.setOnClickListener(mOnClickListener);
 		btn_search.setOnClickListener(mOnClickListener);
-        setmEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
-            @Override
-            public void onLeftBtnFinish() {
-                dismissEnsureDialog();
-            }
-
-            @Override
-            public void onRightBtnFinish() {
-            finish();
-            }
-        },"","放弃本桌的操作吗？");
-
 	}
 	
 	OnClickListener mOnClickListener = new OnClickListener() {
@@ -435,6 +423,17 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		public void onClick(View v) {
 			/*返回按钮*/
 			if(v==btn_back){
+				setmEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
+					@Override
+					public void onLeftBtnFinish() {
+						dismissEnsureDialog();
+					}
+
+					@Override
+					public void onRightBtnFinish() {
+						finish();
+					}
+				},"","放弃本桌的操作吗？");
                 showEnsureDialog("MakeOrder");
 			}
 			/*查看桌子已点菜*/
@@ -469,7 +468,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 				if(mDeskOrder!=null){
 					deskOrderPrice = mDeskOrder.getOriginalPrice();
 				}
-				Intent intent = new Intent(MakeOrderActivity.this, ConfirmOrderActivity.class);
+				Intent intent = new Intent(MakeOrderActivity.this, ConfirmOrderActivity01.class);
 				mBundle.putSerializable("ORDER_SUBMIT", mOrderSubmit);
 				mBundle.putSerializable("MERCHANT_DESK", mCurDesk);
 				mBundle.putString("ORDER_DISHES_COMP", dishesCompJsonStr);
@@ -919,6 +918,17 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
     @Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {
 	    if(keyCode == KeyEvent.KEYCODE_BACK){
+			setmEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
+				@Override
+				public void onLeftBtnFinish() {
+					dismissEnsureDialog();
+				}
+
+				@Override
+				public void onRightBtnFinish() {
+					finish();
+				}
+			},"","放弃本桌的操作吗？");
             showEnsureDialog("MakeOrder");
             return  true;
 	    }

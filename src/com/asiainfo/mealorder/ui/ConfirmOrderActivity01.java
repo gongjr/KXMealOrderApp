@@ -1,27 +1,19 @@
 package com.asiainfo.mealorder.ui;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
-import com.android.volley.AuthFailureError;
-import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.ConfirmOrderDishAdapter;
-import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.config.LoginUserPrefData;
 import com.asiainfo.mealorder.biz.entity.DishesProperty;
 import com.asiainfo.mealorder.biz.entity.DishesPropertyItem;
 import com.asiainfo.mealorder.biz.entity.MerchantDesk;
@@ -30,17 +22,22 @@ import com.asiainfo.mealorder.biz.entity.OrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.OrderSubmit;
 import com.asiainfo.mealorder.biz.entity.helper.DishesCompSelectionEntity;
 import com.asiainfo.mealorder.biz.entity.helper.PropertySelectEntity;
+import com.asiainfo.mealorder.biz.entity.http.PublicDishesItem;
+import com.asiainfo.mealorder.biz.entity.http.QueryAppMerchantPublicAttr;
 import com.asiainfo.mealorder.biz.entity.volley.SubmitOrderId;
 import com.asiainfo.mealorder.biz.entity.volley.UpdateOrderInfoResultData;
-import com.asiainfo.mealorder.http.HttpController;
-import com.asiainfo.mealorder.http.ResultMapRequest;
-import com.asiainfo.mealorder.http.VolleyErrorHelper;
-import com.asiainfo.mealorder.http.VolleyErrors;
 import com.asiainfo.mealorder.biz.listener.OnChangeDishCountListener;
 import com.asiainfo.mealorder.biz.listener.OnChangeDishCountListenerPosition;
 import com.asiainfo.mealorder.biz.listener.OnChangeDishPriceListenerWithPosition;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
+import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnOrderDishesActionListener;
+import com.asiainfo.mealorder.config.Constants;
+import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.http.HttpController;
+import com.asiainfo.mealorder.http.VolleyErrorHelper;
+import com.asiainfo.mealorder.http.VolleyErrors;
+import com.asiainfo.mealorder.ui.PoPup.OrderRemarkDF;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.ui.base.EnsureDialogFragmentBase;
 import com.asiainfo.mealorder.ui.base.MakeOrderFinishDF;
@@ -48,6 +45,8 @@ import com.asiainfo.mealorder.utils.Arith;
 import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.Logger;
 import com.asiainfo.mealorder.utils.StringUtils;
+import com.asiainfo.mealorder.widget.DividerItemDecoration;
+import com.asiainfo.mealorder.widget.TitleView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -59,42 +58,56 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import de.greenrobot.event.EventBus;
+import roboguice.inject.InjectView;
 
 /**
- * @author gjr
- *         <p>
- *         2015年7月3日
- *         <p>
- *         确认订单页面
+ * @author skynight(skynight@dingtalk.com)
+ * @creatTime 16/9/9 下午5:11
  */
-public class ConfirmOrderActivity extends BaseActivity {
-    private static final int VOLLEY_ERROR_BACK_NO = 0;
+public class ConfirmOrderActivity01 extends BaseActivity {
+
+    @InjectView(R.id.co_title)
+    private TitleView titleView;
+    @InjectView(R.id.co_desk_no)
+    private TextView deskNOTxt;
+    @InjectView(R.id.co_person_num)
+    private TextView personNumTxt;
+    @InjectView(R.id.co_order_info)
+    private TextView orderInfoTxt;
+    @InjectView(R.id.co_remark_btn)
+    private Button remarkBtn;
+    @InjectView(R.id.co_delete_btn)
+    private Button deleteBtn;
+    @InjectView(R.id.co_list)
+    private RecyclerView recyclerView;
+    @InjectView(R.id.co_add_btn)
+    private Button addBtn;
+    @InjectView(R.id.co_pay_btn)
+    private Button payBtn;
+    @InjectView(R.id.co_remark)
+    private TextView remarkTxt;
+
     private static final int VOLLEY_ERROR_BACK_YES = 1;
     private static final String ORDER_BTN_ACTION_TYPE_POST = "post"; //提交订单按钮TAG
     private static final String ORDER_BTN_ACTION_TYPE_BACK = "back"; //提交订单按钮TAG
     private int ORDER_CONFIRM_TYPE = Constants.ORDER_CONFIRM_TYPE_NEW_ORDER;
-    private Button btn_back;
-    private TextView tv_headTitle, tv_orderDesk, tv_totalCount, tv_totalPrice;
-    private EditText edit_remark;
-    private RadioGroup grp_orderTime;
-    private RadioButton rdo_orderLater, rdo_orderNow;
-    private Button btn_takeOrder;
-    private RecyclerView rcyv_dishesInfo;
+    private OrderSubmit mOrderSubmit;
+    private MerchantDesk mCurDesk;
+    private String deskOrderPrice = "0";
     private List<OrderGoodsItem> mNormalDishDataList;
     private List<DishesCompSelectionEntity> mDishesCompDataList;
     private ConfirmOrderDishAdapter mConfirmOrderDishAdapter;
-    private OrderSubmit mOrderSubmit;
-    private MerchantDesk mCurDesk;
     private LoginUserPrefData mLoginUserPrefData;
     private MakeOrderFinishDF mMakeOrderFinishDF;
-    private String deskOrderPrice = "0";
+    private EnsureDialogFragmentBase ensureDialogFragmentBase;
+    private OrderRemarkDF orderRemarkDF;
+    private QueryAppMerchantPublicAttr publicAttrs; //细项
+    private ArrayList<Integer> indexes;
 
     @Override
-    protected void onCreate(Bundle bundle) {
-        super.onCreate(bundle);
-        setContentView(R.layout.activity_confirm_order);
-        EventBus.getDefault().register(this);
+    protected void onCreate(Bundle arg0) {
+        super.onCreate(arg0);
+        setContentView(R.layout.activity_confirm_order01);
         Bundle mBundle = getIntent().getBundleExtra("DATA_BUNDLE");
         ORDER_CONFIRM_TYPE = mBundle.getInt("ORDER_CONFIRM_TYPE");
         mOrderSubmit = (OrderSubmit) mBundle.getSerializable("ORDER_SUBMIT");
@@ -107,68 +120,68 @@ public class ConfirmOrderActivity extends BaseActivity {
         //解析套餐菜
         mDishesCompDataList = gson.fromJson(dishesCompJsonStr, new TypeToken<List<DishesCompSelectionEntity>>() {
         }.getType());
-        initView();
+        setTitleView();
         initData();
         initListener();
     }
 
-    public void initView() {
-        btn_back = (Button) findViewById(R.id.btn_back);
-        tv_headTitle = (TextView) findViewById(R.id.tv_make_order_title);
-        tv_orderDesk = (TextView) findViewById(R.id.tv_order_desk);
-        tv_totalCount = (TextView) findViewById(R.id.tv_total_count);
-        tv_totalPrice = (TextView) findViewById(R.id.tv_total_money);
-        edit_remark = (EditText) findViewById(R.id.edit_remark);
-        grp_orderTime = (RadioGroup) findViewById(R.id.grp_order_time);
-        rdo_orderLater = (RadioButton) findViewById(R.id.rdo_order_later);
-        rdo_orderNow = (RadioButton) findViewById(R.id.rdo_order_right_now);
-        btn_takeOrder = (Button) findViewById(R.id.btn_take_order);
-        btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_POST);
-        rcyv_dishesInfo = (RecyclerView) findViewById(R.id.rcyv_dishes_info);
-        LinearLayoutManager dishesLayoutManager = new LinearLayoutManager(mActivity);
-        dishesLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
-        rcyv_dishesInfo.setLayoutManager(dishesLayoutManager);
+    private void setTitleView() {
+        titleView.setCenterTxt("订单确认");
+        titleView.isRightBtnVisible(false);
+        titleView.setOnLeftBtnClickListener(onLeftBtnClickListener);
+        titleView.setCenterTxtSize(22);
+        titleView.setCenterTxtColor(Color.WHITE);
     }
 
-    public void initData() {
-        mLoginUserPrefData = new LoginUserPrefData(ConfirmOrderActivity.this);
-        if (ORDER_CONFIRM_TYPE == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
-            rdo_orderLater.setVisibility(View.INVISIBLE);
-        }
-        tv_orderDesk.setText(mCurDesk.getDeskName());
+    private void initData() {
+        deskNOTxt.setText("桌号:  " + mCurDesk.getDeskName());
+        personNumTxt.setText("[" + mOrderSubmit.getPersonNum() + "人]");
+        orderInfoTxt.setText("订单:  " + mOrderSubmit.getAllGoodsNum() + "项  " + "¥" + mOrderSubmit.getOriginalPrice());
+        payBtn.setTag(ORDER_BTN_ACTION_TYPE_POST);
         mNormalDishDataList = mOrderSubmit.getOrderGoods();
+        mLoginUserPrefData = new LoginUserPrefData(ConfirmOrderActivity01.this);
+        publicAttrs = (QueryAppMerchantPublicAttr) baseApp.gainData(baseApp.KEY_GLOABLE_PUBLICATTR);
+        indexes = new ArrayList<>();
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
+        linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
+        recyclerView.setLayoutManager(linearLayoutManager);
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
 
-//        mConfirmOrderDishAdapter = new ConfirmOrderDishAdapter(ConfirmOrderActivity.this, ConfirmOrderActivity.this, mNormalDishDataList, rcyv_dishesInfo);
+        mConfirmOrderDishAdapter = new ConfirmOrderDishAdapter(ConfirmOrderActivity01.this, ConfirmOrderActivity01.this, mNormalDishDataList, recyclerView, publicAttrs);
         mConfirmOrderDishAdapter.setOnOrderCompGoodsList(mDishesCompDataList);
         mConfirmOrderDishAdapter.setOnDataSetItemClickListener(mOnNormalDishItemClickListener);
         mConfirmOrderDishAdapter.setOnOrderDishesActionListener(mOnOrderDishesActionListener);
         mConfirmOrderDishAdapter.setOnChangeDishCountListener_n(mOnChangeDishCountListener);
         mConfirmOrderDishAdapter.setOnChangeDishCountListener_s(mOnChangeDishCountListenerByPosition);
         mConfirmOrderDishAdapter.setOnChangeDishPriceListenerByPosition(mOnChangeDishPriceListenerWithPosition);
+        recyclerView.setAdapter(mConfirmOrderDishAdapter);
 
-
-        rcyv_dishesInfo.setAdapter(mConfirmOrderDishAdapter);
-        showOrderDishesCountPrice();
     }
 
-    public void initListener() {
-        btn_back.setOnClickListener(new OnClickListener() {
+    private void initListener() {
+        addBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String normalDishes = gson.toJson(mNormalDishDataList);
-                String compDishes = gson.toJson(mDishesCompDataList);
-                Intent intent = new Intent();
-                intent.putExtra("RETURNED_NORMAL_DISHES", normalDishes);
-                intent.putExtra("RETURNED_COMP_DISHES", compDishes);
-                setResult(Constants.ACT_RES_CONFIRM_BACK_RESP, intent);
-                finish();
+                backToPrevious();
             }
         });
-        btn_takeOrder.setOnClickListener(new OnClickListener() {
+        deleteBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "ben tag: " + btn_takeOrder.getTag().toString());
-                if (btn_takeOrder.getTag().equals(ORDER_BTN_ACTION_TYPE_POST)) {
+                showMyEnsureDialog();
+            }
+        });
+        remarkBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showOrderRemarkDF();
+            }
+        });
+        payBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "ben tag: " + payBtn.getTag().toString());
+                if (payBtn.getTag().equals(ORDER_BTN_ACTION_TYPE_POST)) {
                     lockMakeOrderBtn();
                     prepareOrderSummaryInfo();
                     Gson gson = new Gson();
@@ -183,13 +196,13 @@ public class ConfirmOrderActivity extends BaseActivity {
                         case Constants.ORDER_CONFIRM_TYPE_NEW_ORDER: {
                             //新单
                             VolleysubmitOrderInfo2(orderData);
-                            btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_BACK);
+                            payBtn.setTag(ORDER_BTN_ACTION_TYPE_BACK);
                         }
                         break;
                         case Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES: {
                             //加菜
                             VolleyupdateOrderInfo2(orderData);
-                            btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_BACK);
+                            payBtn.setTag(ORDER_BTN_ACTION_TYPE_BACK);
                         }
                         break;
                         case Constants.ORDER_CONFIRM_TYPE_PUSHED_ORDER: {
@@ -203,11 +216,12 @@ public class ConfirmOrderActivity extends BaseActivity {
                 }
             }
         });
+
         setmEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
             @Override
             public void onLeftBtnFinish() {
                 dismissEnsureDialog();
-                btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_POST);
+                payBtn.setTag(ORDER_BTN_ACTION_TYPE_POST);
             }
 
             @Override
@@ -230,7 +244,28 @@ public class ConfirmOrderActivity extends BaseActivity {
                 backToDeskPage();
             }
         }, "", "网络异常，下单失败!", "再看看", "保存本地");
+
+        setMyEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
+            @Override
+            public void onLeftBtnFinish() {
+                dismissMyEnsureDialog();
+            }
+
+            @Override
+            public void onRightBtnFinish() {
+                mNormalDishDataList.clear();
+                mDishesCompDataList.clear();
+                backToPrevious();
+            }
+        }, "", "确定删除订单吗？");
     }
+
+    private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
+        @Override
+        public void onLeftBtnClick() {
+            backToPrevious();
+        }
+    };
 
     /**
      * 普通菜点击事件
@@ -240,28 +275,6 @@ public class ConfirmOrderActivity extends BaseActivity {
         public void onItemClick(View view, int position) {
             //模拟普通菜
             mConfirmOrderDishAdapter.setSelectedRange(position, true);
-//            rcyv_dishesInfo.setScrollY(1);
-//            int i=rcyv_dishesInfo.getScrollY();
-//            KLog.i("getScrollY:"+i+"```getScrollX:"+rcyv_dishesInfo.getScrollX());
-//            KLog.i("rcyv_dishesInfo.getLayoutManager().getItemCount():"+rcyv_dishesInfo.getLayoutManager().getItemCount());
-//            KLog.i("rcyv_dishesInfo.getLayoutManager().getChildCount():"+rcyv_dishesInfo.getLayoutManager().getChildCount());
-//            View firstView=rcyv_dishesInfo.getLayoutManager().getChildAt(0);
-//            int firstViewPosition=rcyv_dishesInfo.getLayoutManager().getPosition(firstView);
-//            KLog.i("getPosition(getChildAt(0)) firstViewPosition:"+firstViewPosition);
-//            KLog.i("当前点击position:"+position);
-//            int lastViewIndex=rcyv_dishesInfo.getLayoutManager().getChildCount()-1;
-//            View lastView=rcyv_dishesInfo.getLayoutManager().getChildAt(lastViewIndex);
-//            KLog.i("lastView的显示情况:"+lastView.getVisibility());
-//            int lastViewPosition=rcyv_dishesInfo.getLayoutManager().getPosition(lastView);
-//            KLog.i("lastView的position:"+lastViewPosition);
-//            if(lastViewPosition==position||lastViewPosition==position+1){
-//                int toPosition=firstViewPosition+1;
-//                KLog.i("toPosition:"+toPosition);
-//                rcyv_dishesInfo.scrollToPosition(1);//点击项最后显示先重合的时候,偏移
-//                View changefirstView=rcyv_dishesInfo.getLayoutManager().getChildAt(0);
-//                int changefirstViewPosition=rcyv_dishesInfo.getLayoutManager().getPosition(changefirstView);
-//                KLog.i("changefirstViewPosition:"+changefirstViewPosition);
-//            }
         }
     };
 
@@ -273,6 +286,36 @@ public class ConfirmOrderActivity extends BaseActivity {
         public void onDishesAction(View v, int position, int actionType, OrderGoodsItem goodsItem) {
             mConfirmOrderDishAdapter.setSelectedPosDontNotify(position);
             executeOrderDishesAction(actionType, goodsItem, position);
+        }
+    };
+
+    /**
+     * 代码复制自点菜页面，逻辑一致，这里不会涉及到数量的变更
+     */
+    private OnChangeDishCountListener mOnChangeDishCountListener = new OnChangeDishCountListener() {
+        @Override
+        public void onChangeCount(MerchantDishes dishesItem, int selectedCount, List<PropertySelectEntity> mDishesPropertyChoice) {
+            updateOrderGoodsListData(dishesItem, selectedCount, mDishesPropertyChoice);
+        }
+    };
+
+    /**
+     * 代码复制自点菜页面，逻辑一致，这里不会涉及到数量的变更
+     */
+    private OnChangeDishCountListenerPosition mOnChangeDishCountListenerByPosition = new OnChangeDishCountListenerPosition() {
+        @Override
+        public void onChangeCount(MerchantDishes dishesItem, int selectedCount, List<PropertySelectEntity> mDishesPropertyChoice, int position) {
+            updateOrderGoodsListDataByPosition(dishesItem, selectedCount, mDishesPropertyChoice, position);
+        }
+    };
+
+    /**
+     * 价格变动用position改变
+     */
+    private OnChangeDishPriceListenerWithPosition mOnChangeDishPriceListenerWithPosition = new OnChangeDishPriceListenerWithPosition() {
+        @Override
+        public void onChangeCount(MerchantDishes dishesItem, int selectedCount, List<PropertySelectEntity> mDishesPropertyChoice, int position, Double priceRatio) {
+            updateOrderGoodsListDataByPriceRatio(dishesItem, selectedCount, mDishesPropertyChoice, position, priceRatio);
         }
     };
 
@@ -310,6 +353,15 @@ public class ConfirmOrderActivity extends BaseActivity {
                     } else {
                         mNormalDishDataList.remove(position);
                     }
+                }
+                break;
+                case Constants.ORDER_DISHES_ACTION_TYPE_WAIT: {//等叫
+                    if (item.isWait()) {
+                        item.setWait(false);
+                    } else {
+                        item.setWait(true);
+                    }
+                    mNormalDishDataList.set(position, item);
                 }
                 break;
                 default:
@@ -373,6 +425,15 @@ public class ConfirmOrderActivity extends BaseActivity {
                         }
                     }
                     break;
+                    case Constants.ORDER_DISHES_ACTION_TYPE_WAIT: {
+                        if (dishesCompEntity.isWait()) {
+                            dishesCompEntity.setIsWait(false);
+                        } else {
+                            dishesCompEntity.setIsWait(true);
+                        }
+                        mDishesCompDataList.set(pos, dishesCompEntity);
+                    }
+                    break;
                     default:
                         break;
                 }
@@ -382,37 +443,6 @@ public class ConfirmOrderActivity extends BaseActivity {
         mConfirmOrderDishAdapter.refreshData(mNormalDishDataList, mDishesCompDataList, true, false);
         showOrderDishesCountPrice();
     }
-
-    /**
-     * 代码复制自点菜页面，逻辑一致，这里不会涉及到数量的变更
-     */
-    private OnChangeDishCountListener mOnChangeDishCountListener = new OnChangeDishCountListener() {
-        @Override
-        public void onChangeCount(MerchantDishes dishesItem, int selectedCount, List<PropertySelectEntity> mDishesPropertyChoice) {
-            updateOrderGoodsListData(dishesItem, selectedCount, mDishesPropertyChoice);
-        }
-    };
-
-    /**
-     * 代码复制自点菜页面，逻辑一致，这里不会涉及到数量的变更
-     */
-    private OnChangeDishCountListenerPosition mOnChangeDishCountListenerByPosition = new OnChangeDishCountListenerPosition() {
-        @Override
-        public void onChangeCount(MerchantDishes dishesItem, int selectedCount, List<PropertySelectEntity> mDishesPropertyChoice, int position) {
-            updateOrderGoodsListDataByPosition(dishesItem, selectedCount, mDishesPropertyChoice, position);
-        }
-    };
-
-
-    /**
-     * 价格变动用position改变
-     */
-    private OnChangeDishPriceListenerWithPosition mOnChangeDishPriceListenerWithPosition = new OnChangeDishPriceListenerWithPosition() {
-        @Override
-        public void onChangeCount(MerchantDishes dishesItem, int selectedCount, List<PropertySelectEntity> mDishesPropertyChoice, int position, Double priceRatio) {
-            updateOrderGoodsListDataByPriceRatio(dishesItem, selectedCount, mDishesPropertyChoice, position, priceRatio);
-        }
-    };
 
     /**
      * 根据当前点的菜，更新订单所点菜品信息
@@ -601,6 +631,31 @@ public class ConfirmOrderActivity extends BaseActivity {
         showOrderDishesCountPrice();
     }
 
+    private String showOrderDishesCountPrice() {
+        int countSum = 0;
+        Double priceSum = 0.0;
+        //普通菜
+        for (int i = 0; i < mNormalDishDataList.size(); i++) {
+            OrderGoodsItem goodsItem = mNormalDishDataList.get(i);
+            countSum += StringUtils.str2Int(goodsItem.getSalesNum());
+            Log.i("TAG", "salesprice:" + goodsItem.getSalesPrice());
+            priceSum += StringUtils.str2Double(goodsItem.getSalesPrice());
+            Log.i("TAG", "priceSum:" + priceSum);
+            //DOUBLE类型转换有问题，所以价格涉及计算转换的地方都要改，包括pad端，double类型字符串转int类型报错
+        }
+        //套餐菜
+        if (mDishesCompDataList != null && mDishesCompDataList.size() > 0) {
+            for (int m = 0; m < mDishesCompDataList.size(); m++) {
+                OrderGoodsItem mainCompDishes = mDishesCompDataList.get(m).getmCompMainDishes();
+                countSum += StringUtils.str2Int(mainCompDishes.getSalesNum());
+                priceSum += StringUtils.str2Double(mainCompDishes.getSalesPrice());
+            }
+        }
+
+        orderInfoTxt.setText("订单:  " + countSum + "项  " + "¥" + Arith.d2str(priceSum));
+        return Arith.d2str(priceSum + StringUtils.str2Double(deskOrderPrice));
+    }
+
     /**
      * 将属性一属性对象的json字符串形式保存
      *
@@ -637,74 +692,206 @@ public class ConfirmOrderActivity extends BaseActivity {
         return remarkList;
     }
 
-    private String showOrderDishesCountPrice() {
-        int countSum = 0;
-        Double priceSum = 0.0;
-        //普通菜
-        for (int i = 0; i < mNormalDishDataList.size(); i++) {
-            OrderGoodsItem goodsItem = mNormalDishDataList.get(i);
-            countSum += StringUtils.str2Int(goodsItem.getSalesNum());
-            Log.i("TAG", "salesprice:" + goodsItem.getSalesPrice());
-            priceSum += StringUtils.str2Double(goodsItem.getSalesPrice());
-            Log.i("TAG", "priceSum:" + priceSum);
-            //DOUBLE类型转换有问题，所以价格涉及计算转换的地方都要改，包括pad端，double类型字符串转int类型报错
+    /*
+    * 返回上一页
+    * */
+    private void backToPrevious() {
+        String normalDishes = gson.toJson(mNormalDishDataList);
+        String compDishes = gson.toJson(mDishesCompDataList);
+        Intent intent = new Intent();
+        intent.putExtra("RETURNED_NORMAL_DISHES", normalDishes);
+        intent.putExtra("RETURNED_COMP_DISHES", compDishes);
+        setResult(Constants.ACT_RES_CONFIRM_BACK_RESP, intent);
+        finish();
+    }
+
+    /**
+     * 锁定下单按钮
+     */
+    private void lockMakeOrderBtn() {
+        payBtn.setEnabled(false);
+        payBtn.setClickable(false);
+    }
+
+    /**
+     * 释放下单按钮
+     */
+    private void releaseMakeOrderBtn() {
+        payBtn.setEnabled(true);
+        payBtn.setClickable(true);
+    }
+
+    /**
+     * 向服务器新增订单，开桌
+     */
+    public void VolleysubmitOrderInfo2(final String order) {
+        Map<String, String> paramList = new HashMap<String, String>();
+        paramList.put("orderSubmitData", order);
+        HttpController.getInstance().postSubmitOrderInfo(paramList,
+                new Response.Listener<SubmitOrderId>() {
+                    @Override
+                    public void onResponse(
+                            SubmitOrderId response) {
+                        releaseMakeOrderBtn();
+                        if (response.getState() == 1) {
+                            onMakeOrderOK(VOLLEY_ERROR_BACK_YES);
+                        } else if (response.getState() == 0) {
+                            onMakeOrderFailed(response.getError(), response.getState());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        releaseMakeOrderBtn();
+                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                                mActivity);
+                        switch (errors.getErrorType()) {
+                            case VolleyErrorHelper.ErrorType_Socket_Timeout:
+                                Log.e(TAG,
+                                        "VolleyError:" + errors.getErrorMsg(), error);
+                                //本地缓存订单
+                                storeLocalOrder();
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
+                                break;
+                            default:
+                                Log.e(TAG,
+                                        "VolleyError:" + errors.getErrorMsg(), error);
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
+                                disMakeOrderDF();
+                                showEnsureDialog("newOrderError");
+                                break;
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 修改订单，加菜
+     */
+    public void VolleyupdateOrderInfo2(final String order) {
+        Map<String, String> paramList = new HashMap<String, String>();
+        paramList.put("orderSubmitData", order);
+        HttpController.getInstance().postUpdateOrderInfo(paramList,
+                new Response.Listener<UpdateOrderInfoResultData>() {
+                    @Override
+                    public void onResponse(
+                            UpdateOrderInfoResultData response) {
+                        releaseMakeOrderBtn();
+                        if (response.getState() == 1) {
+                            onMakeOrderOK(response.getState());
+                        } else if (response.getState() == 0) {
+                            onMakeOrderFailed(response.getError(), response.getState());
+                        }
+                    }
+                }, new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        releaseMakeOrderBtn();
+                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
+                                mActivity);
+                        switch (errors.getErrorType()) {
+                            case VolleyErrorHelper.ErrorType_Socket_Timeout:
+                                Log.e(TAG,
+                                        "VolleyError:" + errors.getErrorMsg(), error);
+                                storeLocalOrder();
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
+//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
+                                break;
+                            default:
+                                Log.e(TAG,
+                                        "VolleyError:" + errors.getErrorMsg(), error);
+//                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
+                                //加菜单缓存后提交,可能原订单状态已经更改,导致数据有误,暂不支持
+                                disMakeOrderDF();
+                                showEnsureDialog("addOrderError");
+                                break;
+                        }
+                    }
+                });
+    }
+
+    /**
+     * 下单提交
+     */
+    private void showMakeOrderDF() {
+        try {
+            mMakeOrderFinishDF = new MakeOrderFinishDF();
+            mMakeOrderFinishDF.setNoticeText("正在提交...");
+            mMakeOrderFinishDF.show(getSupportFragmentManager(), "dialog_fragment_http_common");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        //套餐菜
-        if (mDishesCompDataList != null && mDishesCompDataList.size() > 0) {
-            for (int m = 0; m < mDishesCompDataList.size(); m++) {
-                OrderGoodsItem mainCompDishes = mDishesCompDataList.get(m).getmCompMainDishes();
-                countSum += StringUtils.str2Int(mainCompDishes.getSalesNum());
-                priceSum += StringUtils.str2Double(mainCompDishes.getSalesPrice());
+    }
+
+    /**
+     * 下单提交
+     */
+    private void disMakeOrderDF() {
+        try {
+            if (mMakeOrderFinishDF != null && mMakeOrderFinishDF.isAdded()) {
+                mMakeOrderFinishDF.dismiss();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        tv_totalCount.setText("共" + countSum + "个菜");
-        tv_totalPrice.setText("总价" + Arith.d2str(priceSum) + "元");
-        return Arith.d2str(priceSum + StringUtils.str2Double(deskOrderPrice));
     }
 
-    @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (keyCode == KeyEvent.KEYCODE_BACK) {
-            /*EventMain eventOrder =new EventMain();
-            OrderListEntity orderListEntity=new OrderListEntity();
-            orderListEntity.setmDishesCompDataList(mDishesCompDataList);
-            orderListEntity.setmNormalDishDataList(mNormalDishDataList);
-            eventOrder.setData(orderListEntity);
-            eventOrder.setType(EventMain.TYPE_THREE);
-            eventOrder.setDescribe("确认订单页面返回键触发的时候，需要将订单修改带回去刷新");
-            eventOrder.setName(MakeOrderActivity.class.getName());
-            EventBus.getDefault().post(eventOrder);*/
-
-            String normalDishes = gson.toJson(mNormalDishDataList);
-            String compDishes = gson.toJson(mDishesCompDataList);
-            Intent intent = new Intent();
-            intent.putExtra("RETURNED_NORMAL_DISHES", normalDishes);
-            intent.putExtra("RETURNED_COMP_DISHES", compDishes);
-            setResult(Constants.ACT_RES_CONFIRM_BACK_RESP, intent);
-            finish();
+    /**
+     * 提交成功处理
+     */
+    private void onMakeOrderOK(int type) {
+        try {
+            Log.d(TAG, "下单成功！");
+            if (mMakeOrderFinishDF != null) {
+                mMakeOrderFinishDF.updateNoticeText("下单成功!", type);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        return super.onKeyDown(keyCode, event);
+
     }
 
+    /**
+     * 提交失败处理
+     */
+    private void onMakeOrderFailed(int type) {
+        try {
+            Log.d(TAG, "下单失败！");
+            if (mMakeOrderFinishDF != null) {
+                mMakeOrderFinishDF.updateNoticeText("提交失败，请重新下单!", type);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 提交失败处理
+     */
+    private void onMakeOrderFailed(String msg, int type) {
+        try {
+            Log.d(TAG, "msg:" + msg);
+            if (mMakeOrderFinishDF != null) {
+                mMakeOrderFinishDF.updateNoticeText(msg, type);
+                payBtn.setTag(ORDER_BTN_ACTION_TYPE_POST);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * 准备订单数据信息, 填充备注和下单时间
      */
     private void prepareOrderSummaryInfo() {
-        String remark = edit_remark.getText().toString().trim(); //订单备注
+        String remark = remarkTxt.getText().toString().trim(); //订单备注
         int nowId = R.id.rdo_order_right_now;
-        int checkedId = grp_orderTime.getCheckedRadioButtonId();
-        String salesState = "1";
-        String orderState = "";
-        if (checkedId == nowId) {//立刻下单
-            Log.d(TAG, "现在立刻下单!");
-            salesState = "1";
-            orderState = "0";
-        } else {//稍后下单
-            salesState = "0";
-            orderState = "B";
-            Log.d(TAG, "稍后下单");
-        }
+        String salesState;
+        String orderState;
+        Log.d(TAG, "现在立刻下单!");
+        salesState = "1";
+        orderState = "0";
 
         //解析套餐菜数据，合并到总单，准备提交
         List<OrderGoodsItem> mCommitList = new ArrayList<OrderGoodsItem>();
@@ -793,320 +980,6 @@ public class ConfirmOrderActivity extends BaseActivity {
         return returnedList;
     }
 
-    /**
-     * 向服务器新增订单，开桌
-     */
-    public void VolleysubmitOrderInfo1(final String order) {
-        String param = "/appController/submitOrderInfo.do?";
-        Log.i(TAG, "submitOrderInfo_url:" + HttpController.HOST + param);
-        ResultMapRequest<SubmitOrderId> ResultMapRequest = new ResultMapRequest<SubmitOrderId>(
-                Request.Method.POST, HttpController.HOST + param, SubmitOrderId.class,
-                new Response.Listener<SubmitOrderId>() {
-                    @Override
-                    public void onResponse(
-                            SubmitOrderId response) {
-                        releaseMakeOrderBtn();
-                        if (response.getState() == 1) {
-                            onMakeOrderOK(VOLLEY_ERROR_BACK_YES);
-                        } else if (response.getState() == 0) {
-                            onMakeOrderFailed(response.getError(), response.getState());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                releaseMakeOrderBtn();
-                VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
-                        mActivity);
-                switch (errors.getErrorType()) {
-                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
-                        Log.e(TAG,
-                                "VolleyError:" + errors.getErrorMsg(), error);
-                        //本地缓存订单
-                        storeLocalOrder();
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
-                        break;
-                    default:
-                        Log.e(TAG,
-                                "VolleyError:" + errors.getErrorMsg(), error);
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
-                        disMakeOrderDF();
-                        showEnsureDialog("newOrderError");
-                        break;
-                }
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> paramList = new HashMap<String, String>();
-                paramList.put("orderSubmitData", order);
-                Log.i("VolleyLogTag", "paramList:" + paramList.toString());
-                return paramList;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type",
-                        "application/x-www-form-urlencoded; charset=utf-8");
-                return headers;
-            }
-        };
-        executeRequest(ResultMapRequest, 0);
-    }
-
-    /**
-     * 向服务器新增订单，开桌
-     */
-    public void VolleysubmitOrderInfo2(final String order) {
-        Map<String, String> paramList = new HashMap<String, String>();
-        paramList.put("orderSubmitData", order);
-        HttpController.getInstance().postSubmitOrderInfo(paramList,
-                new Response.Listener<SubmitOrderId>() {
-                    @Override
-                    public void onResponse(
-                            SubmitOrderId response) {
-                        releaseMakeOrderBtn();
-                        if (response.getState() == 1) {
-                            onMakeOrderOK(VOLLEY_ERROR_BACK_YES);
-                        } else if (response.getState() == 0) {
-                            onMakeOrderFailed(response.getError(), response.getState());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        releaseMakeOrderBtn();
-                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
-                                mActivity);
-                        switch (errors.getErrorType()) {
-                            case VolleyErrorHelper.ErrorType_Socket_Timeout:
-                                Log.e(TAG,
-                                        "VolleyError:" + errors.getErrorMsg(), error);
-                                //本地缓存订单
-                                storeLocalOrder();
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
-                                break;
-                            default:
-                                Log.e(TAG,
-                                        "VolleyError:" + errors.getErrorMsg(), error);
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
-                                disMakeOrderDF();
-                                showEnsureDialog("newOrderError");
-                                break;
-                        }
-                    }
-                });
-    }
-
-
-    /**
-     * 修改订单，加菜
-     */
-    public void VolleyupdateOrderInfo1(final String order) {
-        String param = "/appController/updateOrderInfo.do?";
-        Log.i(TAG, "updateOrderInfo_url:" + HttpController.HOST + param);
-        ResultMapRequest<UpdateOrderInfoResultData> ResultMapRequest = new ResultMapRequest<UpdateOrderInfoResultData>(
-                Request.Method.POST, HttpController.HOST + param, UpdateOrderInfoResultData.class,
-                new Response.Listener<UpdateOrderInfoResultData>() {
-                    @Override
-                    public void onResponse(
-                            UpdateOrderInfoResultData response) {
-                        releaseMakeOrderBtn();
-                        if (response.getState() == 1) {
-                            onMakeOrderOK(response.getState());
-                        } else if (response.getState() == 0) {
-                            onMakeOrderFailed(response.getError(), response.getState());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                releaseMakeOrderBtn();
-                VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
-                        mActivity);
-                switch (errors.getErrorType()) {
-                    case VolleyErrorHelper.ErrorType_Socket_Timeout:
-                        Log.e(TAG,
-                                "VolleyError:" + errors.getErrorMsg(), error);
-                        storeLocalOrder();
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
-                        break;
-                    default:
-                        Log.e(TAG,
-                                "VolleyError:" + errors.getErrorMsg(), error);
-//                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
-                        //加菜单缓存后提交,可能原订单状态已经更改,导致数据有误,暂不支持
-                        disMakeOrderDF();
-                        showEnsureDialog("addOrderError");
-                        break;
-                }
-            }
-        }) {
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                Map<String, String> paramList = new HashMap<String, String>();
-                paramList.put("orderSubmitData", order);
-                Log.i("VolleyLogTag", "paramList:" + paramList.toString());
-                return paramList;
-            }
-
-            @Override
-            public Map<String, String> getHeaders() {
-                HashMap<String, String> headers = new HashMap<String, String>();
-                headers.put("Content-Type",
-                        "application/x-www-form-urlencoded; charset=utf-8");
-                return headers;
-            }
-        };
-        executeRequest(ResultMapRequest, 0);
-    }
-
-    /**
-     * 修改订单，加菜
-     */
-    public void VolleyupdateOrderInfo2(final String order) {
-        Map<String, String> paramList = new HashMap<String, String>();
-        paramList.put("orderSubmitData", order);
-        HttpController.getInstance().postUpdateOrderInfo(paramList,
-                new Response.Listener<UpdateOrderInfoResultData>() {
-                    @Override
-                    public void onResponse(
-                            UpdateOrderInfoResultData response) {
-                        releaseMakeOrderBtn();
-                        if (response.getState() == 1) {
-                            onMakeOrderOK(response.getState());
-                        } else if (response.getState() == 0) {
-                            onMakeOrderFailed(response.getError(), response.getState());
-                        }
-                    }
-                }, new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        releaseMakeOrderBtn();
-                        VolleyErrors errors = VolleyErrorHelper.getVolleyErrors(error,
-                                mActivity);
-                        switch (errors.getErrorType()) {
-                            case VolleyErrorHelper.ErrorType_Socket_Timeout:
-                                Log.e(TAG,
-                                        "VolleyError:" + errors.getErrorMsg(), error);
-                                storeLocalOrder();
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_YES);
-//                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);
-                                break;
-                            default:
-                                Log.e(TAG,
-                                        "VolleyError:" + errors.getErrorMsg(), error);
-//                        onMakeOrderFailed(errors.getErrorMsg(), VOLLEY_ERROR_BACK_NO);
-                                //加菜单缓存后提交,可能原订单状态已经更改,导致数据有误,暂不支持
-                                disMakeOrderDF();
-                                showEnsureDialog("addOrderError");
-                                break;
-                        }
-                    }
-                });
-    }
-
-    /**
-     * 返回桌台页面
-     */
-    private void backToDeskPage() {
-        Intent intent = new Intent(ConfirmOrderActivity.this, ChooseDeskActivity.class);
-        intent.putExtra("STAFF_ID", mLoginUserPrefData.getStaffId());
-        intent.putExtra("STAFF_NAME", mLoginUserPrefData.getStaffName());
-        intent.putExtra("CHILD_MERCHANT_ID", mLoginUserPrefData.getChildMerchantId());
-        startActivity(intent);
-        finish();
-    }
-
-    /**
-     * 锁定下单按钮
-     */
-    private void lockMakeOrderBtn() {
-        btn_takeOrder.setEnabled(false);
-        btn_takeOrder.setClickable(false);
-    }
-
-    /**
-     * 释放下单按钮
-     */
-    private void releaseMakeOrderBtn() {
-        btn_takeOrder.setEnabled(true);
-        btn_takeOrder.setClickable(true);
-    }
-
-    /**
-     * 下单提交
-     */
-    private void showMakeOrderDF() {
-        try {
-            mMakeOrderFinishDF = new MakeOrderFinishDF();
-            mMakeOrderFinishDF.setNoticeText("正在提交...");
-            mMakeOrderFinishDF.show(getSupportFragmentManager(), "dialog_fragment_http_common");
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 下单提交
-     */
-    private void disMakeOrderDF() {
-        try {
-            if (mMakeOrderFinishDF != null && mMakeOrderFinishDF.isAdded()) {
-                mMakeOrderFinishDF.dismiss();
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 提交成功处理
-     */
-    private void onMakeOrderOK(int type) {
-        try {
-            Log.d(TAG, "下单成功！");
-            if (mMakeOrderFinishDF != null) {
-                mMakeOrderFinishDF.updateNoticeText("下单成功!", type);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    /**
-     * 提交失败处理
-     */
-    private void onMakeOrderFailed(int type) {
-        try {
-            Log.d(TAG, "下单失败！");
-            if (mMakeOrderFinishDF != null) {
-                mMakeOrderFinishDF.updateNoticeText("提交失败，请重新下单!", type);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     * 提交失败处理
-     */
-    private void onMakeOrderFailed(String msg, int type) {
-        try {
-            Log.d(TAG, "msg:" + msg);
-            if (mMakeOrderFinishDF != null) {
-                mMakeOrderFinishDF.updateNoticeText(msg, type);
-                btn_takeOrder.setTag(ORDER_BTN_ACTION_TYPE_POST);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-    }
-
     //本地保存订单
     private void storeLocalOrder() {
         if (mOrderSubmit.getOrderGoods() != null || mOrderSubmit.getOrderGoods().size() > 0) {
@@ -1129,10 +1002,73 @@ public class ConfirmOrderActivity extends BaseActivity {
         onMakeOrderFailed("服务器连接中断,订单已本地保存,请退出确认结果后,再重新尝试!", VOLLEY_ERROR_BACK_YES);
     }
 
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
+    /**
+     * 返回桌台页面
+     */
+    private void backToDeskPage() {
+        Intent intent = new Intent(ConfirmOrderActivity01.this, ChooseDeskActivity.class);
+        intent.putExtra("STAFF_ID", mLoginUserPrefData.getStaffId());
+        intent.putExtra("STAFF_NAME", mLoginUserPrefData.getStaffName());
+        intent.putExtra("CHILD_MERCHANT_ID", mLoginUserPrefData.getChildMerchantId());
+        startActivity(intent);
+        finish();
     }
 
+    public void showMyEnsureDialog() {
+        try {
+            if (ensureDialogFragmentBase != null && !ensureDialogFragmentBase.isAdded() && !ensureDialogFragmentBase.isVisible()) {
+                ensureDialogFragmentBase.show(mActivity.getFragmentManager(), "ConfirmOrderActivity01");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    public void dismissMyEnsureDialog() {
+        try {
+            if (ensureDialogFragmentBase != null && ensureDialogFragmentBase.isAdded() && ensureDialogFragmentBase.isVisible())
+                ensureDialogFragmentBase.dismiss();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
+
+    /**
+     * 确认取消提示弹窗
+     *
+     * @param mCallBackListener
+     * @param topTitle
+     * @param context
+     */
+    protected void setMyEnsureDialogListener(EnsureDialogFragmentBase.CallBackListener mCallBackListener, String topTitle, String context) {
+        if (ensureDialogFragmentBase == null) {
+            ensureDialogFragmentBase = EnsureDialogFragmentBase.newInstance(topTitle, context, "取消", "确定");
+        }
+        ensureDialogFragmentBase.setOnCallBackListener(mCallBackListener);
+    }
+
+    /*
+    * 显示整单备注弹框
+    * */
+    private void showOrderRemarkDF() {
+        orderRemarkDF = OrderRemarkDF.newInstance(publicAttrs, indexes);
+        orderRemarkDF.setOnEnsureBackListener(onEnsureBackListener);
+        orderRemarkDF.show(getSupportFragmentManager(), "ConfirmOrderActivity01");
+    }
+
+    private OrderRemarkDF.OnEnsureBackListener onEnsureBackListener = new OrderRemarkDF.OnEnsureBackListener() {
+        @Override
+        public void onEnsureBack(ArrayList<Integer> list, String msg) {
+            indexes = list;
+            String str = "";
+            int size = list.size();
+            for (int i=0; i<size; i++) {
+                PublicDishesItem publicDishesItem = publicAttrs.getInfo().get(i);
+                str += publicDishesItem.getAttrName() + " ";
+            }
+            str += msg;
+            remarkTxt.setText(str);
+        }
+    };
 }

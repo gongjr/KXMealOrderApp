@@ -80,12 +80,25 @@ public class TitleView extends RelativeLayout implements View.OnClickListener {
     }
 
     /*
+    * 设置标题右边控件图标样式
+    * */
+    public void setRightBack(int drawable) {
+        rightBtn.setBackgroundResource(drawable);
+    }
+
+    /*
     * 设置标题中间控件内容
     * */
     public void setCenterTxt(String s) {
         centerTxt.setText(s);
     }
 
+    /*
+    *设置中间控件颜色
+    * */
+    public void setCenterTxtColor(int color) {
+        centerTxt.setTextColor(color);
+    }
 
     /*
     * 设置标题左边按钮点击监听

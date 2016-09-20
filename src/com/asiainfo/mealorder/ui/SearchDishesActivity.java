@@ -126,7 +126,7 @@ public class SearchDishesActivity extends BaseActivity{
                 }
                 mOrderSubmit.setOrderGoods(mNormalDishDataList);
                 String dishesCompJsonStr =  gson.toJson(mDishesCompDataList);
-                Intent intent = new Intent(SearchDishesActivity.this, ConfirmOrderActivity.class);
+                Intent intent = new Intent(SearchDishesActivity.this, ConfirmOrderActivity01.class);
                 Bundle mBundle = new Bundle();
                 mBundle.putSerializable("ORDER_SUBMIT", mOrderSubmit);
                 mBundle.putSerializable("MERCHANT_DESK", mCurDesk);

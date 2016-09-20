@@ -39,6 +39,7 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
     private String marketingPrice; //营销掉的价格
     private String createTime;
     private String dishesUnit;
+	private boolean wait;
 
     public String getDishesUnit() {
         return dishesUnit;
@@ -234,4 +235,12 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
     public void setMarketingPrice(String pMarketingPrice) {
         marketingPrice = pMarketingPrice;
     }
+
+	public boolean isWait() {
+		return wait;
+	}
+
+	public void setWait(boolean wait) {
+		this.wait = wait;
+	}
 }

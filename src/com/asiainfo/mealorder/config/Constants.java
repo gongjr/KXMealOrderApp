@@ -46,6 +46,7 @@ public class Constants {
 	public static final int ORDER_DISHES_ACTION_TYPE_DETAIL = 2;
 	public static final int ORDER_DISHES_ACTION_TYPE_ADD = 3;
 	public static final int ORDER_DISHES_ACTION_TYPE_MINUS = 4;
+	public static final int ORDER_DISHES_ACTION_TYPE_WAIT = 5;
 	
 	//属性列的高度
 	public static final int PROPERTY_LAYOUT_HEIGHT = TypedValue.COMPLEX_UNIT_DIP*160;

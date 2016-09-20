@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@android:color/white">
+
+    <RelativeLayout
+        android:id="@+id/rl_content_header"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_alignParentTop="true"
+        android:background="@anim/property_selection_top_bg">
+
+        <TextView
+            android:id="@+id/tv_properties_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentLeft="true"
+            android:layout_marginLeft="15dip"
+            android:text="牛排熟度选择"
+            android:textSize="@dimen/text_size_middle"
+            android:gravity="center_vertical|left"
+            android:padding="5dip"/>
+
+        <ImageView
+            android:id="@+id/img_close"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:padding="10dip"
+            android:src="@drawable/close"
+            android:layout_marginRight="10dip"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+    <GridView
+        android:id="@+id/grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_below="@+id/rl_content_header"
+        android:background="#FFFFFF"
+        android:layout_margin="10dp"
+        android:numColumns="2"
+        android:verticalSpacing="10dp"
+        android:gravity="center"
+        ></GridView>
+
+    <EditText
+        android:id="@+id/or_edit"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:layout_below="@+id/grid_view"
+        android:background="@android:drawable/editbox_background_normal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:hint="输入备注..."
+        android:gravity="top"
+        android:padding="10dp"
+        android:textSize="15sp"
+        />
+
+    <Button
+        android:id="@+id/btn_ensure"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_marginLeft="80dip"
+        android:layout_marginTop="8dip"
+        android:layout_marginRight="80dip"
+        android:layout_marginBottom="8dip"
+        android:text="确定"
+        android:background="@anim/choose_end_btn_bg"
+        android:textColor="@color/white"
+        android:textSize="@dimen/text_size_middle"
+        android:layout_below="@+id/or_edit"
+        android:gravity="center"/>
+
+</RelativeLayout>
