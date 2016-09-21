@@ -527,22 +527,30 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
                 && orderGoodsList != null && position >= orderGoodsList.size()) {
             DishesCompSelectionEntity dishesCompEntity = orderCompGoodsList.get(position - orderGoodsList.size());
             List<OrderGoodsItem> compItemsList = dishesCompEntity.getCompItemDishes();
-            if (dishesCompEntity.isWait()) {
+            /*if (dishesCompEntity.isWait()) {
                 items += "等叫 ";
-            }
+            }*/
             for (int m = 0; m < compItemsList.size(); m++) {
                 OrderGoodsItem goodsItem = (OrderGoodsItem) compItemsList.get(m);
                 if (idx == 0) {
                     items += goodsItem.getSalesName();
                     String rmk = fromItemEntityList2Remark(goodsItem.getRemark());
-                    if (!rmk.equals("")) {
-                        items += "(" + rmk + ")";
+                    if (goodsItem.isWait()){
+                            items += "(等叫 " + rmk + ")";
+                    }else{
+                        if (!rmk.equals("")) {
+                            items += "(" + rmk + ")";
+                        }
                     }
                 } else {
                     items += "  " + goodsItem.getSalesName();
                     String rmk = fromItemEntityList2Remark(goodsItem.getRemark());
-                    if (!rmk.equals("")) {
-                        items += "(" + rmk + ")";
+                    if (goodsItem.isWait()){
+                            items += "(等叫 " + rmk + ")";
+                    }else{
+                        if (!rmk.equals("")) {
+                            items += "(" + rmk + ")";
+                        }
                     }
                 }
                 idx++;

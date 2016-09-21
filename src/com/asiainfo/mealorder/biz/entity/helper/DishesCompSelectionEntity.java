@@ -35,7 +35,15 @@ public class DishesCompSelectionEntity implements Serializable{
 		return isWait;
 	}
 
+    /**
+     * 套餐子菜与主菜都需要加
+     * @param isWait
+     */
 	public void setIsWait(boolean isWait) {
 		this.isWait = isWait;
+        mCompMainDishes.setWait(isWait);
+        for (OrderGoodsItem lOrderGoodsItem:compItemDishes){
+            lOrderGoodsItem.setWait(isWait);
+        }
 	}
 }
