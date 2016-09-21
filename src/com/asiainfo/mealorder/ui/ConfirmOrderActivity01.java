@@ -1064,7 +1064,7 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             String str = "";
             int size = list.size();
             for (int i=0; i<size; i++) {
-                PublicDishesItem publicDishesItem = publicAttrs.getInfo().get(i);
+                PublicDishesItem publicDishesItem = publicAttrs.getInfo().get(list.get(i));
                 str += publicDishesItem.getAttrName() + " ";
             }
             str += msg;
