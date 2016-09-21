@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -690,6 +691,14 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             remarkList.add(propertyItem);
         }
         return remarkList;
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            backToPrevious();
+        }
+        return super.onKeyDown(keyCode, event);
     }
 
     /*
