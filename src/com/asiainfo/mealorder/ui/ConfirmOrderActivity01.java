@@ -919,8 +919,14 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         for (int i = 0; i < mCommitList.size(); i++) {
             OrderGoodsItem goodsItem = mCommitList.get(i);
             goodsItem.setSalesState(salesState + "");
+            List<String> remarkCommitAll=new ArrayList<>();
+            if (goodsItem.isWait()){
+                remarkCommitAll.add("等叫");
+            }
             List<String> remarkCommit = fromItemEntityList2RemarkCommit(goodsItem.getRemark());
-            goodsItem.setRemark(remarkCommit);
+            if (remarkCommit!=null&&remarkCommit.size()>0)
+            remarkCommitAll.addAll(remarkCommit);
+            goodsItem.setRemark(remarkCommitAll);
             mCommitList.set(i, goodsItem);
         }
 
