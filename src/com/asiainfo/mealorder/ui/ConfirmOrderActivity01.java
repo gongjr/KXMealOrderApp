@@ -1075,7 +1075,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         @Override
         public void onEnsureBack(ArrayList<Integer> list, String msg) {
             Log.d(TAG, "onEnsureBack");
-            mIndexes = list;
+            mIndexes.clear();
+            mIndexes.addAll(list);
             String str = "";
             int size = list.size();
             for (int i = 0; i < size; i++) {

@@ -28,7 +28,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
     private View mView;
     private QueryAppMerchantPublicAttr publicAttrs;
     private OrderRemarkAdapter adapter;
-    private ArrayList<Integer> indexes = new ArrayList<>();
+    private ArrayList<Integer> indexes ;
     private OnEnsureBackListener onEnsureBackListener;
     private static OrderRemarkDF orderRemarkDF;
 
@@ -59,12 +59,8 @@ public class OrderRemarkDF extends DialogFragmentBase {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         publicAttrs = (QueryAppMerchantPublicAttr) getArguments().get("attrs");
-        indexes.clear();
-         ArrayList<Integer> ss= (ArrayList<Integer>) getArguments().get("indexes");
-        Log.d("OrderRemarkDF", "ss: " + ss);
-
-
-        indexes.addAll(ss);
+        indexes = new ArrayList<>();
+        indexes.addAll((ArrayList<Integer>) getArguments().get("indexes"));
         Log.d("OrderRemarkDF", "onCreate: " + indexes);
     }
 
