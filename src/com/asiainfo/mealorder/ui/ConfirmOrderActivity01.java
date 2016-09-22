@@ -1067,14 +1067,12 @@ public class ConfirmOrderActivity01 extends BaseActivity {
     * */
     private void showOrderRemarkDF() {
         OrderRemarkDF orderRemarkDF = OrderRemarkDF.newInstance(publicAttrs, mIndexes, onEnsureBackListener);
-        Log.d("ConfirmOrderActivity", "The indexes is: " + mIndexes);
         orderRemarkDF.show(getSupportFragmentManager(), "ConfirmOrderActivity01");
     }
 
     private OrderRemarkDF.OnEnsureBackListener onEnsureBackListener = new OrderRemarkDF.OnEnsureBackListener() {
         @Override
         public void onEnsureBack(ArrayList<Integer> list, String msg) {
-            Log.d(TAG, "onEnsureBack");
             mIndexes.clear();
             mIndexes.addAll(list);
             String str = "";
