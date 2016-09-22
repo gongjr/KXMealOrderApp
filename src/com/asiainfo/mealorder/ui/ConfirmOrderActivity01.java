@@ -101,9 +101,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
     private LoginUserPrefData mLoginUserPrefData;
     private MakeOrderFinishDF mMakeOrderFinishDF;
     private EnsureDialogFragmentBase ensureDialogFragmentBase;
-    private OrderRemarkDF orderRemarkDF;
     private QueryAppMerchantPublicAttr publicAttrs; //细项
-    private ArrayList<Integer> indexes;
+    private ArrayList<Integer> mIndexes;
 
     @Override
     protected void onCreate(Bundle arg0) {
@@ -142,7 +141,7 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         mNormalDishDataList = mOrderSubmit.getOrderGoods();
         mLoginUserPrefData = new LoginUserPrefData(ConfirmOrderActivity01.this);
         publicAttrs = (QueryAppMerchantPublicAttr) baseApp.gainData(baseApp.KEY_GLOABLE_PUBLICATTR);
-        indexes = new ArrayList<>();
+        mIndexes = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
         linearLayoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         recyclerView.setLayoutManager(linearLayoutManager);
@@ -919,13 +918,13 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         for (int i = 0; i < mCommitList.size(); i++) {
             OrderGoodsItem goodsItem = mCommitList.get(i);
             goodsItem.setSalesState(salesState + "");
-            List<String> remarkCommitAll=new ArrayList<>();
-            if (goodsItem.isWait()){
+            List<String> remarkCommitAll = new ArrayList<>();
+            if (goodsItem.isWait()) {
                 remarkCommitAll.add("等叫");
             }
             List<String> remarkCommit = fromItemEntityList2RemarkCommit(goodsItem.getRemark());
-            if (remarkCommit!=null&&remarkCommit.size()>0)
-            remarkCommitAll.addAll(remarkCommit);
+            if (remarkCommit != null && remarkCommit.size() > 0)
+                remarkCommitAll.addAll(remarkCommit);
             goodsItem.setRemark(remarkCommitAll);
             mCommitList.set(i, goodsItem);
         }
@@ -1067,18 +1066,19 @@ public class ConfirmOrderActivity01 extends BaseActivity {
     * 显示整单备注弹框
     * */
     private void showOrderRemarkDF() {
-        orderRemarkDF = OrderRemarkDF.newInstance(publicAttrs, indexes);
-        orderRemarkDF.setOnEnsureBackListener(onEnsureBackListener);
+        OrderRemarkDF orderRemarkDF = OrderRemarkDF.newInstance(publicAttrs, mIndexes, onEnsureBackListener);
+        Log.d("ConfirmOrderActivity", "The indexes is: " + mIndexes);
         orderRemarkDF.show(getSupportFragmentManager(), "ConfirmOrderActivity01");
     }
 
     private OrderRemarkDF.OnEnsureBackListener onEnsureBackListener = new OrderRemarkDF.OnEnsureBackListener() {
         @Override
         public void onEnsureBack(ArrayList<Integer> list, String msg) {
-            indexes = list;
+            Log.d(TAG, "onEnsureBack");
+            mIndexes = list;
             String str = "";
             int size = list.size();
-            for (int i=0; i<size; i++) {
+            for (int i = 0; i < size; i++) {
                 PublicDishesItem publicDishesItem = publicAttrs.getInfo().get(list.get(i));
                 str += publicDishesItem.getAttrName() + " ";
             }

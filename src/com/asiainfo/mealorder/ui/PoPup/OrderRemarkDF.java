@@ -2,6 +2,7 @@ package com.asiainfo.mealorder.ui.PoPup;
 
 import android.annotation.SuppressLint;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +26,11 @@ import java.util.ArrayList;
 public class OrderRemarkDF extends DialogFragmentBase {
 
     private View mView;
-    private static OrderRemarkDF orderRemarkDF;
     private QueryAppMerchantPublicAttr publicAttrs;
     private OrderRemarkAdapter adapter;
-    private ArrayList<Integer> indexes;
+    private ArrayList<Integer> indexes = new ArrayList<>();
     private OnEnsureBackListener onEnsureBackListener;
+    private static OrderRemarkDF orderRemarkDF;
 
     private TextView titleTxt;
     private ImageView closeImg;
@@ -37,7 +38,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
     private EditText editText;
     private Button ensureBtn;
 
-    public static OrderRemarkDF newInstance(QueryAppMerchantPublicAttr publicAttrs, ArrayList<Integer> indexes) {
+    public static OrderRemarkDF newInstance(QueryAppMerchantPublicAttr publicAttrs, ArrayList<Integer> indexes, OnEnsureBackListener onEnsureBackListener) {
         if (orderRemarkDF == null) {
             orderRemarkDF = new OrderRemarkDF();
         }
@@ -48,6 +49,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
             orderRemarkDF.getArguments().clear();
         }
         orderRemarkDF.setArguments(bundle);
+        orderRemarkDF.setOnEnsureBackListener(onEnsureBackListener);
         return orderRemarkDF;
 
     }
@@ -57,7 +59,13 @@ public class OrderRemarkDF extends DialogFragmentBase {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         publicAttrs = (QueryAppMerchantPublicAttr) getArguments().get("attrs");
-        indexes = (ArrayList<Integer>) getArguments().get("indexes");
+        indexes.clear();
+         ArrayList<Integer> ss= (ArrayList<Integer>) getArguments().get("indexes");
+        Log.d("OrderRemarkDF", "ss: " + ss);
+
+
+        indexes.addAll(ss);
+        Log.d("OrderRemarkDF", "onCreate: " + indexes);
     }
 
     @Override
@@ -65,6 +73,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
                              Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
         mView = inflater.inflate(R.layout.df_order_remark, null);
+        Log.d("OrderRemarkDF", "onCreateView");
         return mView;
     }
 
@@ -75,6 +84,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
         initView();
         initData();
         initListener();
+        Log.d("OrderRemarkDF", "onActivityCreated");
     }
 
     private void initView() {
@@ -87,6 +97,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
 
     private void initData() {
         titleTxt.setText("备注");
+        Log.d("orderRemarkDf", "The list is: "+ indexes);
         adapter = new OrderRemarkAdapter(mActivity, publicAttrs.getInfo(), indexes);
         gridView.setAdapter(adapter);
     }
@@ -95,6 +106,7 @@ public class OrderRemarkDF extends DialogFragmentBase {
         closeImg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Log.d("OOOOOOOOO", "index is: " + indexes);
                 dismiss();
             }
         });

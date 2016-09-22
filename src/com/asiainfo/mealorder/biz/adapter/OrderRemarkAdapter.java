@@ -31,6 +31,7 @@ public class OrderRemarkAdapter extends BaseAdapter {
         this.context = context;
         this.publicDishesItems = publicDishesItems;
         this.indexes = indexes;
+        Log.d("orderRemarkAdapter", "The index list is: " + indexes);
     }
 
     private class ViewHolder {
