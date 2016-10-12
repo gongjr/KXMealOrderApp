@@ -160,7 +160,7 @@ public class LocalOrderActivity extends BaseActivity {
     }
 
     public void quaryLocalOrder() {
-        localOrder = DataBinder.binder.findWithWhere(OrderSubmit.class, "childmerchantId=? and createtimeday =?", mLoginUserPrefData.getChildMerchantId(), day);
+        localOrder = DataBinder.binder.findWithWhere(OrderSubmit.class, "childmerchantId=? and createtimeday =? and tradestsffid=?", mLoginUserPrefData.getChildMerchantId(), day,mLoginUserPrefData.getStaffId());
 
         if (localOrder != null && localOrder.size() > 0) {
 //            deleteLocalOrder(localOrder.get(0));

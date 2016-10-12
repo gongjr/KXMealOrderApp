@@ -992,7 +992,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
      */
     public List<OrderSubmit> quaryLocalOrderInfo() {
         String day = StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1);
-        List<OrderSubmit> localOrder= DataBinder.binder.findWithWhere(OrderSubmit.class, "childmerchantId=? and createtimeday =? and deskid =?", mLoginUserPrefData.getChildMerchantId(), day,mCurDesk.getDeskId());
+        List<OrderSubmit> localOrder= DataBinder.binder.findWithWhere(OrderSubmit.class, "childmerchantId=? and createtimeday =? and deskid =? and tradestsffid=?", mLoginUserPrefData.getChildMerchantId(), day,mCurDesk.getDeskId(),mLoginUserPrefData.getStaffId());
         return localOrder;
     }
 

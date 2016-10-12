@@ -35,6 +35,7 @@ import com.asiainfo.mealorder.biz.listener.OnLeftBtnClickListener;
 import com.asiainfo.mealorder.biz.listener.OnOrderDishesActionListener;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.db.DataBinder;
 import com.asiainfo.mealorder.http.HttpController;
 import com.asiainfo.mealorder.http.VolleyErrorHelper;
 import com.asiainfo.mealorder.http.VolleyErrors;
@@ -1190,6 +1191,10 @@ public class ConfirmOrderActivity01 extends BaseActivity {
                 for (OrderGoodsItem lOrderGoodsItem:lOrderSubmit.getOrderGoods()){
                     lOrderGoodsItem.remarkCopyToRemarkString(gson);
                 }
+                //(3)唯一性检索
+                List<OrderSubmit> lOrderSubmitList= quaryLocalOrderInfo();
+                if (lOrderSubmitList!=null&&lOrderSubmitList.size()>0)
+                    for (OrderSubmit dOrderSubmit:lOrderSubmitList)deleteLocalOrder(dOrderSubmit);
                 //(3)数据库保存数据
                 lOrderSubmit.saveThrows();
                 DataSupport.saveAll(lOrderSubmit.getOrderGoods());
@@ -1202,5 +1207,22 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         }else{
             showShortTip("您尚未点菜哦~~");
         }
+    }
+
+    /**
+     * 查询当天,当桌,当前商户的保留订单
+     */
+    public List<OrderSubmit> quaryLocalOrderInfo() {
+        String day = StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1);
+        List<OrderSubmit> localOrder= DataBinder.binder.findWithWhere(OrderSubmit.class, "childmerchantId=? and createtimeday =? and deskid =? and tradestsffid=?", mLoginUserPrefData.getChildMerchantId(), day,mCurDesk.getDeskId(),mLoginUserPrefData.getStaffId());
+        return localOrder;
+    }
+
+    public void deleteLocalOrder(OrderSubmit orderSubmit) {
+        if (orderSubmit.getOrderGoods() != null && orderSubmit.getOrderGoods().size() > 0) {
+            for (OrderGoodsItem orderGoodsItem : orderSubmit.getOrderGoods())
+                DataBinder.binder.delete(OrderGoodsItem.class, orderGoodsItem.getId());
+        }
+        DataBinder.binder.delete(OrderSubmit.class, orderSubmit.getId());
     }
 }
