@@ -85,6 +85,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
     private Button addBtn;
     @InjectView(R.id.co_pay_btn)
     private Button payBtn;
+    @InjectView(R.id.co_save_btn)
+    private Button saveBtn;
     @InjectView(R.id.co_remark)
     private TextView remarkTxt;
 
@@ -100,7 +102,7 @@ public class ConfirmOrderActivity01 extends BaseActivity {
     private ConfirmOrderDishAdapter mConfirmOrderDishAdapter;
     private LoginUserPrefData mLoginUserPrefData;
     private MakeOrderFinishDF mMakeOrderFinishDF;
-    private EnsureDialogFragmentBase ensureDialogFragmentBase;
+    private EnsureDialogFragmentBase ensureDialogFragmentBase,holderOrder;
     private QueryAppMerchantPublicAttr publicAttrs; //细项
     private ArrayList<Integer> mIndexes;
 
@@ -163,6 +165,12 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             @Override
             public void onClick(View v) {
                 backToPrevious();
+            }
+        });
+        saveBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                showHolderOrderEnsureDialog();
             }
         });
         deleteBtn.setOnClickListener(new View.OnClickListener() {
@@ -258,6 +266,17 @@ public class ConfirmOrderActivity01 extends BaseActivity {
                 backToPrevious();
             }
         }, "", "确定删除订单吗？");
+        setStoreHolderOrderEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
+            @Override
+            public void onLeftBtnFinish() {
+                dismissHolderOrderEnsureDialog();
+            }
+
+            @Override
+            public void onRightBtnFinish() {
+                storeHoldOrder();
+            }
+        }, "", "确认保留本订单菜品,下一次进入此桌台时恢复继续点菜？");
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
@@ -1062,6 +1081,45 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         ensureDialogFragmentBase.setOnCallBackListener(mCallBackListener);
     }
 
+    /**
+     * 保留订单的确认取消提示弹窗
+     *
+     * @param mCallBackListener
+     * @param topTitle
+     * @param context
+     */
+    protected void setStoreHolderOrderEnsureDialogListener(EnsureDialogFragmentBase.CallBackListener mCallBackListener, String topTitle, String context) {
+        if (holderOrder == null) {
+            holderOrder = EnsureDialogFragmentBase.newInstance(topTitle, context, "取消", "确定");
+        }
+        holderOrder.setOnCallBackListener(mCallBackListener);
+    }
+
+    /**
+     * 保留订单提示窗口显示
+     */
+    public void showHolderOrderEnsureDialog() {
+        try {
+            if (holderOrder != null && !holderOrder.isAdded() && !holderOrder.isVisible()) {
+                holderOrder.show(mActivity.getFragmentManager(), "HolderOrder");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 保留订单的提示窗口取消
+     */
+    public void dismissHolderOrderEnsureDialog() {
+        try {
+            if (holderOrder != null && holderOrder.isAdded() && holderOrder.isVisible())
+                holderOrder.dismiss();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
+    }
     /*
     * 显示整单备注弹框
     * */
@@ -1085,4 +1143,64 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             remarkTxt.setText(str);
         }
     };
+
+    /**
+     * 准备数据
+     * @return false 无菜品拒绝
+     */
+    private boolean prepareSubmitOrder(){
+        if ((mNormalDishDataList!=null&&mNormalDishDataList.size()>0)||(mDishesCompDataList != null&&mDishesCompDataList.size()>0)) {
+            //(1)订单信息修正保存
+            String remark = remarkTxt.getText().toString().trim(); //订单备注
+            int nowId = R.id.rdo_order_right_now;
+            String salesState;
+            String orderState;
+            Log.d(TAG, "现在立刻下单!");
+            salesState = "1";
+            orderState = "0";
+            mOrderSubmit.setOrderState(orderState);
+            mOrderSubmit.setRemark(remark);
+            mOrderSubmit.setDeskId(mCurDesk.getDeskId());
+            mOrderSubmit.setDeskName(mCurDesk.getDeskName());
+            mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
+            mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));
+            //合并到总单，准备提交,里面的OrderGoodsItem为原始数据,不能再提交保存的时候修改,原型模式,克隆
+            List<OrderGoodsItem> mCommitList = new ArrayList<OrderGoodsItem>();
+            mCommitList.addAll(mNormalDishDataList);
+            if (mDishesCompDataList != null&&mDishesCompDataList.size()>0) {
+                for (int m = 0; m < mDishesCompDataList.size(); m++) {
+                    mCommitList.add(mDishesCompDataList.get(m).getmCompMainDishes());
+                    mCommitList.addAll(mDishesCompDataList.get(m).getCompItemDishes());
+                }
+            }
+            mOrderSubmit.setOrderGoods(mCommitList);
+            return true;
+        } else return false;
+    }
+
+    /**
+     * 本地数据库保存订单信息
+     */
+    private void storeHoldOrder()  {
+        if (prepareSubmitOrder()){
+            try {
+                //(1)从原型克隆当前操作数据
+                OrderSubmit lOrderSubmit=mOrderSubmit.clone();
+                //(2)将属性list<String>转存json在remarkString里
+                for (OrderGoodsItem lOrderGoodsItem:lOrderSubmit.getOrderGoods()){
+                    lOrderGoodsItem.remarkCopyToRemarkString(gson);
+                }
+                //(3)数据库保存数据
+                lOrderSubmit.saveThrows();
+                DataSupport.saveAll(lOrderSubmit.getOrderGoods());
+            }catch (CloneNotSupportedException e){
+                e.printStackTrace();
+            }finally {
+                KLog.i("保留订单操作结束!");
+                backToDeskPage();
+            }
+        }else{
+            showShortTip("您尚未点菜哦~~");
+        }
+    }
 }

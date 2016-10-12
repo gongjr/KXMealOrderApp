@@ -267,6 +267,7 @@ public class SearchDishesActivity extends BaseActivity{
         if(!isExist){
             OrderGoodsItem goodsItem = new OrderGoodsItem();
             goodsItem.setCompId("0");  //非套餐
+            goodsItem.setIsComp("0");  //非套餐
             goodsItem.setTradeStaffId(mOrderSubmit.getTradeStsffId());
             goodsItem.setDeskId(mCurDesk.getDeskId());
             goodsItem.setDishesPrice(dishesItem.getDishesPrice());

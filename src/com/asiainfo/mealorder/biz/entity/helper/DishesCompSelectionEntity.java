@@ -46,4 +46,12 @@ public class DishesCompSelectionEntity implements Serializable{
             lOrderGoodsItem.setWait(isWait);
         }
 	}
+
+    /**
+     * 有主菜,单独更新套餐标志
+     * @param isWait
+     */
+    public void setWait(boolean isWait) {
+        this.isWait = isWait;
+    }
 }

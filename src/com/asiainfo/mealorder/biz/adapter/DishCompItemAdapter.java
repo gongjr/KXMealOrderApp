@@ -474,6 +474,7 @@ public class DishCompItemAdapter extends BaseAdapter {
         } else {
             OrderGoodsItem goodsItem = new OrderGoodsItem();
             goodsItem.setCompId(DISHES_ID); //套餐菜统一设置成对应套餐的dishesId
+            goodsItem.setIsComp("0");
             goodsItem.setTradeStaffId(mLoginUserPrefData.getStaffId());
             goodsItem.setDeskId(mCurDesk.getDeskId());
             goodsItem.setDishesPrice(mDishesCompItem.getDishesPrice());
@@ -552,6 +553,7 @@ public class DishCompItemAdapter extends BaseAdapter {
             if (compItem.getDishesId().equals(dishesId)) {
                 OrderGoodsItem goodsItem = new OrderGoodsItem();
                 goodsItem.setCompId(DISHES_ID); //套餐菜统一设置成对应套餐的dishesId
+                goodsItem.setIsComp("0");
                 goodsItem.setTradeStaffId(mLoginUserPrefData.getStaffId());
                 goodsItem.setDeskId(mCurDesk.getDeskId());
                 goodsItem.setDishesPrice(compItem.getDishesPrice());

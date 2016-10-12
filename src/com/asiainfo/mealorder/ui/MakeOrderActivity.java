@@ -39,10 +39,12 @@ import com.asiainfo.mealorder.biz.listener.OnDishesCompClickListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
 import com.asiainfo.mealorder.config.Constants;
 import com.asiainfo.mealorder.config.LoginUserPrefData;
+import com.asiainfo.mealorder.db.DataBinder;
 import com.asiainfo.mealorder.db.MerchantDishesEntityService;
 import com.asiainfo.mealorder.ui.base.EnsureDialogFragmentBase;
 import com.asiainfo.mealorder.ui.base.MakeOrderActivityBase;
 import com.asiainfo.mealorder.utils.Arith;
+import com.asiainfo.mealorder.utils.KLog;
 import com.asiainfo.mealorder.utils.StringUtils;
 import com.google.gson.reflect.TypeToken;
 
@@ -107,6 +109,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 	 * 微信下单，点击通知，进入到下单页面
 	 */
 	private KXPushModel mPushModel;
+    private EnsureDialogFragmentBase holderOrder;
 
 	@Override
 	protected void onCreate(Bundle bundle) {
@@ -149,6 +152,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
             //showViewOrderPushedDishesDF(true, mPushedOrder);
             showViewOrderPushedDishesDF();
         }
+        checkHolderOrder();
 	}
 
     @Override
@@ -323,6 +327,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		if(!isExist){
 			OrderGoodsItem goodsItem = new OrderGoodsItem();
 			goodsItem.setCompId("0");  //非套餐
+            goodsItem.setIsComp("0");
 			goodsItem.setTradeStaffId(mLoginUserPrefData.getStaffId());
 			goodsItem.setDeskId(mCurDesk.getDeskId());
 			goodsItem.setDishesPrice(dishesItem.getDishesPrice());
@@ -416,6 +421,18 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 		btn_viewOrder.setOnClickListener(mOnClickListener);
 		img_basket.setOnClickListener(mOnClickListener);
 		btn_search.setOnClickListener(mOnClickListener);
+        setStoreHolderOrderEnsureDialogListener(new EnsureDialogFragmentBase.CallBackListener() {
+            @Override
+            public void onLeftBtnFinish() {
+                dismissHolderOrderEnsureDialog();
+            }
+
+            @Override
+            public void onRightBtnFinish() {
+                getDataFromHolderOrder();
+                dismissHolderOrderEnsureDialog();
+            }
+        }, "", "本桌存在保留订单菜品,是否恢复继续点菜？");
 	}
 	
 	OnClickListener mOnClickListener = new OnClickListener() {
@@ -764,7 +781,8 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 				DeskOrderGoodsItem deskGoodsItem = deskOrderItems.get(i);
 				OrderGoodsItem goodsItem = new OrderGoodsItem();
 				goodsItem.setCompId("0");  //非套餐
-				goodsItem.setTradeStaffId(mLoginUserPrefData.getStaffId());
+                goodsItem.setIsComp("0");
+                goodsItem.setTradeStaffId(mLoginUserPrefData.getStaffId());
 				goodsItem.setDeskId(mCurDesk.getDeskId());
 				goodsItem.setDishesPrice(deskGoodsItem.getDishesPrice());
 				goodsItem.setDishesTypeCode(deskGoodsItem.getDishesTypeCode());
@@ -947,4 +965,130 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
         overridePendingTransition(android.R.anim.fade_in,android.R.anim.fade_out);
     }
 
+    /**
+     * 查询当天,当桌,当前商户的保留订单详细,取最后一个
+     */
+    public OrderSubmit quaryLocalOrder() {
+        List<OrderSubmit> localOrder= quaryLocalOrderInfo();
+        if (localOrder != null && localOrder.size() > 0) {
+            OrderSubmit mOrderSubmit=localOrder.get(localOrder.size()-1);
+            String orderData = gson.toJson(mOrderSubmit);
+            KLog.i(orderData);
+            List<OrderGoodsItem> orderGoodsItemList = DataBinder.binder.findWithWhere(OrderGoodsItem.class, "ordersubmit_id=?", mOrderSubmit.getId() + "");
+            for (OrderGoodsItem mOrderGoodsItem : orderGoodsItemList) {
+                mOrderGoodsItem.remarkStringCopyToRemark(gson);
+                mOrderGoodsItem.setRemarkString(null);//remarkString,数据使用后,清空,避免后续数据冗余
+            }
+            mOrderSubmit.setOrderGoods(orderGoodsItemList);
+            return mOrderSubmit;
+        } else {
+            KLog.i("本桌当前无保留订单~.~");
+            return null;
+        }
+    }
+
+    /**
+     * 查询当天,当桌,当前商户的保留订单
+     */
+    public List<OrderSubmit> quaryLocalOrderInfo() {
+        String day = StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1);
+        List<OrderSubmit> localOrder= DataBinder.binder.findWithWhere(OrderSubmit.class, "childmerchantId=? and createtimeday =? and deskid =?", mLoginUserPrefData.getChildMerchantId(), day,mCurDesk.getDeskId());
+        return localOrder;
+    }
+
+
+
+    /**
+     * 保留订单的确认取消提示弹窗
+     *
+     * @param mCallBackListener
+     * @param topTitle
+     * @param context
+     */
+    protected void setStoreHolderOrderEnsureDialogListener(EnsureDialogFragmentBase.CallBackListener mCallBackListener, String topTitle, String context) {
+        if (holderOrder == null) {
+            holderOrder = EnsureDialogFragmentBase.newInstance(topTitle, context, "取消", "确定");
+        }
+        holderOrder.setOnCallBackListener(mCallBackListener);
+    }
+
+    /**
+     * 保留订单提示窗口显示
+     */
+    public void showHolderOrderEnsureDialog() {
+        try {
+            if (holderOrder != null && !holderOrder.isAdded() && !holderOrder.isVisible()) {
+                holderOrder.show(mActivity.getFragmentManager(), "HolderOrder");
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * 保留订单的提示窗口取消
+     */
+    public void dismissHolderOrderEnsureDialog() {
+        try {
+            if (holderOrder != null && holderOrder.isAdded() && holderOrder.isVisible())
+                holderOrder.dismiss();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /*
+    * 从订单中获取普通菜和套餐菜列表
+    * */
+    private void getDataFromHolderOrder() {
+        OrderSubmit mOrderSubmit=quaryLocalOrder();
+        if (mOrderSubmit!=null&&mOrderSubmit.getOrderGoods()!=null&&mOrderSubmit.getOrderGoods().size()>0){
+            List<OrderGoodsItem> holderOrderGoodsList=new ArrayList<>();
+            List<DishesCompSelectionEntity> holderOrderCompGoodsList=new ArrayList<>();
+            for (OrderGoodsItem mOrderGoodsItem:mOrderSubmit.getOrderGoods()){
+                //判断是否是普通菜
+                if (mOrderGoodsItem.getIsComp().equals("0") && mOrderGoodsItem.getIsCompDish().equals("false")) {
+                    holderOrderGoodsList.add(mOrderGoodsItem);
+                } else if (mOrderGoodsItem.getIsComp().equals("1")&& mOrderGoodsItem.getIsCompDish().equals("false")) {
+                    DishesCompSelectionEntity dishesCompSelectionEntity = new DishesCompSelectionEntity(); //套餐菜
+                    List<OrderGoodsItem> compDishList = new ArrayList<OrderGoodsItem>(); //套餐子菜列表
+                    dishesCompSelectionEntity.setmCompMainDishes(mOrderGoodsItem);
+                    //判断是否是套餐子菜,如果是的话判断子菜的compId是否等于主菜的saleId和子菜的instanceId是否等于主菜的instanceId
+                    for (OrderGoodsItem compItemDish:mOrderSubmit.getOrderGoods()){
+                        if (compItemDish.getIsComp().equals("0") && compItemDish.getIsCompDish().equals("true")
+                                && compItemDish.getCompId().equals(mOrderGoodsItem.getSalesId())
+                                && compItemDish.getInstanceId().equals(mOrderGoodsItem.getInstanceId())) {
+                            compDishList.add(compItemDish);
+                        }
+                    }
+                    dishesCompSelectionEntity.setWait(mOrderGoodsItem.isWait());
+                    dishesCompSelectionEntity.setCompItemDishes(compDishList);
+                    holderOrderCompGoodsList.add(dishesCompSelectionEntity);
+                }
+            }
+            orderGoodsList=holderOrderGoodsList;
+            orderCompGoodsList=holderOrderCompGoodsList;
+            updateDishesTypeSelectedCount();
+            deleteLocalOrder(mOrderSubmit);
+        }else{
+            KLog.i("无菜品详情!");
+        }
+    }
+
+    public void checkHolderOrder(){
+        List<OrderSubmit> localOrder=quaryLocalOrderInfo();
+        if(localOrder!=null&&localOrder.size()>0){
+            showHolderOrderEnsureDialog();
+        }else{
+            KLog.i("无保留订单");
+        }
+    }
+
+    public void deleteLocalOrder(OrderSubmit orderSubmit) {
+        if (orderSubmit.getOrderGoods() != null && orderSubmit.getOrderGoods().size() > 0) {
+            for (OrderGoodsItem orderGoodsItem : orderSubmit.getOrderGoods())
+                DataBinder.binder.delete(OrderGoodsItem.class, orderGoodsItem.getId());
+        }
+        DataBinder.binder.delete(OrderSubmit.class, orderSubmit.getId());
+    }
 }

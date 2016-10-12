@@ -1,8 +1,12 @@
 package com.asiainfo.mealorder.biz.entity;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,12 +15,13 @@ import java.util.List;
  * 
  *         提交订单的菜品实体
  */
-public class OrderGoodsItem extends DataSupport implements Serializable{
+public class OrderGoodsItem extends DataSupport implements Serializable,Cloneable{
 
 	private static final long serialVersionUID = 1L;
 	
 	private String tradeStaffId;
 	private String compId;
+	private String isComp;
 	private String deskId;
 	private String dishesPrice;
 	private String dishesTypeCode;
@@ -40,6 +45,14 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
     private String createTime;
     private String dishesUnit;
 	private boolean wait;
+
+    public String getIsComp() {
+        return isComp;
+    }
+
+    public void setIsComp(String pIsComp) {
+        isComp = pIsComp;
+    }
 
     public String getDishesUnit() {
         return dishesUnit;
@@ -243,4 +256,28 @@ public class OrderGoodsItem extends DataSupport implements Serializable{
 	public void setWait(boolean wait) {
 		this.wait = wait;
 	}
+
+    public void remarkCopyToRemarkString(Gson gson){
+        if (this.getRemark()!=null&&this.getRemark().size()>0){
+            String remarkString = gson.toJson(this.getRemark());
+            this.remarkString=remarkString;
+        }
+    }
+
+    public void remarkStringCopyToRemark(Gson gson){
+        if (this.getRemarkString()!=null&&this.getRemarkString().length()>0){
+            List<String> remark = gson.fromJson(this.getRemarkString(), new TypeToken<List<String>>() {
+            }.getType());
+            this.remark=remark;
+        }
+    }
+
+    @Override
+    protected OrderGoodsItem clone() throws CloneNotSupportedException {
+        OrderGoodsItem lOrderGoodsItem=(OrderGoodsItem)super.clone();
+        List<String> remarks=new ArrayList<>();
+        for (String s:remark)remarks.add(s);
+        lOrderGoodsItem.setRemark(remarks);
+        return lOrderGoodsItem;
+    }
 }

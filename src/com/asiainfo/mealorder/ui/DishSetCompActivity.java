@@ -322,6 +322,7 @@ public class DishSetCompActivity extends MakeOrderActivityBase {
         if (mMerchantDishes != null) {
             OrderGoodsItem goodsItem = new OrderGoodsItem();
             goodsItem.setCompId("0");
+            goodsItem.setIsComp("1");
             goodsItem.setTradeStaffId(mLoginUserPrefData.getStaffId());
             goodsItem.setDeskId(mCurDesk.getDeskId());
             goodsItem.setDishesPrice(mMerchantDishes.getDishesPrice());

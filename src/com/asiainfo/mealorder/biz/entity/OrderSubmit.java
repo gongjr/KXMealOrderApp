@@ -3,6 +3,7 @@ package com.asiainfo.mealorder.biz.entity;
 import org.litepal.crud.DataSupport;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -11,7 +12,7 @@ import java.util.List;
  * 
  *         订单提交实体
  */
-public class OrderSubmit extends DataSupport implements Serializable{
+public class OrderSubmit extends DataSupport implements Serializable,Cloneable{
 	
 	private static final long serialVersionUID = 1L;
 	
@@ -295,5 +296,14 @@ public class OrderSubmit extends DataSupport implements Serializable{
 
     public void setTradeStaffId(String pTradeStaffId) {
         tradeStaffId = pTradeStaffId;
+    }
+
+    @Override
+    public OrderSubmit clone() throws CloneNotSupportedException {
+        OrderSubmit lOrderSubmit=(OrderSubmit)super.clone();
+        List<OrderGoodsItem> lOrderGoodsItems=new ArrayList<>();
+        for (OrderGoodsItem lOrderGoodsItem:OrderGoods)lOrderGoodsItems.add(lOrderGoodsItem.clone());
+        lOrderSubmit.setOrderGoods(lOrderGoodsItems);
+        return lOrderSubmit;
     }
 }
