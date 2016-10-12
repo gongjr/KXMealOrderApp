@@ -144,7 +144,7 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
         ImageButton btn_minus/*数量减*/;
         ImageButton btn_edit_price/*单价改动*/;
         ImageButton btn_wait/*等叫*/;
-        LinearLayout ll_propertyItems/*属性下拉布局*/, rl_dish_comp_nav;
+        LinearLayout ll_propertyItems/*属性下拉布局*/;
         TextView tv_propertyName/*属性名*/, tv_propertyValueName/*属性值*/, tv_propertyDrop/*属性下拉视图*/;
         ImageView img_dropDown;/*下拉图标*/
         RelativeLayout relativeLayout;/*整体布局*/
@@ -166,7 +166,6 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
             btn_wait = (ImageButton) itemView.findViewById(R.id.btn_wait);
 
             ll_propertyItems = (LinearLayout) itemView.findViewById(R.id.ll_properties);
-            rl_dish_comp_nav = (LinearLayout) itemView.findViewById(R.id.rl_dish_comp_nav);
             tv_propertyName = (TextView) itemView.findViewById(R.id.tv_property_name);
             tv_propertyValueName = (TextView) itemView.findViewById(R.id.tv_property);
             tv_propertyDrop = (TextView) itemView.findViewById(R.id.tv_property_name);
@@ -351,12 +350,19 @@ public class ConfirmOrderDishAdapter extends Adapter<ConfirmOrderDishAdapter.Vie
         } else {
         }
 
-        holder.rl_dish_comp_nav.setOnClickListener(new OnClickListener() {
+        holder.mView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mOnItemClickListener != null) {
                     mOnItemClickListener.onItemClick(v, position);
                 }
+            }
+        });
+
+        holder.ll_actions.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
 
