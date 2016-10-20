@@ -30,7 +30,7 @@ public class OrderGoodsItem extends DataSupport implements Serializable,Cloneabl
 	private String interferePrice;
 	private String orderId;
     private String remarkString;
-	private List<String> remark;
+	private List<String> remark =new ArrayList<>();
 	private String salesId;
 	private String salesName;
 	private String salesNum;//先Sting,支持提交double,暂不支持,本地修改小数点
@@ -274,7 +274,32 @@ public class OrderGoodsItem extends DataSupport implements Serializable,Cloneabl
 
     @Override
     protected OrderGoodsItem clone() throws CloneNotSupportedException {
-        OrderGoodsItem lOrderGoodsItem=(OrderGoodsItem)super.clone();
+        OrderGoodsItem lOrderGoodsItem=new OrderGoodsItem();
+        lOrderGoodsItem.setTradeStaffId(this.tradeStaffId);
+        lOrderGoodsItem.setCompId(this.compId);
+        lOrderGoodsItem.setIsComp(this.isComp);
+        lOrderGoodsItem.setDeskId(this.deskId);
+        lOrderGoodsItem.setDishesPrice(this.dishesPrice);
+        lOrderGoodsItem.setDishesTypeCode(this.dishesTypeCode);
+        lOrderGoodsItem.setExportId(this.exportId);
+        lOrderGoodsItem.setInstanceId(this.instanceId);
+        lOrderGoodsItem.setInterferePrice(this.interferePrice);
+        lOrderGoodsItem.setOrderId(this.orderId);
+        lOrderGoodsItem.setRemarkString(this.remarkString);
+        lOrderGoodsItem.setSalesId(this.salesId);
+        lOrderGoodsItem.setSalesName(this.salesName);
+        lOrderGoodsItem.setSalesNum(this.salesNum);
+        lOrderGoodsItem.setSalesPrice(this.salesPrice);
+        lOrderGoodsItem.setSalesState(this.salesState);
+        lOrderGoodsItem.setIsCompDish(this.isCompDish);
+        lOrderGoodsItem.setAction(this.action);
+        lOrderGoodsItem.setMemberPrice(this.memberPrice);
+        lOrderGoodsItem.setIsZdzk(this.isZdzk);
+        lOrderGoodsItem.setDiscountPrice(this.discountPrice);
+        lOrderGoodsItem.setMarketingPrice(this.marketingPrice);
+        lOrderGoodsItem.setCreateTime(this.createTime);
+        lOrderGoodsItem.setDishesUnit(this.dishesUnit);
+        lOrderGoodsItem.setWait(this.wait);
         List<String> remarks=new ArrayList<>();
         for (String s:remark)remarks.add(s);
         lOrderGoodsItem.setRemark(remarks);

@@ -192,15 +192,22 @@ public class ConfirmOrderActivity01 extends BaseActivity {
                 Log.d(TAG, "ben tag: " + payBtn.getTag().toString());
                 if (payBtn.getTag().equals(ORDER_BTN_ACTION_TYPE_POST)) {
                     lockMakeOrderBtn();
-                    prepareOrderSummaryInfo();
-                    Gson gson = new Gson();
-                    if (mOrderSubmit.getOrderGoods() == null || mOrderSubmit.getOrderGoods().size() <= 0) {
+                    String orderData="";
+                    if (prepareSubmitOrder()){
+//                        prepareOrderSummaryInfo();
+                        //提交前，重新确定订单总价格
+                        mOrderSubmit.setOriginalPrice("" + showOrderDishesCountPrice());
+                        OrderSubmit lOrderSubmit= prepareOrderSubmit();
+                        if (lOrderSubmit!=null){
+                            orderData = gson.toJson(lOrderSubmit);
+                        }else{
+                            showShortTip("提交数据异常!");
+                            return;
+                        }
+                    }else{
                         showShortTip("亲，还没有点菜哦~");
                         return;
                     }
-                    //提交前，重新确定订单总价格
-                    mOrderSubmit.setOriginalPrice("" + showOrderDishesCountPrice());
-                    String orderData = gson.toJson(mOrderSubmit);
                     switch (ORDER_CONFIRM_TYPE) {
                         case Constants.ORDER_CONFIRM_TYPE_NEW_ORDER: {
                             //新单
@@ -236,9 +243,9 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             @Override
             public void onRightBtnFinish() {
                 //本地缓存订单
-                if (mOrderSubmit.getOrderGoods() != null || mOrderSubmit.getOrderGoods().size() > 0) {
+                /*if (mOrderSubmit.getOrderGoods() != null || mOrderSubmit.getOrderGoods().size() > 0) {
                     KLog.i("保存前:", mOrderSubmit.getId());
-                    mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); /**订单创建天**/
+                    mOrderSubmit.setCreateTimeDay(StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1)); *//**订单创建天**//*
                     if (mOrderSubmit.getOrderGoods() != null && mOrderSubmit.getOrderGoods().size() > 0) {
                         for (OrderGoodsItem orderGoodsItem : mOrderSubmit.getOrderGoods()) {
                             String remarkString = gson.toJson(orderGoodsItem.getRemark());
@@ -249,7 +256,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
                     mOrderSubmit.save();
                     DataSupport.saveAll(mOrderSubmit.getOrderGoods());
                     KLog.i("保存后:", mOrderSubmit.getId());
-                }
+                }*/
+                storeHoldOrder();
                 backToDeskPage();
             }
         }, "", "网络异常，下单失败!", "再看看", "保存本地");
@@ -277,7 +285,7 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             public void onRightBtnFinish() {
                 storeHoldOrder();
             }
-        }, "", "确认保留本订单菜品,下一次进入此桌台时恢复继续点菜？");
+        }, "", "确认保留本订单菜品,下一次进入此桌台时可恢复继续点菜？");
     }
 
     private OnLeftBtnClickListener onLeftBtnClickListener = new OnLeftBtnClickListener() {
@@ -778,7 +786,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
                                 Log.e(TAG,
                                         "VolleyError:" + errors.getErrorMsg(), error);
                                 //本地缓存订单
-                                storeLocalOrder();
+//                                storeLocalOrder();
+                                storeHoldOrder();
 //                        onMakeOrderFailed(errors.getErrorMsg(),VOLLEY_ERROR_BACK_NO);//保留在当前页面不退出桌台
                                 break;
                             default:
@@ -955,6 +964,45 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         }
         mOrderSubmit.setRemark(remark);
         mOrderSubmit.setOrderGoods(mCommitList);
+    }
+
+    /**
+     * 准备订单数据信息, 返回克隆修改对象
+     */
+    private OrderSubmit prepareOrderSubmit() {
+        OrderSubmit lOrderSubmit=null;
+        try {
+            String remark = remarkTxt.getText().toString().trim(); //订单备注
+            int nowId = R.id.rdo_order_right_now;
+            String salesState;
+            String orderState;
+            Log.d(TAG, "现在立刻下单!");
+            salesState = "1";
+            orderState = "0";
+            lOrderSubmit=mOrderSubmit.clone();
+            for (int i = 0; i < lOrderSubmit.getOrderGoods().size(); i++) {
+                OrderGoodsItem goodsItem = lOrderSubmit.getOrderGoods().get(i);
+                goodsItem.setSalesState(salesState + "");
+                List<String> remarkCommitAll = new ArrayList<>();
+                if (goodsItem.isWait()) {
+                    remarkCommitAll.add("等叫");
+                }
+                List<String> remarkCommit = fromItemEntityList2RemarkCommit(goodsItem.getRemark());
+                if (remarkCommit != null && remarkCommit.size() > 0)
+                    remarkCommitAll.addAll(remarkCommit);
+                goodsItem.setRemark(remarkCommitAll);
+            }
+            lOrderSubmit.setOrderState(orderState);
+            if (ORDER_CONFIRM_TYPE == Constants.ORDER_CONFIRM_TYPE_NEW_ORDER) {
+                lOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));
+            }
+            lOrderSubmit.setRemark(remark);
+        }catch (CloneNotSupportedException e){
+            e.printStackTrace();
+        } finally {
+            KLog.i("提交订单数据处理完成!");
+            return lOrderSubmit;
+        }
     }
 
     /**
@@ -1153,11 +1201,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         if ((mNormalDishDataList!=null&&mNormalDishDataList.size()>0)||(mDishesCompDataList != null&&mDishesCompDataList.size()>0)) {
             //(1)订单信息修正保存
             String remark = remarkTxt.getText().toString().trim(); //订单备注
-            int nowId = R.id.rdo_order_right_now;
-            String salesState;
             String orderState;
             Log.d(TAG, "现在立刻下单!");
-            salesState = "1";
             orderState = "0";
             mOrderSubmit.setOrderState(orderState);
             mOrderSubmit.setRemark(remark);
@@ -1167,10 +1212,23 @@ public class ConfirmOrderActivity01 extends BaseActivity {
             mOrderSubmit.setCreateTime(StringUtils.date2Str(new Date(), StringUtils.DATE_TIME_FORMAT));
             //合并到总单，准备提交,里面的OrderGoodsItem为原始数据,不能再提交保存的时候修改,原型模式,克隆
             List<OrderGoodsItem> mCommitList = new ArrayList<OrderGoodsItem>();
+            //每次预备数据,更新菜品的instanceid,避免网络异常时id重复
+            long init=0;
+            for (OrderGoodsItem lOrderGoodsItem:mNormalDishDataList){
+                long instanceid=System.currentTimeMillis()+init;
+                init++;
+                lOrderGoodsItem.setInstanceId(""+instanceid);
+            }
             mCommitList.addAll(mNormalDishDataList);
             if (mDishesCompDataList != null&&mDishesCompDataList.size()>0) {
                 for (int m = 0; m < mDishesCompDataList.size(); m++) {
+                    long instanceid=System.currentTimeMillis()+init;
+                    init++;
+                    mDishesCompDataList.get(m).getmCompMainDishes().setInstanceId(instanceid+"");
                     mCommitList.add(mDishesCompDataList.get(m).getmCompMainDishes());
+                    for (OrderGoodsItem lOrderGoodsItem:mDishesCompDataList.get(m).getCompItemDishes()){
+                        lOrderGoodsItem.setInstanceId(instanceid+"");
+                    }
                     mCommitList.addAll(mDishesCompDataList.get(m).getCompItemDishes());
                 }
             }
@@ -1210,7 +1268,7 @@ public class ConfirmOrderActivity01 extends BaseActivity {
     }
 
     /**
-     * 查询当天,当桌,当前商户的保留订单
+     * 查询当天,当桌,当前商户的当前员工保留订单
      */
     public List<OrderSubmit> quaryLocalOrderInfo() {
         String day = StringUtils.date2Str(new Date(), StringUtils.DATE_FORMAT_1);

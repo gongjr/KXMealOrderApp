@@ -17,8 +17,6 @@ import android.widget.TextView;
 
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.adapter.SearchDishesAdapter;
-import com.asiainfo.mealorder.config.Constants;
-import com.asiainfo.mealorder.db.MerchantDishesEntityService;
 import com.asiainfo.mealorder.biz.entity.MerchantDesk;
 import com.asiainfo.mealorder.biz.entity.MerchantDishes;
 import com.asiainfo.mealorder.biz.entity.MerchantRegister;
@@ -31,6 +29,8 @@ import com.asiainfo.mealorder.biz.entity.helper.PropertySelectEntity;
 import com.asiainfo.mealorder.biz.listener.OnChangeDishCountListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
 import com.asiainfo.mealorder.biz.listener.OnSearchDishesCompUpdateListener;
+import com.asiainfo.mealorder.config.Constants;
+import com.asiainfo.mealorder.db.MerchantDishesEntityService;
 import com.asiainfo.mealorder.ui.base.BaseActivity;
 import com.asiainfo.mealorder.utils.Arith;
 import com.asiainfo.mealorder.utils.KLog;
@@ -396,7 +396,10 @@ public class SearchDishesActivity extends BaseActivity{
             num = num + StringUtils.str2Int(goodsItem.getSalesNum());
         }
         if(mDishesCompDataList!=null && mDishesCompDataList.size()>0){
-            num = num + mDishesCompDataList.size();
+            for (int m = 0; m < mDishesCompDataList.size(); m++) {
+                OrderGoodsItem mainCompDishes = mDishesCompDataList.get(m).getmCompMainDishes();
+                num += StringUtils.str2Int(mainCompDishes.getSalesNum());
+            }
         }
         return num;
     }

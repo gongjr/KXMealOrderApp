@@ -177,8 +177,10 @@ public class UserModel {
             if(mDeskOrder!=null&&mDeskOrder.getOrderGoods()!=null&&mDeskOrder.getOrderGoods().size()>0){
                 for (DeskOrderGoodsItem lDeskOrderGoodsItem:mDeskOrder.getOrderGoods()){
                     if (lDeskOrderGoodsItem.getIsCompDish()!=null&&lDeskOrderGoodsItem.getIsCompDish().equals("true"))continue;
-                    String discount_OrderGoods=mPrePrice.subPrice(lDeskOrderGoodsItem.getDishesPrice(),lDeskOrderGoodsItem.getMemberPrice());
-                    Double allDiscount= Double.valueOf(discount_OrderGoods)*Double.valueOf(lDeskOrderGoodsItem.getSalesNum());
+//                    String discount_OrderGoods=mPrePrice.subPrice(lDeskOrderGoodsItem.getDishesPrice(),lDeskOrderGoodsItem.getMemberPrice());
+//                    Double allDiscount= Double.valueOf(discount_OrderGoods)*Double.valueOf(lDeskOrderGoodsItem.getSalesNum());
+                    Double memberPrices=Double.valueOf(lDeskOrderGoodsItem.getMemberPrice())*Double.valueOf(lDeskOrderGoodsItem.getSalesNum());
+                    String allDiscount=mPrePrice.subPrice(lDeskOrderGoodsItem.getSalesPrice(),memberPrices.toString());
                     discount=mPrePrice.addPrice(allDiscount.toString(),discount);
                 }
             }

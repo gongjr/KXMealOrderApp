@@ -2,9 +2,7 @@ package com.asiainfo.mealorder.ui.base;
 
 import android.app.Activity;
 import android.app.DialogFragment;
-import android.content.res.Resources;
 import android.os.Bundle;
-import android.text.Spanned;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -84,7 +82,7 @@ public class EnsureDialogFragmentBase extends DialogFragment {
         btn_close.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                dismiss();
+                clickLeftButtonEvent();
             }
         });
 

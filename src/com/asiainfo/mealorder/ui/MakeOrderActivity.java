@@ -387,7 +387,7 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 				String dTypeCode = dishType.getDishesTypeCode();
 				String gTypeCode = mCompMainDishes.getDishesTypeCode();
 				if(dTypeCode!=null && gTypeCode!=null && dTypeCode.equals(gTypeCode)){
-					selectedNum = selectedNum + 1;
+					selectedNum = selectedNum + Integer.valueOf(mCompMainDishes.getSalesNum());
 				}
 			}
 			dishType.setDishesNum(selectedNum + "");
@@ -711,8 +711,9 @@ public class MakeOrderActivity extends MakeOrderActivityBase{
 			num = num + Integer.valueOf(goodsItem.getSalesNum());
 		}
 		if(orderCompGoodsList!=null && orderCompGoodsList.size()>0){
-			num = num + orderCompGoodsList.size();
-			Log.d(TAG, "order comp dishes size: " + orderCompGoodsList.size());
+            for (DishesCompSelectionEntity lDishesCompSelectionEntity:orderCompGoodsList){
+                num = num + Integer.valueOf(lDishesCompSelectionEntity.getmCompMainDishes().getSalesNum());
+            }
 		}
 		return num;
 	}
