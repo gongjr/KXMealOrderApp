@@ -72,7 +72,7 @@ public class LocalOrderAdapter extends BaseAdapter {
         } else if (type == Constants.ORDER_CONFIRM_TYPE_EXTRA_DISHES) {
             viewHolder.state.setText("加菜");
         }
-
+        viewHolder.state.setVisibility(View.INVISIBLE);
         String createTime = orderSubmit.getCreateTime();
         Date date = StringUtils.str2Date(createTime, StringUtils.DATE_TIME_FORMAT);
         viewHolder.time.setText("今天 " + StringUtils.date2Str(date, StringUtils.TIME_FORMAT_1));
@@ -83,6 +83,7 @@ public class LocalOrderAdapter extends BaseAdapter {
                 localOrderUploadListener.uploadOrder(position, orderSubmit);
             }
         });
+        viewHolder.imageButton.setVisibility(View.INVISIBLE);
         return convertView;
     }
 

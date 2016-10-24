@@ -143,6 +143,7 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         payBtn.setTag(ORDER_BTN_ACTION_TYPE_POST);
         mNormalDishDataList = mOrderSubmit.getOrderGoods();
         mLoginUserPrefData = new LoginUserPrefData(ConfirmOrderActivity01.this);
+        showOrderDishesCountPrice();
         publicAttrs = (QueryAppMerchantPublicAttr) baseApp.gainData(baseApp.KEY_GLOABLE_PUBLICATTR);
         mIndexes = new ArrayList<>();
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -681,6 +682,8 @@ public class ConfirmOrderActivity01 extends BaseActivity {
         }
 
         orderInfoTxt.setText("订单:  " + countSum + "项  " + "¥" + Arith.d2str(priceSum));
+        mOrderSubmit.setAllGoodsNum(countSum+"");
+        mOrderSubmit.setOriginalPrice(Arith.d2str(priceSum));
         return Arith.d2str(priceSum + StringUtils.str2Double(deskOrderPrice));
     }
 
