@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.asiainfo.mealorder.R;
 import com.asiainfo.mealorder.biz.entity.DeskOrderGoodsItem;
 import com.asiainfo.mealorder.biz.entity.helper.DishesCompDeskOrderEntity;
+import com.asiainfo.mealorder.utils.Arith;
 
 import java.util.List;
 
@@ -67,20 +68,24 @@ public class DeskOrderAdapter extends BaseAdapter {
 
         DeskOrderGoodsItem deskOrderGoodsItem = null;
         List<DeskOrderGoodsItem> deskOrderGoodsItemList = null;
+        String dishesPrice="0";
         if (position < mNormalDishList.size()) {
             deskOrderGoodsItem = mNormalDishList.get(position);
+            dishesPrice=deskOrderGoodsItem.getDishesPrice();
         } else if (position >= mNormalDishList.size() && mCompDishList.size() != 0) {
             deskOrderGoodsItem = mCompDishList.get(position - mNormalDishList.size()).getmCompMainDishes();
             deskOrderGoodsItemList = mCompDishList.get(position - mNormalDishList.size()).getCompItemDishes();
+            dishesPrice= Arith.d2str(Arith.div(Double.valueOf(deskOrderGoodsItem.getSalesPrice()), Double.valueOf(deskOrderGoodsItem.getSalesNum()), 2));
         }
 
         holder.dishName.setText(deskOrderGoodsItem.getSalesName());
         holder.dishCount.setText(deskOrderGoodsItem.getSalesNum());
         holder.dishPrice.setText(deskOrderGoodsItem.getSalesPrice());
+
         if (deskOrderGoodsItem.getDishesUnit()!=null&&deskOrderGoodsItem.getDishesUnit().length()>0){
-            holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/"+deskOrderGoodsItem.getDishesUnit());
+            holder.dishPerPrice.setText(dishesPrice + "元/"+deskOrderGoodsItem.getDishesUnit());
         }else{
-            holder.dishPerPrice.setText(deskOrderGoodsItem.getDishesPrice() + "元/份");
+            holder.dishPerPrice.setText(dishesPrice + "元/份");
         }
         isDishHasRemark(holder, deskOrderGoodsItem);
         isCompDishHasRemark(holder,deskOrderGoodsItemList);
