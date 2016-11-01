@@ -33,6 +33,7 @@ import com.asiainfo.mealorder.biz.listener.OnDishesCompCheckedChangedListener;
 import com.asiainfo.mealorder.biz.listener.OnEnsureCheckedPropertyItemsListener;
 import com.asiainfo.mealorder.biz.listener.OnItemClickListener;
 import com.asiainfo.mealorder.ui.PoPup.ChoosePropertyValueDF;
+import com.asiainfo.mealorder.utils.KLog;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -308,6 +309,7 @@ public class DishCompItemAdapter extends BaseAdapter {
                                 if (mItemCheckedStateMap.get(mDishesCompItemTest.getDishesId())) {
                                     mItemCheckedStateMap.put(mDishesCompItemTest.getDishesId(), false);//遍历清除旧单选项标志
                                 }
+                                KLog.i(mDishesCompItemTest.getDishesName()+":mItemCheckedStateMap "+mItemCheckedStateMap.get(mDishesCompItemTest.getDishesId()));
                             }
                         }
                         mItemCheckedStateMap.put(mDataList.get(position).getDishesId(), true);//确认选中新单选项
@@ -547,6 +549,28 @@ public class DishCompItemAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
+    void updateCurGoodsItemList(){
+        for (DishesCompItem compItem :mDataList){
+            Boolean isChecked = mItemCheckedStateMap.get(compItem.getDishesId());
+            Boolean isExist = false;
+            for (Iterator<OrderGoodsItem> iter = curGoodsItemList.iterator(); iter.hasNext(); ) {
+                OrderGoodsItem goodsItem = iter.next();
+                if (goodsItem.getSalesId().equals(compItem.getDishesId())) {
+                    if (isChecked) {
+                    } else {
+                        iter.remove();
+                    }
+                    isExist = true;
+                    break;
+                }
+            }
+            //如果尚未选择且变为选中状态，则添加到当选菜品中
+            if (!isExist && isChecked) {
+                addDishesToCurSelectedList(compItem.getDishesId());
+            }
+        }
+    }
+
     private void addDishesToCurSelectedList(String dishesId) {
         for (int m = 0; m < mDataList.size(); m++) {
             DishesCompItem compItem = mDataList.get(m);
@@ -660,6 +684,7 @@ public class DishCompItemAdapter extends BaseAdapter {
      * @return
      */
     public List<OrderGoodsItem> getSelectedCompItemData() {
+        updateCurGoodsItemList();
         return curGoodsItemList;
     }
 
