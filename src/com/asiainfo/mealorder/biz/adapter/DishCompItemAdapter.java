@@ -428,7 +428,7 @@ public class DishCompItemAdapter extends BaseAdapter {
         int curIndex = -1;
         for (int i = 0; i < all.size(); i++) {
             curPropertySelectEntity = gson.fromJson(all.get(i), PropertySelectEntity.class);
-            if (curPropertySelectEntity.getItemType().equals(itemType)) {
+            if (curPropertySelectEntity.getItemType()!=null&&curPropertySelectEntity.getItemType().equals(itemType)) {
                 //获得修改属性类型itemType，在当前属性列表中的index
                 curIndex = i;
                 break;
