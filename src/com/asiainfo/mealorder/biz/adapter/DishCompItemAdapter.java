@@ -419,44 +419,48 @@ public class DishCompItemAdapter extends BaseAdapter {
      * 全量的，替换当前属性的全部值
      */
     private void updateDishesPropertyChoice(int curCount, List<String> curSelectedPropertyList, PropertySelectEntity mNewPropertyEntity, int index, CheckBox chk_isItemSelect) {
-        List<String> all = curSelectedPropertyList;
-        String itemType = "";
-        if (mNewPropertyEntity != null) {
-            itemType = mNewPropertyEntity.getItemType();
-        }
-        PropertySelectEntity curPropertySelectEntity = null;
-        int curIndex = -1;
-        for (int i = 0; i < all.size(); i++) {
-            curPropertySelectEntity = gson.fromJson(all.get(i), PropertySelectEntity.class);
-            if (curPropertySelectEntity.getItemType()!=null&&curPropertySelectEntity.getItemType().equals(itemType)) {
-                //获得修改属性类型itemType，在当前属性列表中的index
-                curIndex = i;
-                break;
+        try {
+            List<String> all = curSelectedPropertyList;
+            String itemType = "";
+            if (mNewPropertyEntity != null) {
+                itemType = mNewPropertyEntity.getItemType();
             }
-        }
-        if (curIndex == -1) {
-            //修改类型itemtype，在当前属性列表中没有，则add
-            curIndex = all.size();
-            curPropertySelectEntity = new PropertySelectEntity();
-            curPropertySelectEntity.setItemType(itemType);
-            curPropertySelectEntity.setmSelectedItemsList(mNewPropertyEntity.getmSelectedItemsList());
-            String allremark = gson.toJson(curPropertySelectEntity);
-            all.add(allremark);
-        } else {
-            curPropertySelectEntity.setmSelectedItemsList(mNewPropertyEntity.getmSelectedItemsList());
-            String allremark = gson.toJson(curPropertySelectEntity);
-            all.set(curIndex, allremark);
-            //修改类型itemtype，在当前属性列表中存在，则替换对应index
-        }
+            PropertySelectEntity curPropertySelectEntity = null;
+            int curIndex = -1;
+            for (int i = 0; i < all.size(); i++) {
+                curPropertySelectEntity = gson.fromJson(all.get(i), PropertySelectEntity.class);
+                if (curPropertySelectEntity.getItemType()!=null&&curPropertySelectEntity.getItemType().equals(itemType)) {
+                    //获得修改属性类型itemType，在当前属性列表中的index
+                    curIndex = i;
+                    break;
+                }
+            }
+            if (curIndex == -1) {
+                //修改类型itemtype，在当前属性列表中没有，则add
+                curIndex = all.size();
+                curPropertySelectEntity = new PropertySelectEntity();
+                curPropertySelectEntity.setItemType(itemType);
+                curPropertySelectEntity.setmSelectedItemsList(mNewPropertyEntity.getmSelectedItemsList());
+                String allremark = gson.toJson(curPropertySelectEntity);
+                all.add(allremark);
+            } else {
+                curPropertySelectEntity.setmSelectedItemsList(mNewPropertyEntity.getmSelectedItemsList());
+                String allremark = gson.toJson(curPropertySelectEntity);
+                all.set(curIndex, allremark);
+                //修改类型itemtype，在当前属性列表中存在，则替换对应index
+            }
 
-        //刷新显示属性
-        if (mNewPropertyEntity.getmSelectedItemsList() != null && mNewPropertyEntity.getmSelectedItemsList().size() > 0) {
-            String dishesId = mNewPropertyEntity.getmSelectedItemsList().get(0).getDishesId();
-            String mDishesId = mDishesCompItem.getDishesId();
-            if (dishesId != null && mDishesId != null && dishesId.equals(mDishesId)) {
-                updateDishesCompSelectionByIndex(mDishesCompItem, all, index, chk_isItemSelect);
-                updateCheckedStateMap();
+            //刷新显示属性
+            if (mNewPropertyEntity.getmSelectedItemsList() != null && mNewPropertyEntity.getmSelectedItemsList().size() > 0) {
+                String dishesId = mNewPropertyEntity.getmSelectedItemsList().get(0).getDishesId();
+                String mDishesId = mDishesCompItem.getDishesId();
+                if (dishesId != null && mDishesId != null && dishesId.equals(mDishesId)) {
+                    updateDishesCompSelectionByIndex(mDishesCompItem, all, index, chk_isItemSelect);
+                    updateCheckedStateMap();
+                }
             }
+        }catch (Exception e){
+            e.printStackTrace();
         }
     }
 
